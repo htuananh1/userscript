@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Hades Auto - Bypass Yeumoney
 // @namespace    http://tampermonkey.net/
-// @version      1.4
-// @description  Đợi đủ 80s mới lấy mã, tự động nhập, submit cho Yeumoney, và fake trình duyệt khi gọi API!
+// @version      1.5
+// @description  Tải Ym.js và chạy script ngay từ document-start
 // @author       htuananh + ChatGPT
 // @match        https://yeumoney.com/*
 // @connect      traffic-user.net
@@ -11,5 +11,6 @@
 // @grant        GM_setClipboard
 // @grant        GM_notification
 // @grant        GM_addStyle
-// @run-at       document-end
+// @run-at       document-start
+// @require      https://raw.githubusercontent.com/htuananh1/userscript/refs/heads/main/Ym.js
 // ==/UserScript==
