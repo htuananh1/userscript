@@ -28,7 +28,7 @@
         'w88':      { codexn: 'taodeptrai', url: 'https://188.166.185.213/tim-hieu-khai-niem-3-bet-trong-poker-la-gi', loai_traffic: 'https://188.166.185.213/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'v9bet':    { codexn: 'taodeptrai', url: 'https://v9betho.com/ca-cuoc-bong-ro-ao', loai_traffic: 'https://v9betho.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'vn88':     { codexn: 'bomaydeptrai', url: 'https://vn88sv.com/cach-choi-bai-gao-gae', loai_traffic: 'https://vn88sv.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
-        'bk8':      { codexn: 'taodeptrai', url: 'https://bk8ze.com/cach-choi-bai-catte', loai_traffic: 'https://bk8ze.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'bk8':      { codexn: 'taodeptrai', url: 'https://bk8xo.com/cach-choi-bai-catte', loai_traffic: 'https://bk8xo.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         '88betag':  { codexnd: 'bomaylavua', url: 'https://88betag.com/keo-chau-a-la-gi', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
         'w88abc':   { codexnd: 'bomaylavua', url: 'https://w88abc.com/cach-choi-ca-cuoc-lien-quan-mobile', loai_traffic: 'https://w88abc.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
         '188.166.185.213': { codexnd: 'bomaylavua', url: 'https://w88abc.com/cach-choi-ca-cuoc-lien-quan-mobile', loai_traffic: 'https://w88abc.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
