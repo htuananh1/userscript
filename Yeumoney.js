@@ -2,7 +2,7 @@
 // @name         Hades Auto - Bypass Yeumoney
 // @namespace    http://tampermonkey.net/
 // @version      1.5
-// @description  Tải Ym.js và chạy script ngay từ document-start
+// @description  Tuấn Anh đẹp trai
 // @author       htuananh + ChatGPT
 // @match        https://yeumoney.com/*
 // @connect      traffic-user.net
