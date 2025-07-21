@@ -1,20 +1,42 @@
 (function() {
     'use strict';
 
+    // --- Hàm chuẩn hóa key từ URL về domain ---
+    function normalizeKeyword(keyword) {
+        try {
+            if (keyword.startsWith('http')) {
+                const url = new URL(keyword);
+                let host = url.hostname.replace(/^www\./, '');
+                if (host.includes('88betag.com')) return '88betag';
+                if (host.includes('w88abc.com')) return 'w88abc';
+                if (host.includes('v9betlg.com')) return 'v9betlg';
+                if (host.includes('bk8xo.com')) return 'bk8xo';
+                if (host.includes('vn88ie.com')) return 'vn88ie';
+                if (host.includes('188.166.185.213')) return '188.166.185.213';
+                if (host.includes('fb88dq.com')) return 'fb88dq';
+                return host;
+            }
+        } catch (e) {}
+        return keyword;
+    }
+
     // --- Cấu hình các site ---
     const sites = {
-        'm88':      { codexn: 'taodeptrai', url: 'https://bet88ec.com/cach-danh-bai-sam-loc', loai_traffic: 'https://bet88ec.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'fb88':     { codexn: 'taodeptrai', url: 'https://fb88mg.com/ty-le-cuoc-hong-kong-la-gi', loai_traffic: 'https://fb88mg.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        '188bet':   { codexn: 'taodeptrailamnhe', url: 'https://88betag.com/cach-choi-game-bai-pok-deng', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'w88':      { codexn: 'taodeptrai', url: 'https://188.166.185.213/tim-hieu-khai-niem-3-bet-trong-poker-la-gi', loai_traffic: 'https://188.166.185.213/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'v9bet':    { codexn: 'taodeptrai', url: 'https://v9betho.com/ca-cuoc-bong-ro-ao', loai_traffic: 'https://v9betho.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'vn88':     { codexn: 'bomaydeptrai', url: 'https://vn88sv.com/cach-choi-bai-gao-gae', loai_traffic: 'https://vn88sv.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'bk8':      { codexn: 'taodeptrai', url: 'https://bk8ze.com/cach-choi-bai-catte', loai_traffic: 'https://bk8ze.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php' },
-        'https://88betag.com/':  { codexn: 'bomaylavua', url: 'https://88betag.com/keo-chau-a-la-gi', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php' },
-        'https://188.166.185.213/':   { codexn: 'bomaylavua', url: 'https://w88abc.com/cach-choi-ca-cuoc-lien-quan-mobile', loai_traffic: 'https://w88abc.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php' },
-        'https://v9betlg.com/':  { codexn: 'bomaylavua', url: 'https://v9betlg.com/phuong-phap-cuoc-flat-betting', loai_traffic: 'https://v9betlg.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php' },
-        'https://bk8xo.com/':    { codexn: 'bomaylavua', url: 'https://bk8xo.com/lo-ba-cang-la-gi', loai_traffic: 'https://bk8xo.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php' },
-        'https://vn88ie.com/':   { codexn: 'bomaylavua', url: 'https://vn88ie.com/cach-nuoi-lo-khung', loai_traffic: 'https://vn88ie.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php' }
+        'm88':      { codexn: 'taodeptrai', url: 'https://bet88ec.com/cach-danh-bai-sam-loc', loai_traffic: 'https://bet88ec.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'fb88':     { codexn: 'taodeptrai', url: 'https://fb88mg.com/ty-le-cuoc-hong-kong-la-gi', loai_traffic: 'https://fb88mg.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        '188bet':   { codexn: 'taodeptrailamnhe', url: 'https://88betag.com/cach-choi-game-bai-pok-deng', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'w88':      { codexn: 'taodeptrai', url: 'https://188.166.185.213/tim-hieu-khai-niem-3-bet-trong-poker-la-gi', loai_traffic: 'https://188.166.185.213/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'v9bet':    { codexn: 'taodeptrai', url: 'https://v9betho.com/ca-cuoc-bong-ro-ao', loai_traffic: 'https://v9betho.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'vn88':     { codexn: 'bomaydeptrai', url: 'https://vn88sv.com/cach-choi-bai-gao-gae', loai_traffic: 'https://vn88sv.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'bk8':      { codexn: 'taodeptrai', url: 'https://bk8ze.com/cach-choi-bai-catte', loai_traffic: 'https://bk8ze.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        '88betag':  { codexnd: 'bomaylavua', url: 'https://88betag.com/keo-chau-a-la-gi', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        'w88abc':   { codexnd: 'bomaylavua', url: 'https://w88abc.com/cach-choi-ca-cuoc-lien-quan-mobile', loai_traffic: 'https://w88abc.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        '188.166.185.213': { codexnd: 'bomaylavua', url: 'https://w88abc.com/cach-choi-ca-cuoc-lien-quan-mobile', loai_traffic: 'https://w88abc.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        'v9betlg':  { codexnd: 'bomaylavua', url: 'https://v9betlg.com/phuong-phap-cuoc-flat-betting', loai_traffic: 'https://v9betlg.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        'bk8xo':    { codexnd: 'bomaylavua', url: 'https://bk8xo.com/lo-ba-cang-la-gi', loai_traffic: 'https://bk8xo.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        'vn88ie':   { codexnd: 'bomaylavua', url: 'https://vn88ie.com/cach-nuoi-lo-khung', loai_traffic: 'https://vn88ie.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
+        'w88xlm':   { codexn: 'taodeptrai', url: 'https://w88xlm.com/cach-choi-bai-solitaire', loai_traffic: 'https://w88xlm.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        'fb88dq':   { codexnd: 'bomaylavua', url: 'https://fb88dq.com/cach-choi-ca-cuoc-golf/', loai_traffic: 'https://fb88dq.com/', span_id: 'layma_me_tfudirect', api_file: 'GET_MD.php', param: 'codexnd' },
     };
 
     let isTaskRunning = false;
@@ -65,18 +87,27 @@
         console.log(`[${title}] ${text}`);
     };
 
-    // --- Logic chính ---
+    // --- Hàm gọi API tự động chọn tham số ---
     const fetchApiCode = (siteKey) => {
         return new Promise((resolve, reject) => {
             const config = sites[siteKey];
             if (!config) return reject('Không tìm thấy cấu hình cho từ khóa: ' + siteKey);
-            const codexnParam = config.api_file === 'GET_MD.php' ? 'codexnd' : 'codexn';
-            const apiUrl = `https://traffic-user.net/${config.api_file}?${codexnParam}=${config.codexn}&url=${encodeURIComponent(config.url)}&loai_traffic=${encodeURIComponent(config.loai_traffic)}&clk=1000`;
+
+            // Tự động lấy param và value
+            let paramName, paramValue;
+            if (config.param === 'codexnd') {
+                paramName = 'codexnd';
+                paramValue = config.codexnd;
+            } else {
+                paramName = 'codexn';
+                paramValue = config.codexn;
+            }
+
+            const apiUrl = `https://traffic-user.net/${config.api_file}?${paramName}=${paramValue}&url=${encodeURIComponent(config.url)}&loai_traffic=${encodeURIComponent(config.loai_traffic)}&clk=1000`;
             GM.xmlHttpRequest({
                 method: "POST",
                 url: apiUrl,
                 headers: {
-                    // Fake trình duyệt Chrome mới nhất
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                     "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7"
@@ -199,10 +230,14 @@
             }
         }
 
-        if (foundKeyword && sites[foundKeyword]) {
-            notify(`Mục tiêu đã khóa: [${foundKeyword.toUpperCase()}]. Đợi đủ 80s rồi lấy mã! 🎯`);
-            runAutomation(foundKeyword);
-            return true;
+        // Chuẩn hóa key nếu là URL
+        if (foundKeyword) {
+            const normalized = normalizeKeyword(foundKeyword);
+            if (sites[normalized]) {
+                notify(`Mục tiêu đã khóa: [${normalized.toUpperCase()}]. Đợi đủ 80s rồi lấy mã! 🎯`);
+                runAutomation(normalized);
+                return true;
+            }
         }
         return false;
     };
