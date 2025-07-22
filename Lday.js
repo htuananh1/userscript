@@ -199,8 +199,11 @@
     }
 
     // ================== LOGIC CỐT LÕI ==================
-    // Tự động đổi từ khoá cho đến khi đúng
+    // Tự động đổi từ khoá cho đến khi đúng - CHỈ KHI BẬT AUTO SUBMIT
     function runLogicOn(doc) {
+        // Chỉ chạy logic tự động khi bật chức năng auto submit
+        if (!config.autoSubmit) return;
+        
         const tryChangeKeyword = () => {
             const triggerEl = doc.querySelector(WORD_TRIGGER_SELECTOR);
             if (!triggerEl) return;
@@ -217,19 +220,25 @@
 
     function findAndFillKeyword() {
         const keywordEl = document.querySelector(WORD_TRIGGER_SELECTOR);
-        if (!keywordEl) { showToast('Không tìm thấy từ khóa!', 'fail'); return; }
+        if (!keywordEl) { 
+            showToast('Không tìm thấy từ khóa trên trang!', 'fail'); 
+            return; 
+        }
         const keyword = keywordEl.textContent.trim();
         if (WORD_TO_INPUT_MAP.hasOwnProperty(keyword)) {
-            showToast('Từ khóa đã tồn tại!', 'info');
+            showToast(`Từ khóa "${keyword}" đã tồn tại!`, 'info');
             switchTab('tab-list');
             const selectBox = document.getElementById('keyword-select-box');
-            if(selectBox) { selectBox.value = keyword; selectBox.dispatchEvent(new Event('change')); }
+            if(selectBox) { 
+                selectBox.value = keyword; 
+                selectBox.dispatchEvent(new Event('change')); 
+            }
         } else {
             const keywordInput = document.getElementById('gemini-keyword-input');
             const valueInput = document.getElementById('gemini-value-input');
             if (keywordInput && valueInput) {
                 keywordInput.value = keyword;
-                showToast('Đã điền từ khóa mới!', 'success');
+                showToast(`Đã điền từ khóa mới: "${keyword}"`, 'success');
                 switchTab('tab-add');
                 valueInput.focus();
             }
@@ -247,8 +256,9 @@
             const valueInput = document.getElementById('gemini-value-input');
             if (keywordInput && keywordInput.value.trim() === '') {
                 keywordInput.value = keyword;
-                showToast('Đã phát hiện từ khóa mới!', 'info');
+                showToast(`Phát hiện từ khóa mới: "${keyword}"`, 'info');
                 switchTab('tab-add');
+                if (valueInput) valueInput.focus();
             }
             // Nếu đã nhập mã thì tự động gửi lên GitHub
             if (valueInput && valueInput.value.trim() && !sentKeywords[keyword]) {
@@ -264,13 +274,40 @@
             inputField.value = valueToFill;
             inputField.dispatchEvent(new Event('input', { bubbles: true }));
             const submitButton = doc.querySelector(AUTO_TASK_SUBMIT_SELECTOR);
-            if (submitButton && !submitButton.disabled) setTimeout(() => submitButton.click(), 300);
+            if (submitButton && !submitButton.disabled) {
+                setTimeout(() => {
+                    submitButton.click();
+                    showToast(`Đã điền mã: ${valueToFill}`, 'success');
+                }, 300);
+            }
         }
     }
 
     function clickChangeKeywordButton(doc) {
         const changeButton = doc.querySelector(CHANGE_KEYWORD_BUTTON_SELECTOR);
-        if (changeButton) changeButton.click();
+        if (changeButton) {
+            changeButton.click();
+            showToast('Đang đổi từ khóa...', 'info');
+        }
+    }
+
+    // Hàm chuyển tab được sử dụng ở nhiều nơi
+    function switchTab(tabId) {
+        const panel = document.getElementById('gemini-panel');
+        if (!panel) return;
+        
+        // Xóa active từ tất cả tab buttons và tab panes
+        panel.querySelectorAll('.gemini-tabs button').forEach(b => b.classList.remove('active'));
+        panel.querySelectorAll('.gemini-tab-pane').forEach(pane => pane.classList.remove('active'));
+        
+        // Kích hoạt tab được chọn
+        const tabButton = panel.querySelector(`[data-tab="${tabId}"]`);
+        const tabPane = panel.querySelector(`#${tabId}`);
+        
+        if (tabButton && tabPane) {
+            tabButton.classList.add('active');
+            tabPane.classList.add('active');
+        }
     }
 
     // =============== GIAO DIỆN & HÀM PHỤ ===============
@@ -282,37 +319,104 @@
         const panel = document.createElement('div'); panel.id = 'gemini-panel';
         panel.innerHTML = `
             <button id="gemini-panel-close">×</button>
-            <h3>Bảng Điều Khiển</h3>
+            <h3>🚀 Bảng Điều Khiển LinkDay Pro</h3>
             <div id="gemini-toast-notifier"></div>
             <div class="gemini-tabs">
-                <button class="active" data-tab="tab-settings">Chức Năng</button>
-                <button data-tab="tab-add">Thêm Mới</button>
-                <button data-tab="tab-list">Danh Sách</button>
+                <button class="active" data-tab="tab-settings">⚙️ Cài Đặt</button>
+                <button data-tab="tab-add">➕ Thêm Mới</button>
+                <button data-tab="tab-list">📝 Danh Sách</button>
+                <button data-tab="tab-info">ℹ️ Thông Tin</button>
             </div>
             <div class="gemini-tab-content">
                 <div id="tab-settings" class="gemini-tab-pane active">
-                    <div class="gemini-settings-row"><label>Tự động vượt</label><label class="switch"><input type="checkbox" id="auto-submit-toggle"><span class="slider"></span></label></div>
+                    <div class="gemini-settings-section">
+                        <h4>🎯 Chức Năng Chính</h4>
+                        <div class="gemini-settings-row">
+                            <div class="setting-info">
+                                <label>Tự động vượt challenge</label>
+                                <small>Tự động điền mã và submit khi tìm thấy từ khóa</small>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-submit-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="gemini-settings-section">
+                        <h4>🔄 Hành Động Nhanh</h4>
+                        <button id="quick-reload-btn" class="gemini-button-action">🔄 Tải Lại Từ GitHub</button>
+                        <button id="manual-check-btn" class="gemini-button-action">🔍 Kiểm Tra Từ Khóa Hiện Tại</button>
+                    </div>
                 </div>
                 <div id="tab-add" class="gemini-tab-pane">
-                    <label class="gemini-label">Thêm Từ Khóa Mới</label>
-                    <div class="gemini-input-group">
-                        <input type="text" id="gemini-keyword-input" class="gemini-input" placeholder="Từ khóa...">
-                        <button id="gemini-find-btn" title="Tìm từ khóa trên trang">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        </button>
+                    <div class="add-section">
+                        <label class="gemini-label">➕ Thêm Từ Khóa Mới</label>
+                        <div class="gemini-input-group">
+                            <input type="text" id="gemini-keyword-input" class="gemini-input" placeholder="Nhập từ khóa cần tìm...">
+                            <button id="gemini-find-btn" title="Tìm từ khóa hiện tại trên trang">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </button>
+                        </div>
+                        <input type="text" id="gemini-value-input" class="gemini-input" placeholder="Nhập mã cần điền tương ứng...">
+                        <div class="button-group">
+                            <button id="gemini-save-btn" class="primary">💾 Lưu Từ Khóa</button>
+                            <button id="gemini-clear-btn" class="secondary">🗑️ Xóa Form</button>
+                        </div>
                     </div>
-                    <input type="text" id="gemini-value-input" class="gemini-input" placeholder="Mã cần điền...">
-                    <button id="gemini-save-btn">Lưu Từ Khóa</button>
                 </div>
                 <div id="tab-list" class="gemini-tab-pane">
-                    <label class="gemini-label">Danh sách từ khóa đã lưu</label>
-                    <select id="keyword-select-box" class="gemini-input"></select>
-                    <div id="keyword-value-display"></div>
-                    <button id="delete-selected-btn" class="gemini-button-secondary danger">Xóa Từ Đã Chọn</button>
-                    <button id="gemini-sendall-github-btn" class="gemini-button-secondary" style="margin-top:8px;">Gửi danh sách lên GitHub</button>
-                    <hr><label class="gemini-label">Sao chép / Khôi phục</label>
-                    <textarea id="gemini-backup-area" readonly placeholder="Chỉ sao chép những từ khóa bạn tự thêm."></textarea>
-                    <button id="gemini-copy-btn" class="gemini-button-secondary">Sao Chép Từ Khóa Đã Thêm</button>
+                    <div class="list-section">
+                        <label class="gemini-label">📝 Danh Sách Từ Khóa (<span id="keyword-count">0</span>)</label>
+                        <div class="search-box">
+                            <input type="text" id="keyword-search" class="gemini-input" placeholder="🔍 Tìm kiếm từ khóa...">
+                        </div>
+                        <select id="keyword-select-box" class="gemini-input" size="6"></select>
+                        <div id="keyword-value-display"></div>
+                        <div class="button-group">
+                            <button id="edit-selected-btn" class="gemini-button-secondary">✏️ Sửa</button>
+                            <button id="delete-selected-btn" class="gemini-button-secondary danger">🗑️ Xóa</button>
+                        </div>
+                        <button id="gemini-sendall-github-btn" class="gemini-button-secondary" style="margin-top:8px;">☁️ Đồng Bộ Lên GitHub</button>
+                    </div>
+                    <hr>
+                    <div class="backup-section">
+                        <label class="gemini-label">💾 Sao Chép / Khôi Phục</label>
+                        <textarea id="gemini-backup-area" readonly placeholder="Danh sách từ khóa bạn tự thêm sẽ hiển thị ở đây..."></textarea>
+                        <button id="gemini-copy-btn" class="gemini-button-secondary">📋 Sao Chép Từ Khóa</button>
+                    </div>
+                </div>
+                <div id="tab-info" class="gemini-tab-pane">
+                    <div class="info-section">
+                        <h4>📖 Hướng Dẫn Sử Dụng</h4>
+                        <div class="info-item">
+                            <strong>🎯 Tự Động Vượt:</strong> Bật để script tự động điền mã khi phát hiện từ khóa đã lưu
+                        </div>
+                        <div class="info-item">
+                            <strong>🔍 Tìm Từ Khóa:</strong> Click nút tìm kiếm để lấy từ khóa hiện tại trên trang
+                        </div>
+                        <div class="info-item">
+                            <strong>💾 Lưu Trữ:</strong> Từ khóa được lưu cục bộ và có thể đồng bộ lên GitHub
+                        </div>
+                        <div class="info-item">
+                            <strong>☁️ Đồng Bộ:</strong> Cần GitHub Token để gửi từ khóa lên repository
+                        </div>
+                        <hr>
+                        <div class="stats-section">
+                            <h4>📊 Thống Kê</h4>
+                            <div class="stat-item">
+                                <span>Từ khóa đã lưu:</span>
+                                <span id="total-keywords">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Từ khóa từ GitHub:</span>
+                                <span id="github-keywords">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Từ khóa cục bộ:</span>
+                                <span id="local-keywords">0</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
