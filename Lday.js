@@ -311,8 +311,68 @@
     }
 
     // =============== GIAO DIỆN & HÀM PHỤ ===============
-    function updateUIWithSettings() { const autoSubmitToggle = document.getElementById('auto-submit-toggle'); if (autoSubmitToggle) autoSubmitToggle.checked = config.autoSubmit; }
-    function renderKeywordList() { const selectBox = document.getElementById('keyword-select-box'); const valueDisplay = document.getElementById('keyword-value-display'); if (!selectBox || !valueDisplay) return; const currentKey = selectBox.value; selectBox.innerHTML = ''; const keywords = Object.keys(WORD_TO_INPUT_MAP); if (keywords.length === 0) { selectBox.innerHTML = '<option disabled>Chưa có từ khóa nào</option>'; valueDisplay.textContent = ''; return; } keywords.sort((a, b) => a.localeCompare(b, 'vi')).forEach(key => { const option = document.createElement('option'); option.value = key; option.textContent = key; selectBox.appendChild(option); }); selectBox.value = WORD_TO_INPUT_MAP.hasOwnProperty(currentKey) ? currentKey : keywords[0]; valueDisplay.textContent = WORD_TO_INPUT_MAP[selectBox.value] || ''; }
+    function updateUIWithSettings() { 
+        const autoSubmitToggle = document.getElementById('auto-submit-toggle'); 
+        if (autoSubmitToggle) autoSubmitToggle.checked = config.autoSubmit; 
+        updateStats();
+    }
+    
+    function updateStats() {
+        const totalEl = document.getElementById('total-keywords');
+        const githubEl = document.getElementById('github-keywords');
+        const localEl = document.getElementById('local-keywords');
+        const countEl = document.getElementById('keyword-count');
+        
+        if (totalEl) totalEl.textContent = Object.keys(WORD_TO_INPUT_MAP).length;
+        if (countEl) countEl.textContent = Object.keys(WORD_TO_INPUT_MAP).length;
+        
+        // Đếm từ khóa GitHub và local (async)
+        fetchKeywordsFromGithub().then(githubKeywords => {
+            const githubCount = githubKeywords ? Object.keys(githubKeywords).length : 0;
+            const localCount = Object.keys(WORD_TO_INPUT_MAP).length - githubCount;
+            if (githubEl) githubEl.textContent = githubCount;
+            if (localEl) localEl.textContent = Math.max(0, localCount);
+        });
+    }
+    
+    function renderKeywordList(searchTerm = '') { 
+        const selectBox = document.getElementById('keyword-select-box'); 
+        const valueDisplay = document.getElementById('keyword-value-display'); 
+        if (!selectBox || !valueDisplay) return; 
+        
+        const currentKey = selectBox.value; 
+        selectBox.innerHTML = ''; 
+        
+        let keywords = Object.keys(WORD_TO_INPUT_MAP);
+        
+        // Lọc theo từ khóa tìm kiếm
+        if (searchTerm) {
+            keywords = keywords.filter(key => 
+                key.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                WORD_TO_INPUT_MAP[key].toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+        
+        if (keywords.length === 0) { 
+            selectBox.innerHTML = '<option disabled>' + (searchTerm ? 'Không tìm thấy từ khóa nào' : 'Chưa có từ khóa nào') + '</option>'; 
+            valueDisplay.textContent = ''; 
+            return; 
+        } 
+        
+        keywords.sort((a, b) => a.localeCompare(b, 'vi')).forEach(key => { 
+            const option = document.createElement('option'); 
+            option.value = key; 
+            option.textContent = key; 
+            selectBox.appendChild(option); 
+        }); 
+        
+        selectBox.value = WORD_TO_INPUT_MAP.hasOwnProperty(currentKey) ? currentKey : keywords[0]; 
+        valueDisplay.textContent = WORD_TO_INPUT_MAP[selectBox.value] || ''; 
+        
+        // Cập nhật số lượng
+        const countEl = document.getElementById('keyword-count');
+        if (countEl) countEl.textContent = searchTerm ? keywords.length : Object.keys(WORD_TO_INPUT_MAP).length;
+    }
     function createUI() {
         const fab = document.createElement('div'); fab.id = 'gemini-fab'; fab.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
         const backdrop = document.createElement('div'); backdrop.id = 'gemini-panel-backdrop';
@@ -452,13 +512,56 @@
                         WORD_TO_INPUT_MAP[keyword] = value;
                         await saveKeywordsToStorage();
                         renderKeywordList();
-                        showToast('Đã lưu!', 'success');
+                        updateStats();
+                        showToast(`Đã lưu từ khóa: "${keyword}"`, 'success');
                         keywordInput.value = ''; valueInput.value = ''; keywordInput.focus();
-                    } else { showToast('Vui lòng nhập đủ thông tin', 'fail'); }
+                    } else { showToast('Vui lòng nhập đủ thông tin!', 'fail'); }
+                    break;
+                }
+                case 'gemini-clear-btn': {
+                    const keywordInput = panel.querySelector('#gemini-keyword-input'), valueInput = panel.querySelector('#gemini-value-input');
+                    keywordInput.value = ''; valueInput.value = '';
+                    keywordInput.focus();
+                    showToast('Đã xóa form', 'info');
+                    break;
+                }
+                case 'quick-reload-btn': {
+                    showToast('Đang tải lại từ GitHub...', 'info');
+                    await loadAllSettings();
+                    showToast('Đã tải lại từ GitHub!', 'success');
+                    break;
+                }
+                case 'manual-check-btn': {
+                    const keywordEl = document.querySelector(WORD_TRIGGER_SELECTOR);
+                    if (keywordEl) {
+                        const keyword = keywordEl.textContent.trim();
+                        if (WORD_TO_INPUT_MAP.hasOwnProperty(keyword)) {
+                            showToast(`Từ khóa "${keyword}" đã có mã: ${WORD_TO_INPUT_MAP[keyword]}`, 'success');
+                        } else {
+                            showToast(`Từ khóa "${keyword}" chưa có mã!`, 'fail');
+                        }
+                    } else {
+                        showToast('Không tìm thấy từ khóa trên trang!', 'fail');
+                    }
+                    break;
+                }
+                case 'edit-selected-btn': {
+                    const selectBox = panel.querySelector('#keyword-select-box');
+                    const keywordToEdit = selectBox.value;
+                    if (keywordToEdit) {
+                        const keywordInput = panel.querySelector('#gemini-keyword-input');
+                        const valueInput = panel.querySelector('#gemini-value-input');
+                        keywordInput.value = keywordToEdit;
+                        valueInput.value = WORD_TO_INPUT_MAP[keywordToEdit];
+                        switchTab('tab-add');
+                        showToast(`Đang sửa từ khóa: "${keywordToEdit}"`, 'info');
+                    } else {
+                        showToast('Vui lòng chọn từ khóa để sửa!', 'fail');
+                    }
                     break;
                 }
                 case 'gemini-sendall-github-btn': {
-                    if (confirm('Bạn có chắc muốn ghi đè toàn bộ danh sách từ khóa lên GitHub?')) {
+                    if (confirm('Bạn có chắc muốn đồng bộ toàn bộ danh sách từ khóa lên GitHub?')) {
                         sendAllKeywordsToGithubFile();
                     }
                     break;
@@ -473,12 +576,12 @@
                     backupArea.value = dataString;
 
                     if (Object.keys(newKeywordsToCopy).length === 0) {
-                        showToast('Không có từ khóa mới để sao chép.', 'info');
+                        showToast('Không có từ khóa mới để sao chép!', 'info');
                         return;
                     }
                     navigator.clipboard.writeText(dataString).then(
-                        () => showToast('Đã sao chép từ khóa mới!', 'success'),
-                        () => showToast('Sao chép thất bại.', 'fail')
+                        () => showToast(`Đã sao chép ${Object.keys(newKeywordsToCopy).length} từ khóa!`, 'success'),
+                        () => showToast('Sao chép thất bại!', 'fail')
                     );
                     break;
                 }
@@ -489,8 +592,9 @@
                         delete WORD_TO_INPUT_MAP[keywordToDelete];
                         await saveKeywordsToStorage();
                         renderKeywordList();
-                        showToast(`Đã xóa từ khóa!`, 'success');
-                    } else if (!keywordToDelete) { showToast('Danh sách rỗng!', 'fail');}
+                        updateStats();
+                        showToast(`Đã xóa từ khóa: "${keywordToDelete}"`, 'success');
+                    } else if (!keywordToDelete) { showToast('Vui lòng chọn từ khóa để xóa!', 'fail');}
                     break;
                 }
             }
@@ -499,14 +603,23 @@
         panel.querySelector('#auto-submit-toggle').addEventListener('change', (e) => {
             config.autoSubmit = e.target.checked;
             GM_setValue('autoSubmit', config.autoSubmit);
-            showToast('Đã lưu cài đặt!', 'success');
+            showToast(config.autoSubmit ? 'Đã bật tự động vượt!' : 'Đã tắt tự động vượt!', 'success');
         });
+        
         panel.querySelector('#keyword-select-box').addEventListener('change', (e) => {
             document.getElementById('keyword-value-display').textContent = WORD_TO_INPUT_MAP[e.target.value] || '';
         });
+        
+        // Thêm event listener cho tìm kiếm từ khóa
+        const searchInput = panel.querySelector('#keyword-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                renderKeywordList(e.target.value.trim());
+            });
+        }
     }
 
     // ================== CSS & HÀM PHỤ ==================
     let toastTimeout; function showToast(message, type = 'info', duration = 3000) { const notifier = document.getElementById('gemini-toast-notifier'); if (!notifier) return; clearTimeout(toastTimeout); notifier.textContent = message; notifier.className = 'show'; notifier.classList.add(type); toastTimeout = setTimeout(() => notifier.classList.remove('show'), duration); }
-    function setupStyles() { GM_addStyle(`:root { --accent-color: #007AFF; --bg-color: #ffffff; --text-color: #1d1d1f; --border-color: #d2d2d7; --shadow: 0 8px 32px rgba(0,0,0,0.1); --fail-color: #FF3B30; } #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); } #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; } #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; } #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-color); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99999; padding: 20px; box-shadow: var(--shadow); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; } #gemini-panel.visible { transform: translateY(0); } #gemini-panel-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; padding: 5px; z-index: 10; line-height: 1; } #gemini-panel h3 { font-size: 22px; font-weight: 600; color: var(--text-color); margin: 0; padding-bottom: 15px; text-align: center; } .gemini-label { font-weight: 500; display: block; margin-bottom: 8px; font-size: 16px; } .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: #f5f5f7; padding: 12px; font-size: 16px; border-radius: 10px; margin-bottom: 10px; } #gemini-save-btn { width: 100%; background: #34C759; color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; } #gemini-toast-notifier { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 10px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100000; } #gemini-toast-notifier.show { opacity: 1; } .gemini-button-secondary { width: 100%; background: #e5e5ea; color: #333; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 10px; cursor: pointer; } .gemini-button-secondary.danger { background-color: var(--fail-color); color: white; margin-top: 10px; } hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; } #keyword-value-display { background: #f0f0f0; padding: 10px; border-radius: 8px; margin-top: -5px; margin-bottom: 10px; min-height: 1.5em; word-break: break-all; color: #333; } .gemini-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; } .gemini-tabs button { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-size: 16px; font-weight: 500; color: #888; border-bottom: 3px solid transparent; transition: all 0.2s ease; } .gemini-tabs button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); } .gemini-tab-pane { display: none; } .gemini-tab-pane.active { display: block; } .switch { position: relative; display: inline-block; width: 51px; height: 31px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.1); } input:checked + .slider { background-color: var(--accent-color); } input:checked + .slider:before { transform: translateX(20px); } #gemini-backup-area { width: 100%; box-sizing: border-box; height: 100px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 10px; } .gemini-input-group { display: flex; margin-bottom: 10px; } .gemini-input-group input { flex-grow: 1; border-radius: 10px 0 0 10px; margin-bottom: 0; } .gemini-input-group button { border: 1px solid var(--border-color); background: #f5f5f7; color: var(--text-color); padding: 0 12px; border-radius: 0 10px 10px 0; cursor: pointer; border-left: none; }`); }
+    function setupStyles() { GM_addStyle(`:root { --accent-color: #007AFF; --bg-color: #ffffff; --text-color: #1d1d1f; --border-color: #d2d2d7; --shadow: 0 8px 32px rgba(0,0,0,0.1); --fail-color: #FF3B30; --success-color: #34C759; --info-color: #5AC8FA; } #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s ease; } #gemini-fab:hover { transform: scale(1.1); } #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; } #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; } #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-color); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99999; padding: 20px; box-shadow: var(--shadow); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; } #gemini-panel.visible { transform: translateY(0); } #gemini-panel-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; padding: 5px; z-index: 10; line-height: 1; } #gemini-panel h3 { font-size: 22px; font-weight: 600; color: var(--text-color); margin: 0; padding-bottom: 15px; text-align: center; } h4 { color: var(--text-color); font-size: 18px; font-weight: 600; margin: 0 0 15px 0; } .gemini-label { font-weight: 500; display: block; margin-bottom: 8px; font-size: 16px; color: var(--text-color); } .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: #f5f5f7; padding: 12px; font-size: 16px; border-radius: 10px; margin-bottom: 10px; transition: border-color 0.2s ease; } .gemini-input:focus { outline: none; border-color: var(--accent-color); } .button-group { display: flex; gap: 10px; margin-bottom: 10px; } .button-group button { flex: 1; } #gemini-save-btn, .gemini-button-action { width: 100%; background: var(--success-color); color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } #gemini-save-btn.primary { background: var(--success-color); } #gemini-save-btn.secondary, .button-group .secondary { background: #6c757d; } .gemini-button-action { background: var(--accent-color); } .gemini-button-action:hover, #gemini-save-btn:hover { opacity: 0.9; transform: translateY(-1px); } #gemini-toast-notifier { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 10px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100000; max-width: 90%; } #gemini-toast-notifier.show { opacity: 1; } #gemini-toast-notifier.success { background: var(--success-color); } #gemini-toast-notifier.fail { background: var(--fail-color); } #gemini-toast-notifier.info { background: var(--info-color); } .gemini-button-secondary { width: 100%; background: #e5e5ea; color: #333; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } .gemini-button-secondary:hover { background: #d1d1d6; transform: translateY(-1px); } .gemini-button-secondary.danger { background-color: var(--fail-color); color: white; } .gemini-button-secondary.danger:hover { background-color: #e6342a; } .gemini-settings-section, .add-section, .list-section, .backup-section, .info-section { margin-bottom: 20px; } .gemini-settings-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .setting-info { flex: 1; } .setting-info label { margin-bottom: 5px; font-weight: 600; } .setting-info small { color: #666; font-size: 14px; line-height: 1.3; } .info-item { padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent-color); } .stats-section { background: #f8f9fa; padding: 15px; border-radius: 10px; } .stat-item { display: flex; justify-content: space-between; margin-bottom: 8px; } .stat-item:last-child { margin-bottom: 0; } .stat-item span:last-child { font-weight: 600; color: var(--accent-color); } hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; } #keyword-value-display { background: #f0f0f0; padding: 12px; border-radius: 8px; margin-bottom: 10px; min-height: 1.5em; word-break: break-all; color: #333; font-family: monospace; font-size: 14px; border: 1px solid #e0e0e0; } .search-box { margin-bottom: 10px; } #keyword-select-box { min-height: 120px; font-family: monospace; font-size: 14px; } .gemini-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; } .gemini-tabs button { flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 500; color: #888; border-bottom: 3px solid transparent; transition: all 0.2s ease; } .gemini-tabs button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); } .gemini-tab-pane { display: none; } .gemini-tab-pane.active { display: block; } .switch { position: relative; display: inline-block; width: 51px; height: 31px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.1); } input:checked + .slider { background-color: var(--accent-color); } input:checked + .slider:before { transform: translateX(20px); } #gemini-backup-area { width: 100%; box-sizing: border-box; height: 100px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: #f5f5f7; } .gemini-input-group { display: flex; margin-bottom: 10px; } .gemini-input-group input { flex-grow: 1; border-radius: 10px 0 0 10px; margin-bottom: 0; } .gemini-input-group button { border: 1px solid var(--border-color); background: #f5f5f7; color: var(--text-color); padding: 0 12px; border-radius: 0 10px 10px 0; cursor: pointer; border-left: none; transition: all 0.2s ease; } .gemini-input-group button:hover { background: #e5e5ea; }`); }
 })();
