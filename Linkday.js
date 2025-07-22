@@ -5,7 +5,7 @@
       "chi phí niềng răng elite dental": "Miniscrew",
       "affiliate network permate": "AffiliatePlatform",
       "Bác sĩ Nguyên Giáp ưu đãi": "0909886054",
-      "chivas 12": "Annabel Meikle",
+      "chivas 12": "AnnabelMeikle",
       "công ty hoàng việt travel": "/2015/CDLQGVN",
       "creed aventus": "0824422828",
       "gửi hàng đi mỹ": "989799622",
