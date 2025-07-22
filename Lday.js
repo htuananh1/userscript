@@ -38,39 +38,98 @@
     // =============== QUẢN LÝ DỮ LIỆU ===============
     function fetchKeywordsFromGithub() {
         return new Promise((resolve) => {
+            console.log('🔄 Đang tải từ khóa từ GitHub:', GITHUB_KEYWORDS_URL);
             GM_xmlhttpRequest({
                 method: 'GET',
                 url: GITHUB_KEYWORDS_URL,
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                timeout: 10000,
                 onload: function(response) {
+                    console.log('📥 GitHub Response Status:', response.status);
+                    console.log('📥 GitHub Response Text:', response.responseText.substring(0, 200));
+                    
                     if (response.status >= 200 && response.status < 300) {
                         try {
-                            resolve(JSON.parse(response.responseText));
+                            const data = JSON.parse(response.responseText);
+                            console.log('✅ Đã tải thành công', Object.keys(data).length, 'từ khóa từ GitHub');
+                            showToast(`✅ Đã tải ${Object.keys(data).length} từ khóa từ GitHub`, 'success', 2000);
+                            resolve(data);
                         } catch (e) {
-                            showToast('Lỗi file JSON trên GitHub!', 'fail');
-                            resolve(null);
+                            console.error('❌ Lỗi parse JSON:', e);
+                            showToast('❌ File GitHub không đúng định dạng JSON!', 'fail');
+                            resolve(FALLBACK_KEYWORDS);
                         }
                     } else {
-                        showToast('Lỗi tải từ GitHub!', 'fail');
-                        resolve(null);
+                        console.error('❌ GitHub API Error:', response.status, response.statusText);
+                        showToast(`❌ Lỗi GitHub API (${response.status})`, 'fail');
+                        resolve(FALLBACK_KEYWORDS);
                     }
                 },
-                onerror: function() {
-                    showToast('Lỗi mạng, không thể tải!', 'fail');
-                    resolve(null);
+                onerror: function(error) {
+                    console.error('❌ Network Error:', error);
+                    showToast('❌ Không thể kết nối đến GitHub!', 'fail');
+                    resolve(FALLBACK_KEYWORDS);
+                },
+                ontimeout: function() {
+                    console.error('❌ GitHub Request Timeout');
+                    showToast('⏰ Timeout khi tải từ GitHub!', 'fail');
+                    resolve(FALLBACK_KEYWORDS);
                 }
             });
         });
     }
 
     async function loadAllSettings() {
-        config.autoSubmit = await GM_getValue('autoSubmit', true);
-        const githubKeywords = await fetchKeywordsFromGithub();
-        const localKeywordsJSON = await GM_getValue(LOCAL_KEYWORDS_KEY, '{}');
-        let localKeywords = {};
-        try { localKeywords = JSON.parse(localKeywordsJSON); } catch (e) { localKeywords = {}; }
-        WORD_TO_INPUT_MAP = { ...(githubKeywords || FALLBACK_KEYWORDS), ...localKeywords };
-        updateUIWithSettings();
-        renderKeywordList();
+        try {
+            console.log('🔄 Đang tải cài đặt...');
+            
+            // Tải cài đặt auto submit
+            config.autoSubmit = await GM_getValue('autoSubmit', true);
+            console.log('⚙️ Auto Submit:', config.autoSubmit);
+            
+            // Tải từ khóa từ GitHub
+            const githubKeywords = await fetchKeywordsFromGithub();
+            console.log('📦 GitHub Keywords:', githubKeywords ? Object.keys(githubKeywords).length : 0);
+            
+            // Tải từ khóa cục bộ
+            const localKeywordsJSON = await GM_getValue(LOCAL_KEYWORDS_KEY, '{}');
+            let localKeywords = {};
+            try { 
+                localKeywords = JSON.parse(localKeywordsJSON); 
+                console.log('💾 Local Keywords:', Object.keys(localKeywords).length);
+            } catch (e) { 
+                console.error('❌ Lỗi parse local keywords:', e);
+                localKeywords = {}; 
+            }
+            
+            // Kết hợp từ khóa
+            const githubData = githubKeywords || FALLBACK_KEYWORDS;
+            WORD_TO_INPUT_MAP = { ...githubData, ...localKeywords };
+            console.log('🔗 Tổng từ khóa:', Object.keys(WORD_TO_INPUT_MAP).length);
+            
+            // Cập nhật UI
+            updateUIWithSettings();
+            renderKeywordList();
+            
+            const totalKeywords = Object.keys(WORD_TO_INPUT_MAP).length;
+            if (totalKeywords > 0) {
+                showToast(`🎉 Đã tải ${totalKeywords} từ khóa thành công!`, 'success');
+            } else {
+                showToast('⚠️ Chưa có từ khóa nào được tải!', 'info');
+            }
+            
+        } catch (error) {
+            console.error('❌ Lỗi loadAllSettings:', error);
+            showToast('❌ Lỗi khi tải cài đặt!', 'fail');
+            
+            // Fallback to local only
+            WORD_TO_INPUT_MAP = {};
+            updateUIWithSettings();
+            renderKeywordList();
+        }
     }
 
     async function saveKeywordsToStorage() {
@@ -297,7 +356,7 @@
         if (!panel) return;
         
         // Xóa active từ tất cả tab buttons và tab panes
-        panel.querySelectorAll('.gemini-tabs button').forEach(b => b.classList.remove('active'));
+        panel.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
         panel.querySelectorAll('.gemini-tab-pane').forEach(pane => pane.classList.remove('active'));
         
         // Kích hoạt tab được chọn
@@ -317,21 +376,43 @@
         updateStats();
     }
     
+    function updateConnectionStatus(online = false, text = 'Đang kết nối...') {
+        const statusDot = document.getElementById('connection-status');
+        const statusText = document.querySelector('.status-text');
+        
+        if (statusDot) {
+            statusDot.className = `status-dot ${online ? 'online' : 'offline'}`;
+        }
+        if (statusText) {
+            statusText.textContent = text;
+        }
+    }
+    
     function updateStats() {
         const totalEl = document.getElementById('total-keywords');
         const githubEl = document.getElementById('github-keywords');
         const localEl = document.getElementById('local-keywords');
         const countEl = document.getElementById('keyword-count');
         
-        if (totalEl) totalEl.textContent = Object.keys(WORD_TO_INPUT_MAP).length;
-        if (countEl) countEl.textContent = Object.keys(WORD_TO_INPUT_MAP).length;
+        const totalCount = Object.keys(WORD_TO_INPUT_MAP).length;
+        if (totalEl) totalEl.textContent = totalCount;
+        if (countEl) countEl.textContent = totalCount;
         
         // Đếm từ khóa GitHub và local (async)
         fetchKeywordsFromGithub().then(githubKeywords => {
             const githubCount = githubKeywords ? Object.keys(githubKeywords).length : 0;
-            const localCount = Object.keys(WORD_TO_INPUT_MAP).length - githubCount;
+            const localCount = totalCount - githubCount;
             if (githubEl) githubEl.textContent = githubCount;
             if (localEl) localEl.textContent = Math.max(0, localCount);
+            
+            // Cập nhật trạng thái kết nối
+            if (githubCount > 0) {
+                updateConnectionStatus(true, `Đã kết nối - ${githubCount} từ khóa`);
+            } else {
+                updateConnectionStatus(false, 'Không thể kết nối GitHub');
+            }
+        }).catch(() => {
+            updateConnectionStatus(false, 'Lỗi kết nối');
         });
     }
     
@@ -378,73 +459,156 @@
         const backdrop = document.createElement('div'); backdrop.id = 'gemini-panel-backdrop';
         const panel = document.createElement('div'); panel.id = 'gemini-panel';
         panel.innerHTML = `
-            <button id="gemini-panel-close">×</button>
-            <h3>🚀 Bảng Điều Khiển LinkDay Pro</h3>
+            <div class="panel-header">
+                <button id="gemini-panel-close">×</button>
+                <h3>🚀 LinkDay Pro</h3>
+                <div class="header-status">
+                    <span id="connection-status" class="status-dot offline">●</span>
+                    <span class="status-text">Đang kết nối...</span>
+                </div>
+            </div>
             <div id="gemini-toast-notifier"></div>
             <div class="gemini-tabs">
-                <button class="active" data-tab="tab-settings">⚙️ Cài Đặt</button>
-                <button data-tab="tab-add">➕ Thêm Mới</button>
-                <button data-tab="tab-list">📝 Danh Sách</button>
-                <button data-tab="tab-info">ℹ️ Thông Tin</button>
+                <button class="tab-button active" data-tab="tab-settings">
+                    <span class="tab-icon">⚙️</span>
+                    <span class="tab-text">Cài Đặt</span>
+                </button>
+                <button class="tab-button" data-tab="tab-add">
+                    <span class="tab-icon">➕</span>
+                    <span class="tab-text">Thêm</span>
+                </button>
+                <button class="tab-button" data-tab="tab-list">
+                    <span class="tab-icon">📝</span>
+                    <span class="tab-text">Danh Sách</span>
+                </button>
+                <button class="tab-button" data-tab="tab-info">
+                    <span class="tab-icon">ℹ️</span>
+                    <span class="tab-text">Trợ Giúp</span>
+                </button>
             </div>
             <div class="gemini-tab-content">
-                <div id="tab-settings" class="gemini-tab-pane active">
-                    <div class="gemini-settings-section">
-                        <h4>🎯 Chức Năng Chính</h4>
-                        <div class="gemini-settings-row">
-                            <div class="setting-info">
-                                <label>Tự động vượt challenge</label>
-                                <small>Tự động điền mã và submit khi tìm thấy từ khóa</small>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" id="auto-submit-toggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="gemini-settings-section">
-                        <h4>🔄 Hành Động Nhanh</h4>
-                        <button id="quick-reload-btn" class="gemini-button-action">🔄 Tải Lại Từ GitHub</button>
-                        <button id="manual-check-btn" class="gemini-button-action">🔍 Kiểm Tra Từ Khóa Hiện Tại</button>
-                    </div>
-                </div>
-                <div id="tab-add" class="gemini-tab-pane">
-                    <div class="add-section">
-                        <label class="gemini-label">➕ Thêm Từ Khóa Mới</label>
-                        <div class="gemini-input-group">
-                            <input type="text" id="gemini-keyword-input" class="gemini-input" placeholder="Nhập từ khóa cần tìm...">
-                            <button id="gemini-find-btn" title="Tìm từ khóa hiện tại trên trang">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            </button>
-                        </div>
-                        <input type="text" id="gemini-value-input" class="gemini-input" placeholder="Nhập mã cần điền tương ứng...">
-                        <div class="button-group">
-                            <button id="gemini-save-btn" class="primary">💾 Lưu Từ Khóa</button>
-                            <button id="gemini-clear-btn" class="secondary">🗑️ Xóa Form</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab-list" class="gemini-tab-pane">
-                    <div class="list-section">
-                        <label class="gemini-label">📝 Danh Sách Từ Khóa (<span id="keyword-count">0</span>)</label>
-                        <div class="search-box">
-                            <input type="text" id="keyword-search" class="gemini-input" placeholder="🔍 Tìm kiếm từ khóa...">
-                        </div>
-                        <select id="keyword-select-box" class="gemini-input" size="6"></select>
-                        <div id="keyword-value-display"></div>
-                        <div class="button-group">
-                            <button id="edit-selected-btn" class="gemini-button-secondary">✏️ Sửa</button>
-                            <button id="delete-selected-btn" class="gemini-button-secondary danger">🗑️ Xóa</button>
-                        </div>
-                        <button id="gemini-sendall-github-btn" class="gemini-button-secondary" style="margin-top:8px;">☁️ Đồng Bộ Lên GitHub</button>
-                    </div>
-                    <hr>
-                    <div class="backup-section">
-                        <label class="gemini-label">💾 Sao Chép / Khôi Phục</label>
-                        <textarea id="gemini-backup-area" readonly placeholder="Danh sách từ khóa bạn tự thêm sẽ hiển thị ở đây..."></textarea>
-                        <button id="gemini-copy-btn" class="gemini-button-secondary">📋 Sao Chép Từ Khóa</button>
-                    </div>
-                </div>
+                                <div id="tab-settings" class="gemini-tab-pane active">
+                     <div class="card">
+                         <div class="card-header">
+                             <h4>🎯 Chức Năng Chính</h4>
+                         </div>
+                         <div class="card-body">
+                             <div class="setting-item">
+                                 <div class="setting-info">
+                                     <label>Tự động vượt challenge</label>
+                                     <small>Tự động điền mã và submit khi tìm thấy từ khóa phù hợp</small>
+                                 </div>
+                                 <label class="switch">
+                                     <input type="checkbox" id="auto-submit-toggle">
+                                     <span class="slider"></span>
+                                 </label>
+                             </div>
+                         </div>
+                     </div>
+                     
+                     <div class="card">
+                         <div class="card-header">
+                             <h4>🔄 Hành Động Nhanh</h4>
+                         </div>
+                         <div class="card-body">
+                             <div class="action-grid">
+                                 <button id="quick-reload-btn" class="action-btn primary">
+                                     <span class="btn-icon">🔄</span>
+                                     <span class="btn-text">Tải Lại GitHub</span>
+                                 </button>
+                                 <button id="manual-check-btn" class="action-btn secondary">
+                                     <span class="btn-icon">🔍</span>
+                                     <span class="btn-text">Kiểm Tra</span>
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                                 <div id="tab-add" class="gemini-tab-pane">
+                     <div class="card">
+                         <div class="card-header">
+                             <h4>➕ Thêm Từ Khóa Mới</h4>
+                         </div>
+                         <div class="card-body">
+                             <div class="form-group">
+                                 <label class="form-label">Từ khóa</label>
+                                 <div class="input-with-button">
+                                     <input type="text" id="gemini-keyword-input" class="form-input" placeholder="Nhập từ khóa cần tìm...">
+                                     <button id="gemini-find-btn" class="input-btn" title="Tìm từ khóa hiện tại trên trang">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                     </button>
+                                 </div>
+                             </div>
+                             
+                             <div class="form-group">
+                                 <label class="form-label">Mã tương ứng</label>
+                                 <input type="text" id="gemini-value-input" class="form-input" placeholder="Nhập mã cần điền tương ứng...">
+                             </div>
+                             
+                             <div class="form-actions">
+                                 <button id="gemini-save-btn" class="btn btn-primary">
+                                     <span class="btn-icon">💾</span>
+                                     <span class="btn-text">Lưu Từ Khóa</span>
+                                 </button>
+                                 <button id="gemini-clear-btn" class="btn btn-secondary">
+                                     <span class="btn-icon">🗑️</span>
+                                     <span class="btn-text">Xóa Form</span>
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                                 <div id="tab-list" class="gemini-tab-pane">
+                     <div class="card">
+                         <div class="card-header">
+                             <h4>📝 Danh Sách Từ Khóa</h4>
+                             <span class="keyword-badge"><span id="keyword-count">0</span> từ khóa</span>
+                         </div>
+                         <div class="card-body">
+                             <div class="search-section">
+                                 <input type="text" id="keyword-search" class="search-input" placeholder="🔍 Tìm kiếm từ khóa...">
+                             </div>
+                             
+                             <div class="keyword-list-container">
+                                 <select id="keyword-select-box" class="keyword-select" size="5"></select>
+                             </div>
+                             
+                             <div class="keyword-preview">
+                                 <label class="preview-label">Mã tương ứng:</label>
+                                 <div id="keyword-value-display" class="preview-value"></div>
+                             </div>
+                             
+                             <div class="list-actions">
+                                 <button id="edit-selected-btn" class="btn btn-outline">
+                                     <span class="btn-icon">✏️</span>
+                                     <span class="btn-text">Sửa</span>
+                                 </button>
+                                 <button id="delete-selected-btn" class="btn btn-danger">
+                                     <span class="btn-icon">🗑️</span>
+                                     <span class="btn-text">Xóa</span>
+                                 </button>
+                             </div>
+                             
+                             <button id="gemini-sendall-github-btn" class="btn btn-sync">
+                                 <span class="btn-icon">☁️</span>
+                                 <span class="btn-text">Đồng Bộ GitHub</span>
+                             </button>
+                         </div>
+                     </div>
+                     
+                     <div class="card">
+                         <div class="card-header">
+                             <h4>💾 Sao Chép & Khôi Phục</h4>
+                         </div>
+                         <div class="card-body">
+                             <textarea id="gemini-backup-area" class="backup-textarea" readonly placeholder="Danh sách từ khóa bạn tự thêm sẽ hiển thị ở đây..."></textarea>
+                             <button id="gemini-copy-btn" class="btn btn-outline">
+                                 <span class="btn-icon">📋</span>
+                                 <span class="btn-text">Sao Chép Từ Khóa</span>
+                             </button>
+                         </div>
+                     </div>
+                 </div>
                 <div id="tab-info" class="gemini-tab-pane">
                     <div class="info-section">
                         <h4>📖 Hướng Dẫn Sử Dụng</h4>
@@ -483,9 +647,9 @@
         document.body.append(fab, backdrop, panel);
 
         // Sự kiện chuyển tab
-        panel.querySelectorAll('.gemini-tabs button').forEach(btn => {
+        panel.querySelectorAll('.tab-button').forEach(btn => {
             btn.addEventListener('click', function() {
-                panel.querySelectorAll('.gemini-tabs button').forEach(b => b.classList.remove('active'));
+                panel.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
                 panel.querySelectorAll('.gemini-tab-pane').forEach(pane => pane.classList.remove('active'));
                 btn.classList.add('active');
                 const tabId = btn.getAttribute('data-tab');
@@ -501,28 +665,36 @@
         // Sự kiện các nút chức năng khác
         panel.addEventListener('click', async (event) => {
             const button = event.target.closest('button');
-            if (!button || button.classList.contains('gemini-tabs')) return;
+            if (!button || button.classList.contains('tab-button')) return;
             switch (button.id) {
                 case 'gemini-panel-close': togglePanel(false); break;
                 case 'gemini-find-btn': findAndFillKeyword(); break;
                 case 'gemini-save-btn': {
-                    const keywordInput = panel.querySelector('#gemini-keyword-input'), valueInput = panel.querySelector('#gemini-value-input');
-                    const keyword = keywordInput.value.trim(), value = valueInput.value.trim();
+                    const keywordInput = panel.querySelector('#gemini-keyword-input');
+                    const valueInput = panel.querySelector('#gemini-value-input');
+                    const keyword = keywordInput ? keywordInput.value.trim() : '';
+                    const value = valueInput ? valueInput.value.trim() : '';
                     if (keyword && value) {
                         WORD_TO_INPUT_MAP[keyword] = value;
                         await saveKeywordsToStorage();
                         renderKeywordList();
                         updateStats();
-                        showToast(`Đã lưu từ khóa: "${keyword}"`, 'success');
-                        keywordInput.value = ''; valueInput.value = ''; keywordInput.focus();
-                    } else { showToast('Vui lòng nhập đủ thông tin!', 'fail'); }
+                        showToast(`✅ Đã lưu từ khóa: "${keyword}"`, 'success');
+                        if (keywordInput) keywordInput.value = '';
+                        if (valueInput) valueInput.value = '';
+                        if (keywordInput) keywordInput.focus();
+                    } else { 
+                        showToast('❌ Vui lòng nhập đủ thông tin!', 'fail'); 
+                    }
                     break;
                 }
                 case 'gemini-clear-btn': {
-                    const keywordInput = panel.querySelector('#gemini-keyword-input'), valueInput = panel.querySelector('#gemini-value-input');
-                    keywordInput.value = ''; valueInput.value = '';
-                    keywordInput.focus();
-                    showToast('Đã xóa form', 'info');
+                    const keywordInput = panel.querySelector('#gemini-keyword-input');
+                    const valueInput = panel.querySelector('#gemini-value-input');
+                    if (keywordInput) keywordInput.value = '';
+                    if (valueInput) valueInput.value = '';
+                    if (keywordInput) keywordInput.focus();
+                    showToast('🗑️ Đã xóa form', 'info');
                     break;
                 }
                 case 'quick-reload-btn': {
@@ -621,5 +793,77 @@
 
     // ================== CSS & HÀM PHỤ ==================
     let toastTimeout; function showToast(message, type = 'info', duration = 3000) { const notifier = document.getElementById('gemini-toast-notifier'); if (!notifier) return; clearTimeout(toastTimeout); notifier.textContent = message; notifier.className = 'show'; notifier.classList.add(type); toastTimeout = setTimeout(() => notifier.classList.remove('show'), duration); }
-    function setupStyles() { GM_addStyle(`:root { --accent-color: #007AFF; --bg-color: #ffffff; --text-color: #1d1d1f; --border-color: #d2d2d7; --shadow: 0 8px 32px rgba(0,0,0,0.1); --fail-color: #FF3B30; --success-color: #34C759; --info-color: #5AC8FA; } #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s ease; } #gemini-fab:hover { transform: scale(1.1); } #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; } #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; } #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-color); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99999; padding: 20px; box-shadow: var(--shadow); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; } #gemini-panel.visible { transform: translateY(0); } #gemini-panel-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; padding: 5px; z-index: 10; line-height: 1; } #gemini-panel h3 { font-size: 22px; font-weight: 600; color: var(--text-color); margin: 0; padding-bottom: 15px; text-align: center; } h4 { color: var(--text-color); font-size: 18px; font-weight: 600; margin: 0 0 15px 0; } .gemini-label { font-weight: 500; display: block; margin-bottom: 8px; font-size: 16px; color: var(--text-color); } .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: #f5f5f7; padding: 12px; font-size: 16px; border-radius: 10px; margin-bottom: 10px; transition: border-color 0.2s ease; } .gemini-input:focus { outline: none; border-color: var(--accent-color); } .button-group { display: flex; gap: 10px; margin-bottom: 10px; } .button-group button { flex: 1; } #gemini-save-btn, .gemini-button-action { width: 100%; background: var(--success-color); color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } #gemini-save-btn.primary { background: var(--success-color); } #gemini-save-btn.secondary, .button-group .secondary { background: #6c757d; } .gemini-button-action { background: var(--accent-color); } .gemini-button-action:hover, #gemini-save-btn:hover { opacity: 0.9; transform: translateY(-1px); } #gemini-toast-notifier { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 10px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100000; max-width: 90%; } #gemini-toast-notifier.show { opacity: 1; } #gemini-toast-notifier.success { background: var(--success-color); } #gemini-toast-notifier.fail { background: var(--fail-color); } #gemini-toast-notifier.info { background: var(--info-color); } .gemini-button-secondary { width: 100%; background: #e5e5ea; color: #333; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } .gemini-button-secondary:hover { background: #d1d1d6; transform: translateY(-1px); } .gemini-button-secondary.danger { background-color: var(--fail-color); color: white; } .gemini-button-secondary.danger:hover { background-color: #e6342a; } .gemini-settings-section, .add-section, .list-section, .backup-section, .info-section { margin-bottom: 20px; } .gemini-settings-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .setting-info { flex: 1; } .setting-info label { margin-bottom: 5px; font-weight: 600; } .setting-info small { color: #666; font-size: 14px; line-height: 1.3; } .info-item { padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent-color); } .stats-section { background: #f8f9fa; padding: 15px; border-radius: 10px; } .stat-item { display: flex; justify-content: space-between; margin-bottom: 8px; } .stat-item:last-child { margin-bottom: 0; } .stat-item span:last-child { font-weight: 600; color: var(--accent-color); } hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; } #keyword-value-display { background: #f0f0f0; padding: 12px; border-radius: 8px; margin-bottom: 10px; min-height: 1.5em; word-break: break-all; color: #333; font-family: monospace; font-size: 14px; border: 1px solid #e0e0e0; } .search-box { margin-bottom: 10px; } #keyword-select-box { min-height: 120px; font-family: monospace; font-size: 14px; } .gemini-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; } .gemini-tabs button { flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 500; color: #888; border-bottom: 3px solid transparent; transition: all 0.2s ease; } .gemini-tabs button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); } .gemini-tab-pane { display: none; } .gemini-tab-pane.active { display: block; } .switch { position: relative; display: inline-block; width: 51px; height: 31px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.1); } input:checked + .slider { background-color: var(--accent-color); } input:checked + .slider:before { transform: translateX(20px); } #gemini-backup-area { width: 100%; box-sizing: border-box; height: 100px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: #f5f5f7; } .gemini-input-group { display: flex; margin-bottom: 10px; } .gemini-input-group input { flex-grow: 1; border-radius: 10px 0 0 10px; margin-bottom: 0; } .gemini-input-group button { border: 1px solid var(--border-color); background: #f5f5f7; color: var(--text-color); padding: 0 12px; border-radius: 0 10px 10px 0; cursor: pointer; border-left: none; transition: all 0.2s ease; } .gemini-input-group button:hover { background: #e5e5ea; }`); }
+    function setupStyles() { GM_addStyle(`:root { --accent-color: #007AFF; --bg-color: #ffffff; --text-color: #1d1d1f; --border-color: #d2d2d7; --shadow: 0 8px 32px rgba(0,0,0,0.1); --fail-color: #FF3B30; --success-color: #34C759; --info-color: #5AC8FA; --warning-color: #FF9500; --card-bg: #f8f9fa; --card-border: #e9ecef; } #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s ease; } #gemini-fab:hover { transform: scale(1.1); } #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; } #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; } #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-color); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99999; padding: 20px; box-shadow: var(--shadow); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; } #gemini-panel.visible { transform: translateY(0); } #gemini-panel-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; padding: 5px; z-index: 10; line-height: 1; } #gemini-panel h3 { font-size: 22px; font-weight: 600; color: var(--text-color); margin: 0; padding-bottom: 15px; text-align: center; } h4 { color: var(--text-color); font-size: 18px; font-weight: 600; margin: 0 0 15px 0; } .gemini-label { font-weight: 500; display: block; margin-bottom: 8px; font-size: 16px; color: var(--text-color); } .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: #f5f5f7; padding: 12px; font-size: 16px; border-radius: 10px; margin-bottom: 10px; transition: border-color 0.2s ease; } .gemini-input:focus { outline: none; border-color: var(--accent-color); } .button-group { display: flex; gap: 10px; margin-bottom: 10px; } .button-group button { flex: 1; } #gemini-save-btn, .gemini-button-action { width: 100%; background: var(--success-color); color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } #gemini-save-btn.primary { background: var(--success-color); } #gemini-save-btn.secondary, .button-group .secondary { background: #6c757d; } .gemini-button-action { background: var(--accent-color); } .gemini-button-action:hover, #gemini-save-btn:hover { opacity: 0.9; transform: translateY(-1px); } #gemini-toast-notifier { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 10px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100000; max-width: 90%; } #gemini-toast-notifier.show { opacity: 1; } #gemini-toast-notifier.success { background: var(--success-color); } #gemini-toast-notifier.fail { background: var(--fail-color); } #gemini-toast-notifier.info { background: var(--info-color); } .gemini-button-secondary { width: 100%; background: #e5e5ea; color: #333; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 10px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; } .gemini-button-secondary:hover { background: #d1d1d6; transform: translateY(-1px); } .gemini-button-secondary.danger { background-color: var(--fail-color); color: white; } .gemini-button-secondary.danger:hover { background-color: #e6342a; } .gemini-settings-section, .add-section, .list-section, .backup-section, .info-section { margin-bottom: 20px; } .gemini-settings-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; } .setting-info { flex: 1; } .setting-info label { margin-bottom: 5px; font-weight: 600; } .setting-info small { color: #666; font-size: 14px; line-height: 1.3; } .info-item { padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent-color); } .stats-section { background: #f8f9fa; padding: 15px; border-radius: 10px; } .stat-item { display: flex; justify-content: space-between; margin-bottom: 8px; } .stat-item:last-child { margin-bottom: 0; } .stat-item span:last-child { font-weight: 600; color: var(--accent-color); } hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; } #keyword-value-display { background: #f0f0f0; padding: 12px; border-radius: 8px; margin-bottom: 10px; min-height: 1.5em; word-break: break-all; color: #333; font-family: monospace; font-size: 14px; border: 1px solid #e0e0e0; } .search-box { margin-bottom: 10px; } #keyword-select-box { min-height: 120px; font-family: monospace; font-size: 14px; } .gemini-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; } .gemini-tabs button { flex: 1; padding: 12px 8px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 500; color: #888; border-bottom: 3px solid transparent; transition: all 0.2s ease; } .gemini-tabs button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); } .gemini-tab-pane { display: none; } .gemini-tab-pane.active { display: block; } .switch { position: relative; display: inline-block; width: 51px; height: 31px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.1); } input:checked + .slider { background-color: var(--accent-color); } input:checked + .slider:before { transform: translateX(20px); } #gemini-backup-area { width: 100%; box-sizing: border-box; height: 100px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: #f5f5f7; } .gemini-input-group { display: flex; margin-bottom: 10px; } .gemini-input-group input { flex-grow: 1; border-radius: 10px 0 0 10px; margin-bottom: 0; } .gemini-input-group button { border: 1px solid var(--border-color); background: #f5f5f7; color: var(--text-color); padding: 0 12px; border-radius: 0 10px 10px 0; cursor: pointer; border-left: none; transition: all 0.2s ease; } .gemini-input-group button:hover { background: #e5e5ea; } 
+
+/* Header Panel Styles */ 
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); } 
+.panel-header h3 { margin: 0; flex: 1; text-align: center; } 
+.header-status { display: flex; align-items: center; gap: 8px; font-size: 12px; } 
+.status-dot { font-size: 8px; animation: pulse 2s infinite; } 
+.status-dot.online { color: var(--success-color); } 
+.status-dot.offline { color: #999; } 
+.status-text { color: #666; font-weight: 500; } 
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } } 
+
+/* Card Styles */ 
+.card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; margin-bottom: 16px; overflow: hidden; transition: all 0.2s ease; } 
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); } 
+.card-header { background: white; padding: 16px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; } 
+.card-header h4 { margin: 0; font-size: 16px; font-weight: 600; } 
+.card-body { padding: 16px; } 
+.keyword-badge { background: var(--accent-color); color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; } 
+
+/* Tab Styles */ 
+.tab-button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; } 
+.tab-icon { font-size: 16px; } 
+.tab-text { font-size: 12px; } 
+
+/* Form Styles */ 
+.form-group { margin-bottom: 16px; } 
+.form-label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--text-color); font-size: 14px; } 
+.form-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: white; padding: 12px; font-size: 14px; border-radius: 8px; transition: all 0.2s ease; } 
+.form-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); } 
+.input-with-button { display: flex; } 
+.input-with-button .form-input { border-radius: 8px 0 0 8px; border-right: none; } 
+.input-btn { border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); padding: 12px; border-radius: 0 8px 8px 0; cursor: pointer; transition: all 0.2s ease; } 
+.input-btn:hover { background: var(--border-color); } 
+.form-actions { display: flex; gap: 12px; } 
+
+/* Button Styles */ 
+.btn { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; justify-content: center; } 
+.btn-icon { font-size: 16px; } 
+.btn-text { } 
+.btn:hover { transform: translateY(-1px); } 
+.btn-primary { background: var(--success-color); color: white; } 
+.btn-primary:hover { background: #28a745; } 
+.btn-secondary { background: #6c757d; color: white; } 
+.btn-secondary:hover { background: #5a6268; } 
+.btn-outline { background: white; color: var(--text-color); border: 1px solid var(--border-color); } 
+.btn-outline:hover { background: var(--card-bg); } 
+.btn-danger { background: var(--fail-color); color: white; } 
+.btn-danger:hover { background: #dc2626; } 
+.btn-sync { background: var(--info-color); color: white; width: 100%; } 
+.btn-sync:hover { background: #2196f3; } 
+
+/* Action Styles */ 
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } 
+.action-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 12px; border: none; border-radius: 12px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; } 
+.action-btn.primary { background: var(--accent-color); color: white; } 
+.action-btn.secondary { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); } 
+.action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); } 
+
+/* Setting Styles */ 
+.setting-item { display: flex; justify-content: space-between; align-items: center; } 
+
+/* List Styles */ 
+.search-section { margin-bottom: 16px; } 
+.search-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: white; padding: 12px; font-size: 14px; border-radius: 8px; transition: all 0.2s ease; } 
+.search-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1); } 
+.keyword-list-container { margin-bottom: 16px; } 
+.keyword-select { width: 100%; border: 1px solid var(--border-color); background: white; border-radius: 8px; font-family: monospace; font-size: 12px; min-height: 120px; } 
+.keyword-preview { margin-bottom: 16px; } 
+.preview-label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--text-color); font-size: 12px; } 
+.preview-value { background: white; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; min-height: 20px; word-break: break-all; font-family: monospace; font-size: 12px; color: #333; } 
+.list-actions { display: flex; gap: 12px; margin-bottom: 16px; } 
+.backup-textarea { width: 100%; height: 80px; resize: vertical; font-family: monospace; font-size: 11px; margin-bottom: 12px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: white; }`); }
 })();
