@@ -2,8 +2,11 @@
     'use strict';
 
     // ================== CẤU HÌNH ==================
-    const GITHUB_API_FILE_URL = 'https://api.github.com/repos/htuananh1/userscript/contents/Linkday.js';
-    const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Linkday.js';
+    // [FIX] Tách file chứa từ khóa ra một file JSON riêng để tránh lỗi đọc mã nguồn.
+    const KEYWORDS_FILENAME = 'Linkday.json';
+    const GITHUB_API_FILE_URL = `https://api.github.com/repos/htuananh1/userscript/contents/${KEYWORDS_FILENAME}`;
+    const GITHUB_KEYWORDS_URL = `https://raw.githubusercontent.com/htuananh1/userscript/main/${KEYWORDS_FILENAME}`;
+
     const GITHUB_TOKEN = 'ghp_xxx'; // <-- Thay bằng token của bạn!
     const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v4';
     const WORD_TRIGGER_SELECTOR = 'strong.bg-gray-600.text-white.p-2.select-none';
@@ -42,17 +45,32 @@
                 method: 'GET',
                 url: GITHUB_KEYWORDS_URL + '?t=' + Date.now(), // tránh cache
                 onload: function(response) {
+                    // [FIX] Xử lý các trường hợp tốt hơn: thành công, file rỗng, file không tồn tại (404)
                     if (response.status >= 200 && response.status < 300) {
                         try {
-                            const json = JSON.parse(response.responseText);
-                            if (typeof json === 'object' && json !== null) resolve(json);
-                            else resolve(FALLBACK_KEYWORDS);
+                            const text = response.responseText.trim();
+                            // Nếu file rỗng hoặc chỉ có khoảng trắng, coi như object rỗng
+                            if (!text) {
+                                resolve({});
+                                return;
+                            }
+                            const json = JSON.parse(text);
+                            if (typeof json === 'object' && json !== null) {
+                                resolve(json);
+                            } else {
+                                showToast('File JSON không hợp lệ.', 'fail');
+                                resolve(FALLBACK_KEYWORDS);
+                            }
                         } catch (e) {
-                            showToast('Lỗi file JSON trên GitHub!', 'fail');
+                            showToast('Lỗi phân tích file JSON trên GitHub!', 'fail');
+                            console.error('Lỗi phân tích JSON:', e, 'Nội dung nhận được:', response.responseText);
                             resolve(FALLBACK_KEYWORDS);
                         }
+                    } else if (response.status === 404) {
+                        showToast('File từ khóa chưa có trên GitHub.', 'info');
+                        resolve(FALLBACK_KEYWORDS);
                     } else {
-                        showToast('Lỗi tải từ GitHub!', 'fail');
+                        showToast(`Lỗi tải từ GitHub (Code: ${response.status})!`, 'fail');
                         resolve(FALLBACK_KEYWORDS);
                     }
                 },
@@ -70,7 +88,7 @@
         const localKeywordsJSON = await GM_getValue(LOCAL_KEYWORDS_KEY, '{}');
         let localKeywords = {};
         try { localKeywords = JSON.parse(localKeywordsJSON); } catch (e) { localKeywords = {}; }
-        WORD_TO_INPUT_MAP = { ...(await githubKeywords), ...localKeywords };
+        WORD_TO_INPUT_MAP = { ...githubKeywords, ...localKeywords };
         updateUIWithSettings();
         renderKeywordList();
     }
@@ -98,38 +116,47 @@
                 "Accept": "application/vnd.github+json"
             },
             onload: function(response) {
+                let currentSha = null;
                 if (response.status === 200) {
-                    const res = JSON.parse(response.responseText);
-                    const newContent = btoa(unescape(encodeURIComponent(JSON.stringify(allKeywords, null, 2))));
-                    GM_xmlhttpRequest({
-                        method: "PUT",
-                        url: GITHUB_API_FILE_URL,
-                        headers: {
-                            "Authorization": "token " + GITHUB_TOKEN,
-                            "Accept": "application/vnd.github+json"
-                        },
-                        data: JSON.stringify({
-                            message: `Update all keywords from script`,
-                            content: newContent,
-                            sha: res.sha
-                        }),
-                        onload: function(r2) {
-                            if (r2.status === 200 || r2.status === 201) {
-                                showToast('Đã ghi toàn bộ danh sách lên GitHub!', 'success');
-                            } else {
-                                showToast('Ghi lên GitHub thất bại!', 'fail');
-                            }
-                        },
-                        onerror: function() {
-                            showToast('Lỗi mạng khi ghi lên GitHub!', 'fail');
-                        }
-                    });
-                } else {
-                    showToast('Không đọc được file Linkday.js!', 'fail');
+                    currentSha = JSON.parse(response.responseText).sha;
+                } else if (response.status !== 404) {
+                    showToast(`Lỗi đọc file từ GitHub (Code: ${response.status})`, 'fail');
+                    return;
                 }
+
+                // Dù file có tồn tại (200) hay chưa (404), vẫn tiến hành ghi
+                const newContent = btoa(unescape(encodeURIComponent(JSON.stringify(allKeywords, null, 2))));
+                const payload = {
+                    message: `Update all keywords from script`,
+                    content: newContent,
+                };
+                if (currentSha) {
+                    payload.sha = currentSha;
+                }
+
+                GM_xmlhttpRequest({
+                    method: "PUT",
+                    url: GITHUB_API_FILE_URL,
+                    headers: {
+                        "Authorization": "token " + GITHUB_TOKEN,
+                        "Accept": "application/vnd.github+json"
+                    },
+                    data: JSON.stringify(payload),
+                    onload: function(r2) {
+                        if (r2.status === 200 || r2.status === 201) {
+                            showToast('Đã ghi toàn bộ danh sách lên GitHub!', 'success');
+                        } else {
+                            showToast(`Ghi lên GitHub thất bại (Code: ${r2.status})!`, 'fail');
+                            console.error("GitHub PUT error:", JSON.parse(r2.responseText));
+                        }
+                    },
+                    onerror: function() {
+                        showToast('Lỗi mạng khi ghi lên GitHub!', 'fail');
+                    }
+                });
             },
             onerror: function() {
-                showToast('Lỗi mạng khi đọc file Linkday.js!', 'fail');
+                showToast('Lỗi mạng khi đọc file từ GitHub!', 'fail');
             }
         });
     }
@@ -151,54 +178,65 @@
                 "Accept": "application/vnd.github+json"
             },
             onload: function(response) {
+                let currentSha = null;
+                let json = {};
+
                 if (response.status === 200) {
                     const res = JSON.parse(response.responseText);
-                    let content = atob(res.content.replace(/\n/g, ''));
-                    let json;
+                    currentSha = res.sha;
                     try {
-                        json = JSON.parse(content);
+                        const content = atob(res.content.replace(/\n/g, ''));
+                        json = JSON.parse(content || '{}');
                     } catch (e) {
-                        showToast('File Linkday.js không phải JSON!', 'fail');
+                        showToast('File JSON trên GitHub bị lỗi!', 'fail');
                         return;
                     }
-                    if (json.hasOwnProperty(keyword)) {
-                        showToast('Từ khóa đã có trên GitHub!', 'info');
-                        return;
-                    }
-                    json[keyword] = value;
-                    const newContent = btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2))));
-                    GM_xmlhttpRequest({
-                        method: "PUT",
-                        url: GITHUB_API_FILE_URL,
-                        headers: {
-                            "Authorization": "token " + GITHUB_TOKEN,
-                            "Accept": "application/vnd.github+json"
-                        },
-                        data: JSON.stringify({
-                            message: `Add keyword: ${keyword}`,
-                            content: newContent,
-                            sha: res.sha
-                        }),
-                        onload: function(r2) {
-                            if (r2.status === 200 || r2.status === 201) {
-                                showToast('Đã gửi từ khóa mới lên GitHub!', 'success');
-                            } else {
-                                showToast('Gửi lên GitHub thất bại!', 'fail');
-                            }
-                        },
-                        onerror: function() {
-                            showToast('Lỗi mạng khi gửi lên GitHub!', 'fail');
-                        }
-                    });
-                } else {
-                    showToast('Không đọc được file Linkday.js!', 'fail');
+                } else if (response.status !== 404) {
+                    showToast(`Lỗi đọc file từ GitHub (Code: ${response.status})`, 'fail');
+                    return;
                 }
+
+                if (json.hasOwnProperty(keyword)) {
+                    showToast('Từ khóa đã có trên GitHub!', 'info');
+                    return;
+                }
+
+                json[keyword] = value;
+                const newContent = btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2))));
+                const payload = {
+                    message: `Add keyword: ${keyword}`,
+                    content: newContent
+                };
+                if (currentSha) {
+                    payload.sha = currentSha;
+                }
+
+                GM_xmlhttpRequest({
+                    method: "PUT",
+                    url: GITHUB_API_FILE_URL,
+                    headers: {
+                        "Authorization": "token " + GITHUB_TOKEN,
+                        "Accept": "application/vnd.github+json"
+                    },
+                    data: JSON.stringify(payload),
+                    onload: function(r2) {
+                        if (r2.status === 200 || r2.status === 201) {
+                            showToast('Đã gửi từ khóa mới lên GitHub!', 'success');
+                        } else {
+                            showToast(`Gửi lên GitHub thất bại (Code: ${r2.status})!`, 'fail');
+                        }
+                    },
+                    onerror: function() {
+                        showToast('Lỗi mạng khi gửi lên GitHub!', 'fail');
+                    }
+                });
             },
             onerror: function() {
-                showToast('Lỗi mạng khi đọc file Linkday.js!', 'fail');
+                showToast('Lỗi mạng khi đọc file từ GitHub!', 'fail');
             }
         });
     }
+
 
     // ================== LOGIC CỐT LÕI ==================
     function runLogicOn(doc) {
@@ -373,7 +411,7 @@
                     break;
                 }
                 case 'gemini-sendall-github-btn': {
-                    if (confirm('Bạn có chắc muốn ghi đè toàn bộ danh sách từ khóa lên GitHub?')) {
+                    if (confirm('Bạn có chắc muốn ghi đè toàn bộ danh sách từ khóa lên GitHub? Hành động này sẽ tạo file mới nếu chưa có.')) {
                         sendAllKeywordsToGithubFile();
                     }
                     break;
