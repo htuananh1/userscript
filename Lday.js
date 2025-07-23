@@ -4,7 +4,7 @@
     // ================== CẤU HÌNH ==================
     const GITHUB_API_FILE_URL = 'https://api.github.com/repos/htuananh1/userscript/contents/Linkday.js';
     const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Linkday.js';
-    const GITHUB_TOKEN = window.LDAY_GITHUB_TOKEN || '';
+    const GITHUB_TOKEN = 'ghp_xxx'; // <-- Thay bằng token của bạn!
     const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v4';
     const WORD_TRIGGER_SELECTOR = 'strong.bg-gray-600.text-white.p-2.select-none';
     const AUTO_TASK_INPUT_SELECTOR = 'input[name="code"], input[placeholder*="Nhập mã xác nhận"]';
@@ -30,7 +30,7 @@
             setupStyles();
             createUI();
             await loadAllSettings();
-            runLogicOn(document);
+            setTimeout(() => runLogicOn(document), 1000);
             setInterval(checkForNewKeyword, 1500);
         }
     }
@@ -40,23 +40,25 @@
         return new Promise((resolve) => {
             GM_xmlhttpRequest({
                 method: 'GET',
-                url: GITHUB_KEYWORDS_URL,
+                url: GITHUB_KEYWORDS_URL + '?t=' + Date.now(), // tránh cache
                 onload: function(response) {
                     if (response.status >= 200 && response.status < 300) {
                         try {
-                            resolve(JSON.parse(response.responseText));
+                            const json = JSON.parse(response.responseText);
+                            if (typeof json === 'object' && json !== null) resolve(json);
+                            else resolve(FALLBACK_KEYWORDS);
                         } catch (e) {
                             showToast('Lỗi file JSON trên GitHub!', 'fail');
-                            resolve(null);
+                            resolve(FALLBACK_KEYWORDS);
                         }
                     } else {
                         showToast('Lỗi tải từ GitHub!', 'fail');
-                        resolve(null);
+                        resolve(FALLBACK_KEYWORDS);
                     }
                 },
                 onerror: function() {
                     showToast('Lỗi mạng, không thể tải!', 'fail');
-                    resolve(null);
+                    resolve(FALLBACK_KEYWORDS);
                 }
             });
         });
@@ -68,15 +70,15 @@
         const localKeywordsJSON = await GM_getValue(LOCAL_KEYWORDS_KEY, '{}');
         let localKeywords = {};
         try { localKeywords = JSON.parse(localKeywordsJSON); } catch (e) { localKeywords = {}; }
-        WORD_TO_INPUT_MAP = { ...(githubKeywords || FALLBACK_KEYWORDS), ...localKeywords };
+        WORD_TO_INPUT_MAP = { ...(await githubKeywords), ...localKeywords };
         updateUIWithSettings();
         renderKeywordList();
     }
 
     async function saveKeywordsToStorage() {
-        const githubAndFallback = await fetchKeywordsFromGithub() || FALLBACK_KEYWORDS;
+        const githubAndFallback = await fetchKeywordsFromGithub();
         const keywordsToSave = Object.fromEntries(
-            Object.entries(WORD_TO_INPUT_MAP).filter(([key]) => !githubAndFallback.hasOwnProperty(key))
+            Object.entries(WORD_TO_INPUT_MAP).filter(([key]) => !(key in githubAndFallback))
         );
         await GM_setValue(LOCAL_KEYWORDS_KEY, JSON.stringify(keywordsToSave));
     }
@@ -139,7 +141,7 @@
             showToast('Chưa cấu hình GitHub Token!', 'fail');
             return;
         }
-        if (sentKeywords[keyword]) return; // Đã gửi rồi thì bỏ qua
+        if (sentKeywords[keyword]) return;
         sentKeywords[keyword] = true;
         GM_xmlhttpRequest({
             method: "GET",
@@ -199,9 +201,8 @@
     }
 
     // ================== LOGIC CỐT LÕI ==================
-    // Tự động đổi từ khoá cho đến khi đúng - CHỈ KHI BẬT AUTO SUBMIT
     function runLogicOn(doc) {
-        if (!config.autoSubmit) return; // Chỉ chạy khi bật auto
+        if (!config.autoSubmit) return;
         const tryChangeKeyword = () => {
             const triggerEl = doc.querySelector(WORD_TRIGGER_SELECTOR);
             if (!triggerEl) return;
@@ -237,7 +238,6 @@
         }
     }
 
-    // Tự động gửi từ khoá mới lên GitHub nếu đã nhập mã
     function checkForNewKeyword() {
         const keywordEl = document.querySelector(WORD_TRIGGER_SELECTOR);
         if (!keywordEl) return;
@@ -252,7 +252,6 @@
                 switchTab('tab-add');
                 if (valueInput) valueInput.focus();
             }
-            // Nếu đã nhập mã thì tự động gửi lên GitHub
             if (valueInput && valueInput.value.trim() && !sentKeywords[keyword]) {
                 sendKeywordToGithubFile(keyword, valueInput.value.trim());
             }
@@ -277,13 +276,9 @@
 
     function clickChangeKeywordButton(doc) {
         const changeButton = doc.querySelector(CHANGE_KEYWORD_BUTTON_SELECTOR);
-        if (changeButton) {
-            changeButton.click();
-            showToast('Đang đổi từ khóa...', 'info');
-        }
+        if (changeButton) changeButton.click();
     }
 
-    // Hàm chuyển tab
     function switchTab(tabId) {
         const panel = document.getElementById('gemini-panel');
         if (!panel) return;
@@ -301,12 +296,12 @@
     function updateUIWithSettings() { const autoSubmitToggle = document.getElementById('auto-submit-toggle'); if (autoSubmitToggle) autoSubmitToggle.checked = config.autoSubmit; }
     function renderKeywordList() { const selectBox = document.getElementById('keyword-select-box'); const valueDisplay = document.getElementById('keyword-value-display'); if (!selectBox || !valueDisplay) return; const currentKey = selectBox.value; selectBox.innerHTML = ''; const keywords = Object.keys(WORD_TO_INPUT_MAP); if (keywords.length === 0) { selectBox.innerHTML = '<option disabled>Chưa có từ khóa nào</option>'; valueDisplay.textContent = ''; return; } keywords.sort((a, b) => a.localeCompare(b, 'vi')).forEach(key => { const option = document.createElement('option'); option.value = key; option.textContent = key; selectBox.appendChild(option); }); selectBox.value = WORD_TO_INPUT_MAP.hasOwnProperty(currentKey) ? currentKey : keywords[0]; valueDisplay.textContent = WORD_TO_INPUT_MAP[selectBox.value] || ''; }
     function createUI() {
-        const fab = document.createElement('div'); fab.id = 'gemini-fab'; fab.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        const fab = document.createElement('div'); fab.id = 'gemini-fab'; fab.textContent = '☰';
         const backdrop = document.createElement('div'); backdrop.id = 'gemini-panel-backdrop';
         const panel = document.createElement('div'); panel.id = 'gemini-panel';
         panel.innerHTML = `
             <button id="gemini-panel-close">×</button>
-            <h3>🔧 Cài Đặt & Quản Lý Từ Khóa</h3>
+            <h3>Quản Lý Từ Khóa</h3>
             <div id="gemini-toast-notifier"></div>
             <div class="gemini-tabs">
                 <button class="active" data-tab="tab-settings">Cài Đặt</button>
@@ -324,9 +319,7 @@
                     <label class="gemini-label">Thêm Từ Khóa Mới</label>
                     <div class="gemini-input-group">
                         <input type="text" id="gemini-keyword-input" class="gemini-input" placeholder="Từ khóa...">
-                        <button id="gemini-find-btn" title="Tìm từ khóa trên trang">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        </button>
+                        <button id="gemini-find-btn" title="Tìm từ khóa trên trang">Tìm</button>
                     </div>
                     <input type="text" id="gemini-value-input" class="gemini-input" placeholder="Mã cần điền...">
                     <button id="gemini-save-btn">Lưu Từ Khóa</button>
@@ -361,7 +354,6 @@
         fab.addEventListener('click', () => togglePanel(true));
         backdrop.addEventListener('click', () => togglePanel(false));
 
-        // Sự kiện các nút chức năng khác
         panel.addEventListener('click', async (event) => {
             const button = event.target.closest('button');
             if (!button || button.classList.contains('gemini-tabs')) return;
@@ -388,9 +380,9 @@
                 }
                 case 'gemini-copy-btn': {
                     const backupArea = panel.querySelector('#gemini-backup-area');
-                    const githubAndFallback = await fetchKeywordsFromGithub() || FALLBACK_KEYWORDS;
+                    const githubAndFallback = await fetchKeywordsFromGithub();
                     const newKeywordsToCopy = Object.fromEntries(
-                        Object.entries(WORD_TO_INPUT_MAP).filter(([key]) => !githubAndFallback.hasOwnProperty(key))
+                        Object.entries(WORD_TO_INPUT_MAP).filter(([key]) => !(key in githubAndFallback))
                     );
                     const dataString = JSON.stringify(newKeywordsToCopy, null, 2);
                     backupArea.value = dataString;
@@ -431,5 +423,36 @@
 
     // ================== CSS & HÀM PHỤ ==================
     let toastTimeout; function showToast(message, type = 'info', duration = 3000) { const notifier = document.getElementById('gemini-toast-notifier'); if (!notifier) return; clearTimeout(toastTimeout); notifier.textContent = message; notifier.className = 'show'; notifier.classList.add(type); toastTimeout = setTimeout(() => notifier.classList.remove('show'), duration); }
-    function setupStyles() { GM_addStyle(`:root { --accent-color: #007AFF; --bg-color: #ffffff; --text-color: #1d1d1f; --border-color: #d2d2d7; --shadow: 0 8px 32px rgba(0,0,0,0.1); --fail-color: #FF3B30; } #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 56px; height: 56px; border-radius: 50%; background: var(--accent-color); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); } #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99998; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; } #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; } #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-color); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 99999; padding: 20px; box-shadow: var(--shadow); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; } #gemini-panel.visible { transform: translateY(0); } #gemini-panel-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; padding: 5px; z-index: 10; line-height: 1; } #gemini-panel h3 { font-size: 22px; font-weight: 600; color: var(--text-color); margin: 0; padding-bottom: 15px; text-align: center; } .gemini-label { font-weight: 500; display: block; margin-bottom: 8px; font-size: 16px; } .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border-color); background: #f5f5f7; padding: 12px; font-size: 16px; border-radius: 10px; margin-bottom: 10px; } #gemini-save-btn { width: 100%; background: #34C759; color: white; border: none; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; } #gemini-toast-notifier { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 10px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s ease; pointer-events: none; z-index: 100000; } #gemini-toast-notifier.show { opacity: 1; } .gemini-button-secondary { width: 100%; background: #e5e5ea; color: #333; border: none; padding: 12px; font-size: 15px; font-weight: 500; border-radius: 10px; cursor: pointer; } .gemini-button-secondary.danger { background-color: var(--fail-color); color: white; margin-top: 10px; } hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; } #keyword-value-display { background: #f0f0f0; padding: 10px; border-radius: 8px; margin-top: -5px; margin-bottom: 10px; min-height: 1.5em; word-break: break-all; color: #333; } .gemini-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; } .gemini-tabs button { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-size: 16px; font-weight: 500; color: #888; border-bottom: 3px solid transparent; transition: all 0.2s ease; } .gemini-tabs button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); } .gemini-tab-pane { display: none; } .gemini-tab-pane.active { display: block; } .switch { position: relative; display: inline-block; width: 51px; height: 31px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 0 2px rgba(0,0,0,0.1); } input:checked + .slider { background-color: var(--accent-color); } input:checked + .slider:before { transform: translateX(20px); } #gemini-backup-area { width: 100%; box-sizing: border-box; height: 100px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 10px; } .gemini-input-group { display: flex; margin-bottom: 10px; } .gemini-input-group input { flex-grow: 1; border-radius: 10px 0 0 10px; margin-bottom: 0; } .gemini-input-group button { border: 1px solid var(--border-color); background: #f5f5f7; color: var(--text-color); padding: 0 12px; border-radius: 0 10px 10px 0; cursor: pointer; border-left: none; }`); }
+    function setupStyles() { GM_addStyle(`
+        #gemini-fab { position: fixed; bottom: 25px; right: 25px; z-index: 99999; width: 48px; height: 48px; border-radius: 50%; background: #007AFF; color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; }
+        #gemini-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 99998; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        #gemini-panel-backdrop.visible { opacity: 1; pointer-events: all; }
+        #gemini-panel { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top-left-radius: 16px; border-top-right-radius: 16px; z-index: 99999; padding: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(100%); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
+        #gemini-panel.visible { transform: translateY(0); }
+        #gemini-panel-close { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 22px; cursor: pointer; color: #999; }
+        #gemini-panel h3 { font-size: 18px; font-weight: 600; color: #222; margin: 0 0 10px 0; text-align: center; }
+        .gemini-tabs { display: flex; border-bottom: 1px solid #eee; margin-bottom: 10px; }
+        .gemini-tabs button { flex: 1; padding: 8px; border: none; background: none; cursor: pointer; font-size: 15px; font-weight: 500; color: #888; border-bottom: 2px solid transparent; }
+        .gemini-tabs button.active { color: #007AFF; border-bottom-color: #007AFF; }
+        .gemini-tab-pane { display: none; }
+        .gemini-tab-pane.active { display: block; }
+        .gemini-label { font-weight: 500; display: block; margin-bottom: 6px; font-size: 15px; }
+        .gemini-input { width: 100%; box-sizing: border-box; border: 1px solid #d2d2d7; background: #f5f5f7; padding: 10px; font-size: 15px; border-radius: 8px; margin-bottom: 8px; }
+        .gemini-input-group { display: flex; margin-bottom: 8px; }
+        .gemini-input-group input { flex-grow: 1; border-radius: 8px 0 0 8px; margin-bottom: 0; }
+        .gemini-input-group button { border: 1px solid #d2d2d7; background: #f5f5f7; color: #222; padding: 0 10px; border-radius: 0 8px 8px 0; cursor: pointer; border-left: none; }
+        #gemini-save-btn, .gemini-button-secondary { width: 100%; background: #007AFF; color: white; border: none; padding: 10px; font-size: 15px; font-weight: 500; border-radius: 8px; cursor: pointer; margin-bottom: 8px; }
+        .gemini-button-secondary { background: #e5e5ea; color: #333; }
+        .gemini-button-secondary.danger { background-color: #FF3B30; color: white; }
+        #gemini-toast-notifier { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); padding: 10px 18px; border-radius: 8px; color: white; text-align: center; font-weight: 500; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100000; background: #007AFF; }
+        #gemini-toast-notifier.show { opacity: 1; }
+        #keyword-value-display { background: #f0f0f0; padding: 8px; border-radius: 6px; margin-top: -4px; margin-bottom: 8px; min-height: 1.2em; word-break: break-all; color: #333; }
+        #gemini-backup-area { width: 100%; box-sizing: border-box; height: 80px; resize: vertical; font-family: monospace; font-size: 12px; margin-bottom: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #E9E9EA; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #007AFF; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    `); }
 })();
