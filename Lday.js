@@ -3,7 +3,7 @@
 
     // ================== CẤU HÌNH ==================
     // [FIX] Tách file chứa từ khóa ra một file JSON riêng để tránh lỗi đọc mã nguồn.
-    const KEYWORDS_FILENAME = 'Linkday.json';
+    const KEYWORDS_FILENAME = 'Linkday.js';
     const GITHUB_API_FILE_URL = `https://api.github.com/repos/htuananh1/userscript/contents/${KEYWORDS_FILENAME}`;
     const GITHUB_KEYWORDS_URL = `https://raw.githubusercontent.com/htuananh1/userscript/main/${KEYWORDS_FILENAME}`;
 
