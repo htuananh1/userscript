@@ -4,7 +4,7 @@
     // ================== CẤU HÌNH ==================
     const GITHUB_API_FILE_URL = 'https://api.github.com/repos/htuananh1/userscript/contents/Linkday.js';
     const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Linkday.js';
-    const GITHUB_TOKEN = 'ghp_xxx'; // <-- Thay bằng token của bạn!
+    const GITHUB_TOKEN = window.LDAY_GITHUB_TOKEN || '';
     const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v4';
     const WORD_TRIGGER_SELECTOR = 'strong.bg-gray-600.text-white.p-2.select-none';
     const AUTO_TASK_INPUT_SELECTOR = 'input[name="code"], input[placeholder*="Nhập mã xác nhận"]';
