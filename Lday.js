@@ -2,18 +2,20 @@
     'use strict';
 
     // ================== CẤU HÌNH ==================
-    const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/refs/heads/main/Data.json';
-    const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v5'; // Đổi key để tránh xung đột với phiên bản cũ
+    const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Data.json';
+    const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v5';
+    const LOG_KEY = 'linkday_pro_log_v1';
     const WORD_TRIGGER_SELECTOR = 'strong.bg-gray-600.text-white.p-2.select-none';
     const AUTO_TASK_INPUT_SELECTOR = 'input[name="code"], input[placeholder*="Nhập mã xác nhận"]';
     const AUTO_TASK_SUBMIT_SELECTOR = 'button[type="submit"].submit-button';
     const CHANGE_KEYWORD_BUTTON_SELECTOR = 'button#changeCampaignButton';
-    const FALLBACK_KEYWORDS = {}; // Sử dụng khi không tải được từ đâu cả
+    const FALLBACK_KEYWORDS = {};
 
     let WORD_TO_INPUT_MAP = {};
-    let githubKeywordsCache = {}; // Lưu cache các từ khóa từ Github để phân biệt
+    let githubKeywordsCache = {};
     let config = { autoSubmit: true };
     let uiInitialized = false;
+    let logList = [];
 
     // =============== KHỞI CHẠY SCRIPT ==============
     const observer = new MutationObserver(() => { if (!document.getElementById('gemini-fab')) { uiInitialized = false; initializeUI(); } });
@@ -34,26 +36,45 @@
     // =============== QUẢN LÝ DỮ LIỆU ===============
     function fetchKeywordsFromGithub() {
         return new Promise((resolve) => {
+            const startTime = Date.now();
             GM_xmlhttpRequest({
                 method: 'GET',
-                url: GITHUB_KEYWORDS_URL + '?t=' + Date.now(), // Tránh cache
+                url: GITHUB_KEYWORDS_URL + '?t=' + Date.now(),
                 onload: function(response) {
+                    let status = 'success', count = 0, msg = '';
                     if (response.status >= 200 && response.status < 300) {
                         try {
                             const text = response.responseText.trim();
                             const json = text ? JSON.parse(text) : {};
-                            if (typeof json === 'object' && json !== null) resolve(json);
-                            else resolve(FALLBACK_KEYWORDS);
+                            if (typeof json === 'object' && json !== null) {
+                                count = Object.keys(json).length;
+                                msg = `Tải thành công ${count} từ khóa từ GitHub`;
+                                addLog({ time: new Date().toLocaleString(), status, count, msg });
+                                resolve(json);
+                            } else {
+                                status = 'fail';
+                                msg = 'File JSON không hợp lệ!';
+                                addLog({ time: new Date().toLocaleString(), status, count, msg });
+                                resolve(FALLBACK_KEYWORDS);
+                            }
                         } catch (e) {
+                            status = 'fail';
+                            msg = 'Lỗi parse JSON!';
+                            addLog({ time: new Date().toLocaleString(), status, count, msg });
                             showToast('Lỗi file JSON trên GitHub!', 'fail');
                             resolve(FALLBACK_KEYWORDS);
                         }
                     } else {
+                        status = 'fail';
+                        msg = 'Không tải được từ GitHub!';
+                        addLog({ time: new Date().toLocaleString(), status, count, msg });
                         showToast('Không tải được từ GitHub!', 'fail');
                         resolve(FALLBACK_KEYWORDS);
                     }
                 },
                 onerror: function() {
+                    const status = 'fail', count = 0, msg = 'Lỗi mạng, không thể tải!';
+                    addLog({ time: new Date().toLocaleString(), status, count, msg });
                     showToast('Lỗi mạng, không thể tải!', 'fail');
                     resolve(FALLBACK_KEYWORDS);
                 }
@@ -63,22 +84,30 @@
 
     async function loadAllSettings() {
         config.autoSubmit = await GM_getValue('autoSubmit', true);
+        logList = await GM_getValue(LOG_KEY, []);
         githubKeywordsCache = await fetchKeywordsFromGithub();
         const localKeywordsJSON = await GM_getValue(LOCAL_KEYWORDS_KEY, '{}');
         let localKeywords = {};
         try { localKeywords = JSON.parse(localKeywordsJSON); } catch (e) { localKeywords = {}; }
-        // Hợp nhất: Từ khóa local sẽ ghi đè từ khóa từ GitHub nếu trùng
         WORD_TO_INPUT_MAP = { ...githubKeywordsCache, ...localKeywords };
         updateUIWithSettings();
         renderKeywordList();
+        renderLogList();
     }
 
     async function saveKeywordsToStorage() {
-        // Chỉ lưu những từ khóa không có trên GitHub hoặc có giá trị khác
         const keywordsToSave = Object.fromEntries(
             Object.entries(WORD_TO_INPUT_MAP).filter(([key, value]) => !githubKeywordsCache.hasOwnProperty(key) || githubKeywordsCache[key] !== value)
         );
         await GM_setValue(LOCAL_KEYWORDS_KEY, JSON.stringify(keywordsToSave));
+    }
+
+    async function addLog(entry) {
+        logList = await GM_getValue(LOG_KEY, []);
+        logList.unshift(entry);
+        if (logList.length > 30) logList = logList.slice(0, 30);
+        await GM_setValue(LOG_KEY, logList);
+        renderLogList();
     }
 
     // ================== LOGIC CỐT LÕI ==================
@@ -90,7 +119,6 @@
         if (WORD_TO_INPUT_MAP.hasOwnProperty(word)) {
             processAutoTask(doc, WORD_TO_INPUT_MAP[word]);
         } else {
-            // Nếu không có từ khóa thì thử đổi, tránh lặp vô hạn
             clickChangeKeywordButton(doc);
         }
     }
@@ -153,6 +181,19 @@
     // =============== GIAO DIỆN & HÀM PHỤ ===============
     function updateUIWithSettings() { const autoSubmitToggle = document.getElementById('auto-submit-toggle'); if (autoSubmitToggle) autoSubmitToggle.checked = config.autoSubmit; }
     function renderKeywordList() { const selectBox = document.getElementById('keyword-select-box'); const valueDisplay = document.getElementById('keyword-value-display'); if (!selectBox || !valueDisplay) return; const currentKey = selectBox.value; selectBox.innerHTML = ''; const keywords = Object.keys(WORD_TO_INPUT_MAP); if (keywords.length === 0) { selectBox.innerHTML = '<option disabled>Chưa có từ khóa nào</option>'; valueDisplay.textContent = ''; return; } keywords.sort((a, b) => a.localeCompare(b, 'vi')).forEach(key => { const option = document.createElement('option'); option.value = key; option.textContent = key; selectBox.appendChild(option); }); selectBox.value = WORD_TO_INPUT_MAP.hasOwnProperty(currentKey) ? currentKey : keywords[0]; valueDisplay.textContent = WORD_TO_INPUT_MAP[selectBox.value] || ''; }
+    function renderLogList() {
+        const logBox = document.getElementById('gemini-log-list');
+        if (!logBox) return;
+        if (!logList || logList.length === 0) {
+            logBox.innerHTML = '<div style="color:#888;text-align:center;padding:10px;">Chưa có log cập nhật nào.</div>';
+            return;
+        }
+        logBox.innerHTML = logList.map(log =>
+            `<div class="gemini-log-item ${log.status}">
+                <b>${log.time}</b> - <span>${log.msg}</span>
+            </div>`
+        ).join('');
+    }
     function createUI() {
         const fab = document.createElement('div'); fab.id = 'gemini-fab'; fab.textContent = '☰';
         const backdrop = document.createElement('div'); backdrop.id = 'gemini-panel-backdrop';
@@ -165,6 +206,7 @@
                 <button class="active" data-tab="tab-settings">Cài Đặt</button>
                 <button data-tab="tab-add">Thêm Mới</button>
                 <button data-tab="tab-list">Danh Sách</button>
+                <button data-tab="tab-log">Log</button>
             </div>
             <div class="gemini-tab-content">
                 <div id="tab-settings" class="gemini-tab-pane active">
@@ -197,6 +239,10 @@
                        <button id="gemini-export-btn" class="gemini-button-secondary">Xuất</button>
                        <button id="gemini-import-btn" class="gemini-button-secondary">Nhập</button>
                     </div>
+                </div>
+                <div id="tab-log" class="gemini-tab-pane">
+                    <label class="gemini-label">Lịch sử cập nhật từ khóa</label>
+                    <div id="gemini-log-list" style="max-height:200px;overflow-y:auto;"></div>
                 </div>
             </div>
         `;
@@ -321,5 +367,9 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #007AFF; }
         input:checked + .slider:before { transform: translateX(20px); }
+        #gemini-log-list { font-size: 13px; }
+        .gemini-log-item { padding: 4px 0; border-bottom: 1px solid #eee; }
+        .gemini-log-item.success { color: #007AFF; }
+        .gemini-log-item.fail { color: #FF3B30; }
     `); }
 })();
