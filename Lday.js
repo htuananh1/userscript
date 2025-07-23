@@ -2,7 +2,7 @@
     'use strict';
 
     // ================== CẤU HÌNH ==================
-    const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Linkday_keywords.json';
+    const GITHUB_KEYWORDS_URL = 'https://raw.githubusercontent.com/htuananh1/userscript/main/Linkday.js';
     const LOCAL_KEYWORDS_KEY = 'linkday_pro_keywords_v5'; // Đổi key để tránh xung đột với phiên bản cũ
     const WORD_TRIGGER_SELECTOR = 'strong.bg-gray-600.text-white.p-2.select-none';
     const AUTO_TASK_INPUT_SELECTOR = 'input[name="code"], input[placeholder*="Nhập mã xác nhận"]';
