@@ -24,7 +24,7 @@
     const sites = {
         'm88':      { codexn: 'taodeptrai', url: 'https://bet88ec.com/cach-danh-bai-sam-loc', loai_traffic: 'https://bet88ec.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'fb88':     { codexn: 'taodeptrai', url: 'https://fb88dq.com/ty-le-cuoc-hong-kong-la-gi', loai_traffic: 'https://fb88dq.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
-        '188bet':   { codexn: 'taodeptrailamnhe', url: 'https://88betag.com/cach-choi-game-bai-pok-deng', loai_traffic: 'https://88betag.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
+        '188bet':   { codexn: 'taodeptrailamnhe', url: 'https://165.22.63.250/keo-malaysia-la-gi/', loai_traffic: 'https://165.22.63.250/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'w88':      { codexn: 'taodeptrai', url: 'https://188.166.185.213/tim-hieu-khai-niem-3-bet-trong-poker-la-gi', loai_traffic: 'https://188.166.185.213/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'v9bet':    { codexn: 'taodeptrai', url: 'https://v9betho.com/ca-cuoc-bong-ro-ao', loai_traffic: 'https://v9betho.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
         'vn88':     { codexn: 'bomaydeptrai', url: 'https://vn88sv.com/cach-choi-bai-gao-gae', loai_traffic: 'https://vn88sv.com/', span_id: 'layma_me_vuatraffic', api_file: 'GET_MA.php', param: 'codexn' },
