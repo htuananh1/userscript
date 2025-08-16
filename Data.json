@@ -57,15 +57,281 @@
       "id": "anime",
       "name": "Hoạt Hình",
       "display": "horizontal",
-      "grid_number": 5,
+      "grid_number": 1,
       "channels": [
         {
-          "id": "anime-remote",
-          "name": "Danh sách Hoạt Hình",
-          "type": "remote",
+          "id": "than-quoc-chi-thuong",
+          "name": "Thần Quốc Chi Thượng",
+          "description": "Đội ngũ nguyên tác của Thần Lan Kỳ Vực Vô Song Châu trở lại, mang đến một...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250617-1/8682bed7677ab2f87c5c5d6515c3bb44.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
           "display": "text-below",
+          "label": {
+            "text": "Tập 12",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
           "remote_data": {
-            "url": "https://media.hth4nh.eu.org/kkphim/sort/tab/anime"
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/than-quoc-chi-thuong"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "tieng-goi-cua-man-dem-phan-2",
+          "name": "Tiếng Gọi Của Màn Đêm (Phần 2)",
+          "description": "Đang lang thang trên phố vào ban đêm, thiếu niên buồn chán nọ gặp một ma cà...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250705-1/034b36df9c83f387aa5bba6c50548500.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 7",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/tieng-goi-cua-man-dem-phan-2"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "huyet-quy-hon-chien",
+          "name": "Huyết Quỷ Hỗn Chiến",
+          "description": "Rất lâu sau khi Momotaro huyền thoại chiến đấu với Oni, một thiếu niên nổi...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250713-1/2c3c7db71c2ff172083e8e0c77768f8a.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 6",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/huyet-quy-hon-chien"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "chua-te-huyen-bi",
+          "name": "Chúa Tể Huyền Bí",
+          "description": "Trong thế giới thời Victoria ngập tràn hơi nước, tàu chiến và những điều...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250628-1/b85e70f3b89c25f66500f12da35d7e8e.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 9",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/chua-te-huyen-bi"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "bi-mat-cua-phu-thuy-tinh-lang",
+          "name": "Bí Mật Của Phù Thủy Tĩnh Lặng",
+          "description": "Monica Everett được mệnh danh là \\\"phù thủy im lặng\\\" - thiên tài duy nhất...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250705-1/0eac34475ca78761aed40ad8ef04fd8f.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 7",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/bi-mat-cua-phu-thuy-tinh-lang"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "luyen-khi-muoi-van-nam",
+          "name": "Luyện Khí Mười Vạn Năm",
+          "description": "Mười vạn năm trước Thiên Lam Tông vang dội giới tu chân, đệ tử trong tông...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503185d0deda186d0d6f34013ab7b",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 268",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/luyen-khi-muoi-van-nam"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "trong-tong-mon-tru-ta-ra-tat-ca-deu-la-gian-diep",
+          "name": "Trong Tông Môn Trừ Ta Ra Tất Cả Đều Là Gián Điệp",
+          "description": "Một hacker huyền thoại tên Trần Ninh đã bị hệ thống AI truy sát rồi hi sinh...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503185d0d0675a91f21f54686b027",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 93",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/trong-tong-mon-tru-ta-ra-tat-ca-deu-la-gian-diep"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "dau-la-dai-luc-2-tuyet-the-duong-mon",
+          "name": "Đấu La Đại Lục 2 (Tuyệt Thế Đường Môn)",
+          "description": "Nơi đây không có ma pháp, không có hơn thua, không có võ thuật, nhưng lại có võ...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503175d0d26b12a32248944ad9184",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 114",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/dau-la-dai-luc-2-tuyet-the-duong-mon"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "van-gioi-doc-ton",
+          "name": "Vạn Giới Độc Tôn",
+          "description": "Với sự trợ giúp của Phượng Hoàng huyết mạch, Lâm Phong đã vượt qua mọi...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503165d0d60fd9c90f6ef452ba9e6",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 356",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/van-gioi-doc-ton"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "pham-nhan-tu-tien",
+          "name": "Phàm Nhân Tu Tiên",
+          "description": "Phàm Nhân Tu Tiên là một câu chuyện Tiên Hiệp kể về Hàn Lập - Một người...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503175d0d4bf27346cec74943815e",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 156",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/pham-nhan-tu-tien"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "thuong-lan-quyet-ban-hoat-hinh-phan-2",
+          "name": "Thương Lan Quyết (Bản Hoạt Hình) (Phần 2)",
+          "description": "Sau đại chiến long trời lở đất, Đông Phương Thanh Thương trở về biển...",
+          "image": {
+            "url": "https://ik.imagekit.io/hth4nh/upload/vod/20250803-1/124d7fa9873b76aa5fe7c33d0ea89ff2.jpg?tr=n-resize",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 7",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/thuong-lan-quyet-ban-hoat-hinh-phan-2"
+          },
+          "enable_detail": true
+        },
+        {
+          "id": "thon-phe-tinh-khong",
+          "name": "Thôn Phệ Tinh Không",
+          "description": "Một ngày nọ, một chiếc virus RR ko xác định xuất hiện trên trái đất, và...",
+          "image": {
+            "url": "https://p21-ad-sg.ibyteimg.com/obj/ad-site-i18n-sg/202503175d0dbe0fd32cf89548f9994d",
+            "type": "cover",
+            "width": 480,
+            "height": 640
+          },
+          "type": "playlist",
+          "display": "text-below",
+          "label": {
+            "text": "Tập 184",
+            "position": "top-left",
+            "color": "#35ba8b",
+            "text_color": "#ffffff"
+          },
+          "remote_data": {
+            "url": "https://media.hth4nh.eu.org/kkphim/detail/thon-phe-tinh-khong"
           },
           "enable_detail": true
         }
@@ -106,6 +372,6 @@
           "enable_detail": true
         }
       ]
-     }
-    ]
-   }
+    }
+  ]
+}
