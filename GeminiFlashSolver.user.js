@@ -139,14 +139,21 @@
                 .replace(/\r\n/g, '\n')
                 .replace(/\r/g, '\n');
 
-            // Match answer patterns: A), A., A:, (A), etc.
-            const answerRegex = /(?:^|\n)\s*\(?([A-D])\)?[\).:\-]\s*(.+?)(?=(?:\n\s*\(?[A-D]\)?[\).:\-])|$)/gis;
+            // Enhanced regex to match answer patterns in both formats:
+            // 1. With newlines: "\nA. content"
+            // 2. Concatenated: "?A. contentB. content" (common in highlighted text)
+            // Match patterns: A), A., A:, (A), etc.
+            const answerRegex = /(?:^|\n|[?.!])\s*\(?([A-D])\)?[\).:\-]\s*(.+?)(?=\s*\(?[A-D]\)?[\).:\-]|$)/gis;
             const matches = [];
             let match;
 
             while ((match = answerRegex.exec(normalized)) !== null) {
                 const letter = match[1].toUpperCase();
-                const content = match[2].trim();
+                let content = match[2].trim();
+                
+                // Clean up content: remove trailing punctuation followed by next option letter
+                content = content.replace(/\s*(?=[A-D][\).:\-])/g, '').trim();
+                
                 if (content && !answers[letter]) {
                     matches.push({ letter, content, start: match.index });
                     answers[letter] = content;
@@ -162,8 +169,11 @@
                 question = normalized.trim();
             }
 
-            // Clean up question
-            question = question.replace(/^(?:question|câu hỏi|câu)\s*\d*[:.\-]?\s*/i, '').trim();
+            // Clean up question: remove common question prefixes and trailing punctuation
+            question = question
+                .replace(/^(?:question|câu hỏi|câu)\s*\d*[:.\-]?\s*/i, '')
+                .replace(/[?.!]+$/, '')
+                .trim();
 
             return { question, answers };
         }
