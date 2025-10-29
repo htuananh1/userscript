@@ -1186,6 +1186,40 @@
                     box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
                 }
 
+                #aqs-floating-capture {
+                    position: absolute;
+                    display: none;
+                    z-index: 999999;
+                    background: linear-gradient(135deg, var(--primary), #764ba2);
+                    color: white;
+                    border: none;
+                    padding: 10px 18px;
+                    border-radius: 8px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    font-size: 13px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+                    transition: transform 0.15s, box-shadow 0.15s;
+                    animation: slideIn 0.2s ease-out;
+                }
+
+                #aqs-floating-capture:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+                }
+
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
                 .aqs-type-badge {
                     display: inline-block;
                     padding: 4px 8px;
@@ -1224,6 +1258,13 @@
                 title: 'AI Quiz Solver Pro MAX v3.0'
             });
             document.body.appendChild(this.fab);
+            
+            // Create floating capture button
+            this.floatingBtn = Utils.createElement('button', {
+                id: 'aqs-floating-capture',
+                html: '📥 Chụp văn bản'
+            });
+            document.body.appendChild(this.floatingBtn);
         }
 
         createPanel() {
@@ -1241,7 +1282,6 @@
             // Tabs
             const tabs = Utils.createElement('div', { class: 'aqs-tabs' }, [
                 Utils.createElement('button', { class: 'aqs-tab active', 'data-tab': 'solve', text: '🎯 Giải' }),
-                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'history', text: '📚 Lịch sử' }),
                 Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'settings', text: '⚙️ Cài đặt' })
             ]);
 
@@ -1261,7 +1301,7 @@
             this.elements.closeBtn = header.querySelector('.aqs-close');
             this.elements.tabs = Array.from(tabs.querySelectorAll('.aqs-tab'));
             this.elements.content = content;
-            this.tabsCreated = { solve: true, history: false, settings: false };
+            this.tabsCreated = { solve: true, settings: false };
         }
 
         createSolveTab() {
@@ -1333,12 +1373,6 @@
             });
             solveTab.appendChild(this.elements.autoDetectBtn);
 
-            this.elements.captureBtn = Utils.createElement('button', {
-                class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>📥</span><span>Chụp vùng chọn</span>'
-            });
-            solveTab.appendChild(this.elements.captureBtn);
-
             this.elements.solveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
                 html: '<span>🧠</span><span>Giải bằng AI</span>',
@@ -1353,28 +1387,22 @@
             return solveTab;
         }
 
-        createHistoryTab() {
-            const historyTab = Utils.createElement('div', { class: 'aqs-tab-pane', 'data-pane': 'history' });
+        showFloatingCaptureButton(range) {
+            if (!this.floatingBtn) return;
             
-            this.elements.historySearch = Utils.createElement('input', {
-                class: 'aqs-input',
-                type: 'text',
-                placeholder: '🔍 Tìm kiếm...',
-                style: 'margin-bottom: 14px;'
-            });
-            historyTab.appendChild(this.elements.historySearch);
+            const rect = range.getBoundingClientRect();
+            const top = window.scrollY + rect.bottom + 5;
+            const left = window.scrollX + rect.left;
+            
+            this.floatingBtn.style.top = top + 'px';
+            this.floatingBtn.style.left = left + 'px';
+            this.floatingBtn.style.display = 'block';
+        }
 
-            this.elements.clearHistoryBtn = Utils.createElement('button', {
-                class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>🗑️</span><span>Xóa lịch sử</span>',
-                style: 'margin-bottom: 14px;'
-            });
-            historyTab.appendChild(this.elements.clearHistoryBtn);
-
-            this.elements.historyList = Utils.createElement('div', { class: 'aqs-history-list' });
-            historyTab.appendChild(this.elements.historyList);
-
-            return historyTab;
+        hideFloatingCaptureButton() {
+            if (this.floatingBtn) {
+                this.floatingBtn.style.display = 'none';
+            }
         }
 
         createSettingsTab() {
@@ -1450,7 +1478,11 @@
             });
 
             this.elements.autoDetectBtn.addEventListener('click', () => this.app.autoDetect());
-            this.elements.captureBtn.addEventListener('click', () => this.app.captureSelection());
+            this.floatingBtn.addEventListener('click', () => {
+                this.app.captureSelection();
+                this.hideFloatingCaptureButton();
+                this.togglePanel(true);
+            });
             this.elements.solveBtn.addEventListener('click', () => this.app.solveQuestion());
 
             this.elements.questionInput.addEventListener('input', () => this.updateSolveButton());
@@ -1465,10 +1497,6 @@
                     this.panel.classList.add('visible');
                 });
                 this.app.updateStats();
-                const activeTab = this.elements.tabs.find(t => t.classList.contains('active'));
-                if (activeTab?.dataset.tab === 'history') {
-                    this.app.loadHistory();
-                }
             } else {
                 this.panel.classList.remove('visible');
                 setTimeout(() => {
@@ -1482,12 +1510,7 @@
         switchTab(tabName) {
             // Lazy load tabs
             if (!this.tabsCreated[tabName]) {
-                if (tabName === 'history') {
-                    this.elements.content.appendChild(this.createHistoryTab());
-                    this.elements.clearHistoryBtn.addEventListener('click', () => this.app.clearHistory());
-                    this.elements.historySearch.addEventListener('input', Utils.debounce((e) => 
-                        this.app.searchHistory(e.target.value), 300));
-                } else if (tabName === 'settings') {
+                if (tabName === 'settings') {
                     this.elements.content.appendChild(this.createSettingsTab());
                     this.elements.saveBtn.addEventListener('click', () => this.app.saveSettings());
                     this.elements.clearCacheBtn.addEventListener('click', () => this.app.clearCache());
@@ -1505,9 +1528,7 @@
                 pane.classList.toggle('active', pane.dataset.pane === tabName);
             });
             
-            if (tabName === 'history') {
-                this.app.loadHistory();
-            } else if (tabName === 'settings') {
+            if (tabName === 'settings') {
                 this.ui.loadSettings(this.app.config);
             }
         }
@@ -1586,29 +1607,32 @@
             this.elements.todaySolved.querySelector('.aqs-stat-value').textContent = stats.recentCount;
         }
 
-        displayHistory(items) {
-            this.elements.historyList.innerHTML = '';
+        highlightCorrectAnswer(letter) {
+            if (!letter || !this.elements.answerInput) return;
             
-            if (items.length === 0) {
-                this.elements.historyList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">No history yet</div>';
-                return;
+            const answerText = this.elements.answerInput.value;
+            const lines = answerText.split('\n');
+            const correctLineIndex = lines.findIndex(line => 
+                line.trim().toUpperCase().startsWith(letter.toUpperCase() + '.')
+            );
+            
+            if (correctLineIndex !== -1) {
+                // Use CSS to style the textarea with a background for the correct answer
+                const correctLine = lines[correctLineIndex];
+                this.elements.answerInput.style.background = 'var(--bg-darker)';
+                
+                // Add a visual indicator in the UI
+                const answerGroup = this.elements.answerInput.parentElement;
+                let indicator = answerGroup.querySelector('.aqs-correct-indicator');
+                if (!indicator) {
+                    indicator = Utils.createElement('div', {
+                        class: 'aqs-correct-indicator',
+                        style: 'margin-top: 8px; padding: 8px 12px; background: rgba(16, 185, 129, 0.15); border-left: 3px solid var(--success); border-radius: 6px; font-size: 13px; color: var(--success); font-weight: 600;'
+                    });
+                    answerGroup.appendChild(indicator);
+                }
+                indicator.innerHTML = `✓ Đáp án đúng: ${letter} - ${correctLine.substring(correctLine.indexOf('.') + 1).trim()}`;
             }
-
-            items.forEach(item => {
-                const historyItem = Utils.createElement('div', { class: 'aqs-history-item' });
-                historyItem.innerHTML = `
-                    <div class="aqs-history-question">${item.question}</div>
-                    <div class="aqs-history-meta">
-                        <span>📌 Answer: ${item.answer}</span>
-                        <span>${Utils.formatDate(item.timestamp)}</span>
-                    </div>
-                `;
-                historyItem.addEventListener('click', () => {
-                    this.elements.questionInput.value = item.question;
-                    this.switchTab('solve');
-                });
-                this.elements.historyList.appendChild(historyItem);
-            });
         }
     }
 
@@ -1636,14 +1660,24 @@
         }
 
         setupSelectionListener() {
-            document.addEventListener('selectionchange', Utils.debounce(() => {
+            document.addEventListener('mouseup', () => {
                 const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0 && selection.toString().trim()) {
+                if (selection && selection.rangeCount > 0 && selection.toString().trim().length > 10) {
                     const range = selection.getRangeAt(0);
                     this.selectionText = SelectionParser.extractFromRange(range);
                     this.selectionRange = range.cloneRange();
+                    this.ui.showFloatingCaptureButton(range);
+                } else {
+                    this.ui.hideFloatingCaptureButton();
                 }
-            }, 500));
+            });
+            
+            document.addEventListener('selectionchange', Utils.debounce(() => {
+                const selection = window.getSelection();
+                if (!selection || !selection.toString().trim()) {
+                    this.ui.hideFloatingCaptureButton();
+                }
+            }, 300));
         }
 
         updateStatus() {
@@ -1706,6 +1740,13 @@
                 .map(([letter, text]) => `${letter}. ${text}`)
                 .join('\n');
             this.ui.elements.answerInput.value = answersText;
+            
+            // Clear previous correct answer indicator
+            const answerGroup = this.ui.elements.answerInput.parentElement;
+            const indicator = answerGroup.querySelector('.aqs-correct-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
             
             this.ui.showQuestionType(parsed.type);
             this.ui.updateSolveButton();
@@ -1807,6 +1848,11 @@
                 'success'
             );
 
+            // Highlight correct answer in answer input
+            if (letter) {
+                this.ui.highlightCorrectAnswer(letter);
+            }
+
             // Highlight answer on page
             if (letter && this.currentParsed?.answers[letter] && this.config.autoHighlight) {
                 requestAnimationFrame(() => {
@@ -1848,28 +1894,6 @@
             }
         }
 
-        async loadHistory() {
-            const history = await HistoryManager.getAll();
-            this.ui.displayHistory(history);
-        }
-
-        async searchHistory(query) {
-            if (!query.trim()) {
-                await this.loadHistory();
-                return;
-            }
-            const results = await HistoryManager.search(query);
-            this.ui.displayHistory(results);
-        }
-
-        async clearHistory() {
-            if (confirm('Xóa tất cả lịch sử? Hành động này không thể hoàn tác.')) {
-                await HistoryManager.clear();
-                this.ui.showStatus('✅ Đã xóa lịch sử', 'success');
-                await this.loadHistory();
-                await this.updateStats();
-            }
-        }
 
         async clearCache() {
             if (confirm('Xóa bộ nhớ cache? Hành động này không thể hoàn tác.')) {
