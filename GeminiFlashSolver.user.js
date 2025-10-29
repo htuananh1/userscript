@@ -603,11 +603,12 @@
             temperature: config.temperature,
             maxTokens: config.maxTokens
         }).then(result => {
-            answerBox.textContent = result.text.trim();
+            const finalText = result.text.trim();
             answerBox.className = 'gfs-answer';
+            renderAnswerBox(answerBox, finalText, answers);
             status.textContent = 'Hoàn tất.';
             status.className = 'gfs-status ok';
-            highlightFromResponse(result.text.trim(), answers);
+            highlightFromResponse(finalText, answers);
         }).catch(error => {
             answerBox.textContent = `Lỗi: ${error.message}`;
             answerBox.className = 'gfs-answer error';
@@ -709,6 +710,7 @@
             element.classList.add('gfs-answer-highlight');
             element.setAttribute('data-gfs-highlight', letter);
             element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            markQuestionDone();
         }
     }
 
@@ -825,6 +827,82 @@
         panelAnswerItems.forEach(item => {
             item.classList.remove('correct');
         });
+    }
+
+    // Render rich answer box with colored options and correct letter
+    function renderAnswerBox(answerBox, text, answers) {
+        try {
+            // Reset box
+            while (answerBox.firstChild) answerBox.removeChild(answerBox.firstChild);
+
+            const letter = detectAnswerLetter(text, answers);
+
+            const header = createElement('div', { class: 'gfs-answer-head' });
+            header.appendChild(createElement('span', { class: 'gfs-answer-head-label', text: 'Đáp án:' }));
+            header.appendChild(createElement('span', { class: 'gfs-correct-letter', text: letter || '?' }));
+            answerBox.appendChild(header);
+
+            const grid = createElement('div', { class: 'gfs-options-grid' });
+            ['A', 'B', 'C', 'D'].forEach(l => {
+                const option = createElement('div', { class: `gfs-option${l === letter ? ' correct' : ''}` });
+                option.appendChild(createElement('div', { class: 'gfs-letter', text: l }));
+                option.appendChild(createElement('div', { class: 'gfs-option-text', text: answers[l] || '' }));
+                grid.appendChild(option);
+            });
+            answerBox.appendChild(grid);
+
+            // For modes with explanation, keep the model output for reference
+            if (config.outputMode !== 'answer' && text) {
+                const explain = createElement('div', { class: 'gfs-explain' });
+                const pre = document.createElement('pre');
+                pre.textContent = text;
+                explain.appendChild(pre);
+                answerBox.appendChild(explain);
+            }
+        } catch (err) {
+            // Fallback to plain text if rendering fails for any reason
+            answerBox.textContent = text;
+        }
+    }
+
+    // Try to mark the current question index on page as done (best-effort for common UIs)
+    function markQuestionDone() {
+        try {
+            // Find an element like "1/10" or "3 / 20" on page
+            const progressEl = Array.from(document.querySelectorAll('div, span, p, strong'))
+                .find(el => {
+                    if (!el || el === panel || panel.contains(el)) return false;
+                    const t = (el.innerText || el.textContent || '').trim();
+                    return /^\d+\s*\/\s*\d+$/.test(t);
+                });
+            if (!progressEl) return;
+            const t = (progressEl.innerText || progressEl.textContent || '').trim();
+            const current = t.split('/')[0].trim();
+            if (!current) return;
+
+            const nearBottom = (el) => {
+                const rect = safeRect(el.getBoundingClientRect());
+                return rect && rect.bottom > (window.innerHeight - 260);
+            };
+
+            const candidates = Array.from(document.querySelectorAll('button, a, span, div, li'))
+                .filter(el => {
+                    if (!el || el === panel || panel.contains(el)) return false;
+                    const label = (el.innerText || el.textContent || '').trim();
+                    if (label !== current) return false;
+                    if (label.length > 3) return false;
+                    return nearBottom(el);
+                });
+            candidates.forEach(el => {
+                el.setAttribute('data-gfs-done', 'true');
+                el.style.backgroundColor = '#23a057';
+                el.style.color = '#fff';
+                el.style.borderRadius = '8px';
+                el.style.transition = 'all .2s ease';
+            });
+        } catch (_) {
+            // ignore best-effort failures
+        }
     }
 
     GM_addStyle(`
@@ -1013,6 +1091,61 @@
             color: #2ecc71;
             box-shadow: 0 4px 15px rgba(46, 204, 113, 0.1);
         }
+        /* Rich answer layout */
+        .gfs-answer-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .gfs-answer-head-label { color: #cfd8dc; }
+        .gfs-correct-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: #23a057;
+            color: #fff;
+        }
+        .gfs-options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .gfs-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 8px 10px;
+        }
+        .gfs-letter {
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.1);
+            font-weight: 700;
+        }
+        .gfs-option.correct {
+            border-color: rgba(46,204,113,0.7);
+            background: rgba(46,204,113,0.15);
+        }
+        .gfs-option.correct .gfs-letter {
+            background: #23a057;
+            color: #fff;
+        }
+        .gfs-option-text { white-space: pre-wrap; }
+        .gfs-explain { margin-top: 8px; opacity: .95; }
+        .gfs-explain pre { margin: 0; white-space: pre-wrap; }
         .gfs-answer.loading::after {
             content: '⏳';
             display: inline-block;
