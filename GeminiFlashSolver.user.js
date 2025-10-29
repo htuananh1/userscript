@@ -699,6 +699,71 @@
                     color: var(--text-muted);
                 }
 
+                .aqs-option-badges {
+                    display: flex;
+                    gap: 8px;
+                    margin-bottom: 12px;
+                    padding: 12px;
+                    background: rgba(102, 126, 234, 0.05);
+                    border-radius: 8px;
+                    border: 1px solid var(--border);
+                }
+                
+                .aqs-option-badge {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 8px;
+                    background: var(--bg-darker);
+                    border: 2px solid var(--border);
+                    color: var(--text-muted);
+                    font-size: 16px;
+                    font-weight: 700;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    cursor: pointer;
+                    position: relative;
+                }
+                
+                .aqs-option-badge:hover {
+                    transform: translateY(-2px);
+                    border-color: var(--primary);
+                }
+                
+                .aqs-option-badge.filled {
+                    background: linear-gradient(135deg, var(--primary), #764ba2);
+                    border-color: var(--primary);
+                    color: white;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                    animation: pulse 2s ease-in-out infinite;
+                }
+                
+                .aqs-option-badge.filled::after {
+                    content: '✓';
+                    position: absolute;
+                    top: -4px;
+                    right: -4px;
+                    width: 16px;
+                    height: 16px;
+                    background: var(--success);
+                    border-radius: 50%;
+                    font-size: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                }
+                
+                @keyframes pulse {
+                    0%, 100% {
+                        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                    }
+                    50% {
+                        box-shadow: 0 4px 25px rgba(102, 126, 234, 0.6);
+                    }
+                }
+
                 .aqs-result {
                     background: var(--bg-darker);
                     border: 1px solid var(--border);
@@ -781,10 +846,23 @@
             solveTab.appendChild(this.elements.status);
 
             const questionGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '❓ Question' }));
+            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '❓ Câu hỏi / Question' }));
+            
+            // Add ABCD indicator badges
+            this.elements.optionBadges = Utils.createElement('div', { class: 'aqs-option-badges' });
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                const badge = Utils.createElement('span', {
+                    class: 'aqs-option-badge',
+                    'data-letter': letter,
+                    text: letter
+                });
+                this.elements.optionBadges.appendChild(badge);
+            });
+            questionGroup.appendChild(this.elements.optionBadges);
+            
             this.elements.questionInput = Utils.createElement('textarea', {
                 class: 'aqs-textarea',
-                placeholder: 'Paste your question here or use "Capture from Selection" button below...',
+                placeholder: 'Dán câu hỏi của bạn vào đây hoặc sử dụng nút "Chụp từ vùng chọn" bên dưới...\n\nPaste your question here or use "Capture from Selection" button below...',
                 style: 'min-height: 120px;'
             });
             questionGroup.appendChild(this.elements.questionInput);
@@ -808,13 +886,13 @@
 
             this.elements.captureBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>📥</span><span>Capture from Selection</span>'
+                html: '<span>📥</span><span>Chụp từ vùng chọn / Capture from Selection</span>'
             });
             solveTab.appendChild(this.elements.captureBtn);
 
             this.elements.solveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
-                html: '<span>🧠</span><span>Solve with AI</span>',
+                html: '<span>🧠</span><span>Giải với AI / Solve with AI</span>',
                 disabled: true
             });
             solveTab.appendChild(this.elements.solveBtn);
@@ -891,6 +969,23 @@
 
             this.elements.apiKeyInput.addEventListener('input', () => this.updateSolveButton());
             this.elements.questionInput.addEventListener('input', () => this.updateSolveButton());
+            
+            // Add input listeners for answer options to update badges
+            this.elements.answerGrid.querySelectorAll('textarea').forEach(textarea => {
+                textarea.addEventListener('input', () => this.updateOptionBadges());
+            });
+            
+            // Add click listeners to option badges to focus on corresponding textarea
+            this.elements.optionBadges.querySelectorAll('.aqs-option-badge').forEach(badge => {
+                badge.addEventListener('click', () => {
+                    const letter = badge.dataset.letter;
+                    const textarea = this.elements.answerGrid.querySelector(`textarea[data-letter="${letter}"]`);
+                    if (textarea) {
+                        textarea.focus();
+                        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
         }
 
         togglePanel(show = null) {
@@ -950,6 +1045,21 @@
             if (textarea) {
                 textarea.closest('.aqs-answer-item').classList.add('correct');
             }
+        }
+
+        updateOptionBadges() {
+            const textareas = this.elements.answerGrid.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                const letter = textarea.dataset.letter;
+                const badge = this.elements.optionBadges.querySelector(`.aqs-option-badge[data-letter="${letter}"]`);
+                if (badge) {
+                    if (textarea.value.trim()) {
+                        badge.classList.add('filled');
+                    } else {
+                        badge.classList.remove('filled');
+                    }
+                }
+            });
         }
 
         loadSettings(config) {
@@ -1021,8 +1131,9 @@
             });
 
             const answerCount = Object.keys(parsed.answers).length;
-            this.ui.showStatus(`✅ Content captured successfully! (Question + ${answerCount} answer${answerCount !== 1 ? 's' : ''})`, 'success');
+            this.ui.showStatus(`✅ Đã chụp thành công! (Câu hỏi + ${answerCount} đáp án) / Content captured successfully! (Question + ${answerCount} answer${answerCount !== 1 ? 's' : ''})`, 'success');
             this.ui.updateSolveButton();
+            this.ui.updateOptionBadges();
         }
 
         async solveQuestion() {
@@ -1046,8 +1157,8 @@
             }
 
             this.ui.elements.solveBtn.disabled = true;
-            this.ui.elements.solveBtn.innerHTML = '<span>⏳</span><span>Analyzing...</span>';
-            this.ui.showStatus(`🤖 AI is analyzing ${answerCount} option${answerCount !== 1 ? 's' : ''}...`, 'warning');
+            this.ui.elements.solveBtn.innerHTML = '<span>⏳</span><span>Đang phân tích... / Analyzing...</span>';
+            this.ui.showStatus(`🤖 AI đang phân tích ${answerCount} đáp án / AI is analyzing ${answerCount} option${answerCount !== 1 ? 's' : ''}...`, 'warning');
 
             try {
                 const client = new GeminiClient(
@@ -1063,7 +1174,7 @@
                 const answerLetter = AnswerDetector.detectLetter(result.text);
                 
                 this.ui.showResult(answerLetter, result.text);
-                this.ui.showStatus(`✅ Question solved! AI suggests answer: ${answerLetter || 'Unknown'}`, 'success');
+                this.ui.showStatus(`✅ Đã giải xong! AI gợi ý đáp án: ${answerLetter || 'Không xác định'} / Question solved! AI suggests answer: ${answerLetter || 'Unknown'}`, 'success');
 
                 if (answerLetter) {
                     this.ui.highlightAnswer(answerLetter);
@@ -1078,11 +1189,11 @@
                     }
                 }
             } catch (error) {
-                this.ui.showStatus(`❌ Error: ${error.message}`, 'error');
+                this.ui.showStatus(`❌ Lỗi / Error: ${error.message}`, 'error');
                 console.error('[AI Quiz Solver] Error:', error);
             } finally {
                 this.ui.elements.solveBtn.disabled = false;
-                this.ui.elements.solveBtn.innerHTML = '<span>🧠</span><span>Solve with AI</span>';
+                this.ui.elements.solveBtn.innerHTML = '<span>🧠</span><span>Giải với AI / Solve with AI</span>';
             }
         }
 
