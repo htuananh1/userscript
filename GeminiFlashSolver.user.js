@@ -25,7 +25,7 @@
         STORAGE_KEY: 'ai_quiz_solver_config',
         DEFAULT_SETTINGS: {
             apiKey: '',
-            model: 'gemini-2.5-flash-exp',
+            model: 'gemini-2.5-flash',
             language: 'vi',
             subject: 'General',
             outputMode: 'answer',
@@ -36,11 +36,8 @@
             theme: 'dark'
         },
         MODELS: [
-            { value: 'gemini-2.0-flash-exp', label: '⚡ Gemini 2.0 Flash (Experimental)', icon: '⚡' },
-            { value: 'gemini-2.5-flash-exp', label: '🚀 Gemini 2.5 Flash (Latest)', icon: '🚀' },
-            { value: 'gemini-2.5-pro-exp', label: '💎 Gemini 2.5 Pro (Premium)', icon: '💎' },
-            { value: 'gemini-1.5-flash', label: '⭐ Gemini 1.5 Flash', icon: '⭐' },
-            { value: 'gemini-1.5-pro', label: '🎯 Gemini 1.5 Pro', icon: '🎯' }
+            { value: 'gemini-2.5-flash', label: '⚡ Gemini 2.5 Flash', icon: '⚡' },
+            { value: 'gemini-2.5-pro', label: '💎 Gemini 2.5 Pro', icon: '💎' }
         ],
         LANGUAGES: [
             { value: 'vi', label: 'Tiếng Việt' },
