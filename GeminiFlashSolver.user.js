@@ -315,8 +315,15 @@
         if (!cloned) return '';
         const container = document.createElement('div');
         container.appendChild(cloned);
-        const text = container.innerText || container.textContent || '';
-        return text.replace(/[\u00A0\u200B]+/g, ' ').replace(/\s+$/g, '').trim();
+        
+        // Preserve line breaks and clean up
+        let text = container.innerText || container.textContent || '';
+        text = text.replace(/[\u00A0\u200B]+/g, ' '); // Remove non-breaking spaces
+        text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n'); // Normalize line breaks
+        text = text.replace(/[ \t]+$/gm, ''); // Remove trailing spaces on each line
+        text = text.trim();
+        
+        return text;
     }
 
     function getRangeRoot(range) {
@@ -360,85 +367,159 @@
     }
 
     function parseSelection(text) {
-        const cleaned = String(text || '')
-            .replace(/[\u00A0\u200B]+/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+        if (!text) {
+            return { question: '', answers: { A: '', B: '', C: '', D: '' } };
+        }
 
         const answers = { A: '', B: '', C: '', D: '' };
-        if (!cleaned) {
-            return { question: '', answers };
-        }
+        
+        // Normalize text but preserve line structure
+        const normalized = String(text)
+            .replace(/[\u00A0\u200B]+/g, ' ')
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n');
 
-        const optionRegex = /\b([A-D])[).:-]?(?:\s+|(?=\S))/gi;
+        // Try to find answer options with various formats: A), A., A:, A-, (A), etc.
+        // Match at start of line or after whitespace
+        const optionRegex = /(?:^|\n|\s{2,})\(?([A-D])\)?[\).:\-]\s*(.+?)(?=(?:\n|\s{2,})\(?[A-D]\)?[\).:\-]|$)/gis;
         const matches = [];
         let match;
-        while ((match = optionRegex.exec(cleaned)) !== null) {
-            matches.push({
-                letter: match[1].toUpperCase(),
-                start: match.index,
-                end: optionRegex.lastIndex
-            });
+        
+        while ((match = optionRegex.exec(normalized)) !== null) {
+            const letter = match[1].toUpperCase();
+            const content = match[2].trim();
+            if (content && !answers[letter]) {
+                matches.push({
+                    letter,
+                    content,
+                    start: match.index
+                });
+                answers[letter] = content;
+            }
         }
 
-        if (matches.length) {
-            const first = matches[0];
-            const question = cleaned.slice(0, first.start).trim();
-            for (let i = 0; i < matches.length; i++) {
-                const current = matches[i];
-                const next = matches[i + 1];
-                const answerText = cleaned.slice(current.end, next ? next.start : undefined).trim();
-                if (answerText && !answers[current.letter]) {
-                    answers[current.letter] = answerText;
+        // Extract question (everything before first answer option)
+        let question = '';
+        if (matches.length > 0) {
+            const firstMatchIndex = matches[0].start;
+            question = normalized.slice(0, firstMatchIndex).trim();
+        } else {
+            // No options found, try alternative parsing
+            // Split by line breaks and look for patterns
+            const lines = normalized.split('\n').map(l => l.trim()).filter(Boolean);
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                // Check if line starts with answer marker
+                const answerMatch = line.match(/^\(?([A-D])\)?[\).:\-]\s*(.+)/);
+                if (answerMatch) {
+                    const letter = answerMatch[1].toUpperCase();
+                    const content = answerMatch[2].trim();
+                    if (!answers[letter]) {
+                        answers[letter] = content;
+                    }
+                    // Question is everything before this line
+                    if (!question) {
+                        question = lines.slice(0, i).join(' ').trim();
+                    }
+                } else if (!Object.values(answers).some(a => a)) {
+                    // Still building the question
+                    question = lines.slice(0, i + 1).join(' ').trim();
                 }
             }
-            return { question, answers };
         }
 
-        const lines = cleaned.split(/(?<=\?)\s|(?<=\.)\s|\r?\n/).map(part => part.trim()).filter(Boolean);
-        const question = lines.shift() || cleaned;
+        // If still no question found, use first line or first sentence
+        if (!question) {
+            const sentences = normalized.split(/[.?!]\s+/);
+            question = sentences[0] ? sentences[0].trim() : normalized.trim();
+        }
+
+        // Clean up question - remove common prefixes
+        question = question.replace(/^(?:câu hỏi|question|câu)\s*\d*[:.\-]?\s*/i, '').trim();
+        
         return { question, answers };
     }
 
     function locateAnswerElements(range, answers) {
         const result = {};
         if (!range) return result;
+        
         const root = getRangeRoot(range) || document.body;
         const letters = Object.entries(answers).filter(([, value]) => value);
         if (!letters.length) {
             return result;
         }
+        
         const selectionRect = safeRect(range.getBoundingClientRect());
+        
+        // Get all potential answer elements
         const candidates = (root === document.body)
-            ? document.querySelectorAll('li, label, p, div, span')
-            : root.querySelectorAll('li, label, p, div, span');
+            ? Array.from(document.querySelectorAll('li, label, p, div, span, td'))
+            : Array.from(root.querySelectorAll('li, label, p, div, span, td'));
+
+        // Sort by position in document for more predictable matching
+        candidates.sort((a, b) => {
+            const rectA = a.getBoundingClientRect();
+            const rectB = b.getBoundingClientRect();
+            if (Math.abs(rectA.top - rectB.top) > 5) {
+                return rectA.top - rectB.top;
+            }
+            return rectA.left - rectB.left;
+        });
 
         for (const el of candidates) {
             if (!el || !document.contains(el)) continue;
             if (el === panel || panel.contains(el)) continue;
-            const text = normalizeText(el.innerText || '').toLowerCase();
+            
+            const text = normalizeText(el.innerText || el.textContent || '');
             if (!text) continue;
+            
+            // Check if element is within or near selection area
             if (selectionRect) {
                 const rect = safeRect(el.getBoundingClientRect());
                 if (!rect || !rectsIntersect(rect, selectionRect)) {
                     continue;
                 }
             }
+            
+            const textLower = text.toLowerCase();
+            
             for (const [letter, answer] of letters) {
                 if (result[letter]) continue;
-                const answerNormalized = normalizeText(answer).toLowerCase();
+                
+                const answerNormalized = normalizeText(answer);
                 if (!answerNormalized) continue;
-                if (!text.includes(answerNormalized)) continue;
-                const letterPattern = new RegExp(`\\b${letter.toLowerCase()}[\\).:-]?`);
-                const fullPattern = new RegExp(`\\b${letter.toLowerCase()}[\\).:-]?\\s*${escapeRegExp(answerNormalized)}`);
-                if (letterPattern.test(text) || fullPattern.test(text)) {
+                
+                const answerLower = answerNormalized.toLowerCase();
+                
+                // Check if text contains the answer content
+                if (!textLower.includes(answerLower)) continue;
+                
+                // Check for letter marker patterns: A), A., A:, (A), etc.
+                const letterLower = letter.toLowerCase();
+                const patterns = [
+                    new RegExp(`\\(?${letterLower}\\)[\\).:\\-]`, 'i'),
+                    new RegExp(`^\\s*${letterLower}[\\).:\\-]`, 'i'),
+                    new RegExp(`\\b${letterLower}[\\).:\\-]`, 'i')
+                ];
+                
+                const hasMarker = patterns.some(p => p.test(text));
+                
+                // Also check if the answer text is a significant portion of the element
+                const similarity = answerNormalized.length / text.length;
+                
+                if (hasMarker || similarity > 0.5) {
                     result[letter] = el;
                 }
             }
+            
+            // Early exit if all answers found
             if (letters.every(([letter]) => result[letter])) {
                 break;
             }
         }
+        
         return result;
     }
 
@@ -644,33 +725,75 @@
 
     function findAnswerElement(letter, text) {
         if (!text) return null;
+        
         const root = (state.selectionRoot && document.contains(state.selectionRoot)) ? state.selectionRoot : document.body;
-        const queue = [];
+        const candidates = [];
+        
         if (root === document.body) {
-            queue.push(...document.querySelectorAll('li, p, div, span, label')); // fallback
+            candidates.push(...document.querySelectorAll('li, p, div, span, label, td'));
         } else {
-            queue.push(root, ...root.querySelectorAll('li, p, div, span, label'));
+            candidates.push(root, ...root.querySelectorAll('li, p, div, span, label, td'));
         }
+        
         const normalizedTarget = normalizeText(text).toLowerCase();
         const letterLower = letter.toLowerCase();
         const selectionRect = state.selectionRange ? safeRect(state.selectionRange.getBoundingClientRect()) : null;
-        for (const el of queue) {
+        
+        let bestMatch = null;
+        let bestScore = 0;
+        
+        for (const el of candidates) {
             if (!el || el === panel || panel.contains(el)) continue;
-            const content = normalizeText(el.innerText || '').toLowerCase();
+            
+            const content = normalizeText(el.innerText || el.textContent || '');
             if (!content) continue;
+            
+            const contentLower = content.toLowerCase();
+            
+            // Skip if answer text not in element
+            if (!contentLower.includes(normalizedTarget)) continue;
+            
+            // Check if within selection area
             if (selectionRect) {
                 const rect = safeRect(el.getBoundingClientRect());
                 if (!rect || !rectsIntersect(rect, selectionRect)) {
                     continue;
                 }
             }
-            if (!content.includes(normalizedTarget)) continue;
-            const hasLetterMarker = new RegExp(`\\b${letterLower}[\\).:-]?`).test(content);
-            if (hasLetterMarker || content === normalizedTarget) {
-                return el;
+            
+            // Score this match
+            let score = 0;
+            
+            // Check for letter markers
+            const patterns = [
+                new RegExp(`^\\s*\\(?${letterLower}\\)[\\).:\\-]`, 'i'),  // Starts with (A) or A)
+                new RegExp(`^\\s*${letterLower}[\\).:\\-]`, 'i'),           // Starts with A.
+                new RegExp(`\\b${letterLower}[\\).:\\-]`, 'i')              // Contains A.
+            ];
+            
+            for (let i = 0; i < patterns.length; i++) {
+                if (patterns[i].test(content)) {
+                    score += (3 - i); // Earlier patterns get higher scores
+                    break;
+                }
+            }
+            
+            // Prefer exact or close matches
+            const similarity = normalizedTarget.length / content.length;
+            if (similarity > 0.8) score += 3;
+            else if (similarity > 0.5) score += 2;
+            else if (similarity > 0.3) score += 1;
+            
+            // Prefer smaller elements (more specific)
+            if (content.length < 200) score += 1;
+            
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = el;
             }
         }
-        return null;
+        
+        return bestScore > 0 ? bestMatch : null;
     }
 
     function clearHighlights() {
