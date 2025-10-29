@@ -162,7 +162,9 @@
 
         const questionRow = createElement('div', { class: 'gfs-row' });
         const questionLabel = createElement('label', { class: 'gfs-label', text: 'Câu hỏi' });
-        const questionArea = createElement('textarea', { id: 'gfs-question', rows: '3', placeholder: 'Dán hoặc lấy từ phần bôi đen...' });
+        const questionArea = createElement('textarea', { id: 'gfs-question', rows: '4', placeholder: 'Dán hoặc lấy từ phần bôi đen...' });
+        questionArea.style.fontSize = '15px';
+        questionArea.style.lineHeight = '1.6';
         questionRow.appendChild(questionLabel);
         questionRow.appendChild(questionArea);
         panel.appendChild(questionRow);
@@ -171,7 +173,11 @@
         const answerInputs = {};
         ['A', 'B', 'C', 'D'].forEach(letter => {
             const wrapper = createElement('div', { class: 'gfs-answer-item' });
+            wrapper.setAttribute('data-answer-letter', letter);
             const label = createElement('label', { class: 'gfs-label', text: `Đáp án ${letter}` });
+            label.style.fontWeight = '700';
+            label.style.fontSize = '13px';
+            label.style.marginBottom = '6px';
             const input = createElement('textarea', {
                 class: 'gfs-answer-input',
                 rows: '2',
@@ -680,6 +686,18 @@
     function highlightFromResponse(text, answers) {
         const letter = detectAnswerLetter(text, answers);
         if (!letter) return;
+        
+        // Highlight in the panel
+        const panelAnswerItems = panel.querySelectorAll('.gfs-answer-item');
+        panelAnswerItems.forEach(item => {
+            item.classList.remove('correct');
+        });
+        const correctItem = panel.querySelector(`.gfs-answer-item[data-answer-letter="${letter}"]`);
+        if (correctItem) {
+            correctItem.classList.add('correct');
+        }
+        
+        // Highlight on the page
         let element = state.answerElements?.[letter];
         if (element && !document.contains(element)) {
             element = null;
@@ -797,9 +815,15 @@
     }
 
     function clearHighlights() {
+        // Clear highlights on page
         document.querySelectorAll('.gfs-answer-highlight').forEach(el => {
             el.classList.remove('gfs-answer-highlight');
             el.removeAttribute('data-gfs-highlight');
+        });
+        // Clear highlights in panel
+        const panelAnswerItems = panel.querySelectorAll('.gfs-answer-item');
+        panelAnswerItems.forEach(item => {
+            item.classList.remove('correct');
         });
     }
 
@@ -826,20 +850,21 @@
             position: fixed;
             bottom: 80px;
             right: 18px;
-            width: min(360px, 90vw);
-            max-height: 80vh;
+            width: min(420px, 90vw);
+            max-height: 85vh;
             overflow-y: auto;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(16px);
             color: #f0f0f0;
-            border-radius: 16px;
-            padding: 14px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-            font-family: 'Segoe UI', sans-serif;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.1);
+            font-family: 'Segoe UI', 'Inter', -apple-system, sans-serif;
             font-size: 13px;
-            line-height: 1.4;
+            line-height: 1.5;
             z-index: 2147483646;
             display: none;
+            border: 1px solid rgba(46, 204, 113, 0.1);
         }
         #gfs-panel.gfs-visible {
             display: block;
@@ -848,11 +873,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(46, 204, 113, 0.2);
         }
         .gfs-title {
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 18px;
+            background: linear-gradient(135deg, #2ecc71, #23a057);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .gfs-close {
             background: transparent;
@@ -900,13 +931,41 @@
             margin-bottom: 10px;
         }
         .gfs-answers {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 10px;
         }
+        .gfs-answer-item {
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .gfs-answer-item:hover {
+            border-color: rgba(46, 204, 113, 0.3);
+            background: rgba(255,255,255,0.06);
+        }
+        .gfs-answer-item.correct {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.15);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+        }
+        .gfs-answer-item.correct .gfs-label {
+            color: #2ecc71;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .gfs-answer-item.correct .gfs-answer-input {
+            color: #2ecc71;
+            font-weight: 600;
+            border-color: rgba(46, 204, 113, 0.4);
+        }
         .gfs-answer-input {
-            min-height: 48px;
+            min-height: 60px;
+            font-size: 14px;
+            line-height: 1.6;
         }
         .gfs-controls {
             display: flex;
@@ -941,12 +1000,18 @@
             background: linear-gradient(135deg, #2bc86c, #219356);
         }
         #gfs-answer-box {
-            background: rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 12px;
-            min-height: 64px;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(35, 160, 87, 0.15));
+            border: 2px solid rgba(46, 204, 113, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            min-height: 80px;
             white-space: pre-wrap;
             word-break: break-word;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.8;
+            color: #2ecc71;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.1);
         }
         .gfs-answer.loading::after {
             content: '⏳';
@@ -976,32 +1041,64 @@
         }
         .gfs-answer-highlight {
             background: rgba(46, 204, 113, 0.3) !important;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             position: relative;
+            border: 3px solid #2ecc71 !important;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.5) !important;
+            font-weight: 700 !important;
+            font-size: 16px !important;
+            transform: scale(1.02);
+        }
+        .gfs-answer-highlight::before {
+            content: '✓ Đáp án đúng';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            letter-spacing: 0.5px;
         }
         .gfs-answer-highlight::after {
             content: attr(data-gfs-highlight);
             position: absolute;
-            top: 6px;
-            right: 6px;
-            background: #23a057;
+            top: 8px;
+            right: 8px;
+            background: #2ecc71;
             color: #fff;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 999px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            font-size: 18px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            min-width: 32px;
+            text-align: center;
+        }
+        @keyframes correctPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(46, 204, 113, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(46, 204, 113, 0.5); }
+        }
+        .gfs-answer-item.correct {
+            animation: correctPulse 2s ease-in-out infinite;
         }
         @media (max-width: 520px) {
             #gfs-panel {
-                right: 12px;
-                left: 12px;
+                right: 8px;
+                left: 8px;
                 width: auto;
+                bottom: 70px;
             }
             .gfs-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
-            .gfs-answers {
-                grid-template-columns: minmax(0, 1fr);
+            .gfs-title {
+                font-size: 16px;
             }
         }
     `);
