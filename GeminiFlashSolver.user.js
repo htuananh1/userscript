@@ -719,7 +719,8 @@
         }
 
         static findAnswerElement(letter, answerText, root = document.body) {
-            const candidates = Array.from(root.querySelectorAll('li, label, p, div, span, button, input[type="radio"]'));
+            const selectors = 'li, label, [role="radio"], [class*="option"], [class*="answer"]';
+            const candidates = Array.from(root.querySelectorAll(selectors));
             const normalized = Utils.normalizeText(answerText).toLowerCase();
             
             let bestMatch = null;
@@ -727,12 +728,12 @@
 
             for (const el of candidates) {
                 const text = Utils.normalizeText(el.innerText || el.textContent || '');
-                if (!text) continue;
+                if (!text || text.length > answerText.length * 3) continue;
 
                 const textLower = text.toLowerCase();
                 
-                // Check if it contains the answer text
-                if (!textLower.includes(normalized) && 
+                // Quick check
+                if (!textLower.includes(normalized.slice(0, 20)) && 
                     Utils.calculateSimilarity(textLower, normalized) < 0.6) {
                     continue;
                 }
@@ -749,7 +750,8 @@
                 score += similarity * 5;
 
                 // Element type bonus
-                if (el.tagName === 'LABEL' || el.tagName === 'LI') score += 2;
+                const tag = el.tagName;
+                if (tag === 'LABEL' || tag === 'LI') score += 2;
                 if (el.querySelector('input[type="radio"]')) score += 3;
 
                 if (score > bestScore) {
@@ -758,7 +760,7 @@
                 }
             }
 
-            return bestScore > 0 ? bestMatch : null;
+            return bestScore > 5 ? bestMatch : null;
         }
     }
 
@@ -783,11 +785,8 @@
 
         injectStyles() {
             GM_addStyle(`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-                
                 :root {
                     --primary: #667eea;
-                    --primary-hover: #5568d3;
                     --success: #10b981;
                     --danger: #ef4444;
                     --warning: #f59e0b;
@@ -799,164 +798,135 @@
                     --border: rgba(255, 255, 255, 0.1);
                 }
 
+                * { box-sizing: border-box; }
+
                 #aqs-fab {
                     position: fixed;
                     bottom: 24px;
                     right: 24px;
-                    width: 64px;
-                    height: 64px;
+                    width: 56px;
+                    height: 56px;
                     border-radius: 50%;
                     background: linear-gradient(135deg, var(--primary), #764ba2);
                     border: none;
                     color: white;
-                    font-size: 28px;
+                    font-size: 24px;
                     font-weight: 700;
                     cursor: pointer;
-                    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
+                    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
                     z-index: 999998;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    font-family: 'Inter', sans-serif;
-                    animation: fabPulse 2s ease-in-out infinite;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    font-family: system-ui, -apple-system, sans-serif;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                }
-
-                @keyframes fabPulse {
-                    0%, 100% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5); }
-                    50% { box-shadow: 0 8px 48px rgba(102, 126, 234, 0.7); }
+                    will-change: transform;
                 }
 
                 #aqs-fab:hover {
-                    transform: scale(1.1) rotate(5deg);
-                    box-shadow: 0 12px 48px rgba(102, 126, 234, 0.7);
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
                 }
 
                 #aqs-panel {
                     position: fixed;
-                    bottom: 100px;
+                    bottom: 90px;
                     right: 24px;
-                    width: 520px;
-                    max-height: 90vh;
+                    width: 480px;
+                    max-height: 85vh;
                     background: var(--bg-dark);
-                    border-radius: 20px;
-                    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
-                    font-family: 'Inter', sans-serif;
+                    border-radius: 16px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+                    font-family: system-ui, -apple-system, sans-serif;
                     color: var(--text);
                     z-index: 999999;
                     display: none;
                     flex-direction: column;
                     overflow: hidden;
                     border: 1px solid var(--border);
+                    opacity: 0;
+                    transform: translateY(10px);
+                    transition: opacity 0.2s, transform 0.2s;
                 }
 
                 #aqs-panel.visible {
                     display: flex;
-                    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                @keyframes slideInUp {
-                    from { opacity: 0; transform: translateY(30px) scale(0.95); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
+                    opacity: 1;
+                    transform: translateY(0);
                 }
 
                 .aqs-header {
                     background: linear-gradient(135deg, var(--primary), #764ba2);
-                    padding: 20px 24px;
+                    padding: 16px 20px;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                .aqs-header::before {
-                    content: '';
-                    position: absolute;
-                    top: -50%;
-                    right: -50%;
-                    width: 200%;
-                    height: 200%;
-                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-                    animation: headerShimmer 4s linear infinite;
-                }
-
-                @keyframes headerShimmer {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
                 }
 
                 .aqs-title {
-                    font-size: 20px;
-                    font-weight: 800;
+                    font-size: 18px;
+                    font-weight: 700;
                     color: white;
                     display: flex;
                     align-items: center;
-                    gap: 12px;
-                    position: relative;
-                    z-index: 1;
+                    gap: 10px;
                 }
 
                 .aqs-version {
-                    font-size: 11px;
+                    font-size: 10px;
                     font-weight: 500;
                     background: rgba(255, 255, 255, 0.2);
-                    padding: 2px 8px;
-                    border-radius: 12px;
-                    letter-spacing: 0.5px;
+                    padding: 2px 6px;
+                    border-radius: 8px;
                 }
 
                 .aqs-close {
-                    width: 36px;
-                    height: 36px;
+                    width: 32px;
+                    height: 32px;
                     border-radius: 50%;
                     background: rgba(255, 255, 255, 0.2);
                     border: none;
                     color: white;
                     cursor: pointer;
-                    font-size: 20px;
+                    font-size: 18px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: all 0.2s;
-                    position: relative;
-                    z-index: 1;
+                    transition: background 0.2s;
                 }
 
                 .aqs-close:hover {
                     background: rgba(255, 255, 255, 0.3);
-                    transform: rotate(90deg);
                 }
 
                 .aqs-tabs {
                     display: flex;
                     background: var(--bg-darker);
                     border-bottom: 1px solid var(--border);
-                    padding: 8px;
-                    gap: 6px;
+                    padding: 6px;
+                    gap: 4px;
                 }
 
                 .aqs-tab {
                     flex: 1;
-                    padding: 12px;
+                    padding: 10px;
                     background: transparent;
                     border: none;
                     color: var(--text-muted);
                     cursor: pointer;
                     font-weight: 600;
-                    font-size: 13px;
-                    transition: all 0.2s;
+                    font-size: 12px;
+                    transition: background 0.15s, color 0.15s;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 6px;
-                    border-radius: 10px;
+                    gap: 5px;
+                    border-radius: 8px;
                 }
 
                 .aqs-tab.active {
                     color: white;
-                    background: linear-gradient(135deg, var(--primary), #764ba2);
-                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                    background: var(--primary);
                 }
 
                 .aqs-tab:hover:not(.active) {
@@ -967,7 +937,7 @@
                 .aqs-content {
                     flex: 1;
                     overflow-y: auto;
-                    padding: 24px;
+                    padding: 20px;
                 }
 
                 .aqs-content::-webkit-scrollbar {
@@ -985,247 +955,217 @@
 
                 .aqs-tab-pane.active {
                     display: block;
-                    animation: fadeIn 0.3s ease;
-                }
-
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
                 }
 
                 .aqs-form-group {
-                    margin-bottom: 20px;
+                    margin-bottom: 16px;
                 }
 
                 .aqs-label {
                     display: block;
-                    font-size: 12px;
-                    font-weight: 700;
+                    font-size: 11px;
+                    font-weight: 600;
                     color: var(--text-muted);
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     text-transform: uppercase;
-                    letter-spacing: 0.8px;
                 }
 
                 .aqs-input, .aqs-select, .aqs-textarea {
                     width: 100%;
-                    padding: 12px 16px;
+                    padding: 10px 12px;
                     background: var(--bg-darker);
-                    border: 2px solid var(--border);
-                    border-radius: 10px;
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
                     color: var(--text);
                     font-family: inherit;
-                    font-size: 14px;
-                    transition: all 0.2s;
+                    font-size: 13px;
+                    transition: border-color 0.15s;
                 }
 
                 .aqs-input:focus, .aqs-select:focus, .aqs-textarea:focus {
                     outline: none;
                     border-color: var(--primary);
-                    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
                 }
 
                 .aqs-textarea {
-                    min-height: 100px;
+                    min-height: 90px;
                     resize: vertical;
-                    font-family: 'SF Mono', 'Monaco', monospace;
-                    font-size: 13px;
-                    line-height: 1.6;
+                    font-family: monospace;
+                    font-size: 12px;
+                    line-height: 1.5;
                 }
 
                 .aqs-btn {
                     width: 100%;
-                    padding: 14px 20px;
+                    padding: 11px 16px;
                     border: none;
-                    border-radius: 12px;
-                    font-weight: 700;
-                    font-size: 14px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 13px;
                     cursor: pointer;
-                    transition: all 0.2s;
-                    margin-bottom: 10px;
+                    transition: background 0.15s, transform 0.15s;
+                    margin-bottom: 8px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 8px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
+                    gap: 6px;
                 }
 
                 .aqs-btn-primary {
-                    background: linear-gradient(135deg, var(--primary), #764ba2);
+                    background: var(--primary);
                     color: white;
-                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
                 }
 
                 .aqs-btn-primary:hover:not(:disabled) {
-                    transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+                    background: #5568d3;
                 }
 
                 .aqs-btn-secondary {
                     background: var(--bg-darker);
                     color: var(--text);
-                    border: 2px solid var(--border);
+                    border: 1px solid var(--border);
                 }
 
                 .aqs-btn-secondary:hover:not(:disabled) {
                     background: rgba(255, 255, 255, 0.05);
-                    border-color: var(--primary);
                 }
 
                 .aqs-btn:disabled {
-                    opacity: 0.6;
+                    opacity: 0.5;
                     cursor: not-allowed;
                 }
 
                 .aqs-status {
-                    padding: 14px 18px;
-                    border-radius: 12px;
-                    font-size: 13px;
-                    margin-bottom: 16px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    font-weight: 600;
-                    border: 2px solid transparent;
-                    line-height: 1.5;
+                    padding: 10px 14px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    margin-bottom: 12px;
+                    font-weight: 500;
+                    border: 1px solid transparent;
+                    line-height: 1.4;
                 }
 
                 .aqs-status.success {
-                    background: rgba(16, 185, 129, 0.15);
+                    background: rgba(16, 185, 129, 0.12);
                     color: var(--success);
-                    border-color: rgba(16, 185, 129, 0.3);
+                    border-color: rgba(16, 185, 129, 0.2);
                 }
 
                 .aqs-status.error {
-                    background: rgba(239, 68, 68, 0.15);
+                    background: rgba(239, 68, 68, 0.12);
                     color: var(--danger);
-                    border-color: rgba(239, 68, 68, 0.3);
+                    border-color: rgba(239, 68, 68, 0.2);
                 }
 
                 .aqs-status.warning {
-                    background: rgba(245, 158, 11, 0.15);
+                    background: rgba(245, 158, 11, 0.12);
                     color: var(--warning);
-                    border-color: rgba(245, 158, 11, 0.3);
+                    border-color: rgba(245, 158, 11, 0.2);
                 }
 
                 .aqs-status.info {
-                    background: rgba(59, 130, 246, 0.15);
+                    background: rgba(59, 130, 246, 0.12);
                     color: var(--info);
-                    border-color: rgba(59, 130, 246, 0.3);
+                    border-color: rgba(59, 130, 246, 0.2);
                 }
 
                 .aqs-stats-grid {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
-                    gap: 12px;
-                    margin-bottom: 20px;
+                    gap: 10px;
+                    margin-bottom: 16px;
                 }
 
                 .aqs-stat-card {
                     background: var(--bg-darker);
-                    border: 2px solid var(--border);
-                    border-radius: 12px;
-                    padding: 16px;
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
+                    padding: 12px;
                     text-align: center;
-                    transition: all 0.3s;
-                }
-
-                .aqs-stat-card:hover {
-                    border-color: var(--primary);
-                    transform: translateY(-2px);
                 }
 
                 .aqs-stat-value {
-                    font-size: 24px;
-                    font-weight: 800;
+                    font-size: 20px;
+                    font-weight: 700;
                     color: var(--primary);
                     margin-bottom: 4px;
                 }
 
                 .aqs-stat-label {
-                    font-size: 11px;
+                    font-size: 10px;
                     color: var(--text-muted);
                     text-transform: uppercase;
-                    letter-spacing: 0.5px;
                     font-weight: 600;
                 }
 
                 .aqs-result {
                     background: var(--bg-darker);
-                    border: 2px solid var(--border);
-                    border-radius: 12px;
-                    padding: 20px;
-                    margin-top: 16px;
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
+                    padding: 16px;
+                    margin-top: 12px;
                 }
 
                 .aqs-result-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 16px;
+                    margin-bottom: 12px;
                 }
 
                 .aqs-result-answer {
-                    font-size: 32px;
-                    font-weight: 800;
-                    background: linear-gradient(135deg, var(--success), #059669);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: var(--success);
                 }
 
                 .aqs-confidence-badge {
-                    padding: 6px 12px;
-                    border-radius: 20px;
-                    font-size: 12px;
-                    font-weight: 700;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
                 }
 
                 .aqs-confidence-high {
-                    background: rgba(16, 185, 129, 0.2);
+                    background: rgba(16, 185, 129, 0.15);
                     color: var(--success);
                 }
 
                 .aqs-confidence-medium {
-                    background: rgba(245, 158, 11, 0.2);
+                    background: rgba(245, 158, 11, 0.15);
                     color: var(--warning);
                 }
 
                 .aqs-confidence-low {
-                    background: rgba(239, 68, 68, 0.2);
+                    background: rgba(239, 68, 68, 0.15);
                     color: var(--danger);
                 }
 
                 .aqs-result-text {
-                    font-size: 14px;
-                    line-height: 1.7;
+                    font-size: 13px;
+                    line-height: 1.6;
                     color: var(--text);
                 }
 
                 .aqs-history-item {
                     background: var(--bg-darker);
-                    border: 2px solid var(--border);
-                    border-radius: 12px;
-                    padding: 16px;
-                    margin-bottom: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: 8px;
+                    padding: 12px;
+                    margin-bottom: 10px;
                     cursor: pointer;
-                    transition: all 0.2s;
+                    transition: border-color 0.15s;
                 }
 
                 .aqs-history-item:hover {
                     border-color: var(--primary);
-                    transform: translateX(4px);
                 }
 
                 .aqs-history-question {
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 600;
                     color: var(--text);
-                    margin-bottom: 8px;
+                    margin-bottom: 6px;
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
@@ -1236,45 +1176,42 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    font-size: 11px;
+                    font-size: 10px;
                     color: var(--text-muted);
                 }
 
                 .aqs-highlight {
-                    background: rgba(16, 185, 129, 0.25) !important;
-                    border: 3px solid var(--success) !important;
-                    box-shadow: 0 0 25px rgba(16, 185, 129, 0.5) !important;
-                    transition: all 0.3s !important;
-                    animation: highlightPulse 1.5s ease-in-out infinite;
-                }
-
-                @keyframes highlightPulse {
-                    0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-                    50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+                    background: rgba(16, 185, 129, 0.2) !important;
+                    border: 2px solid var(--success) !important;
+                    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
                 }
 
                 .aqs-type-badge {
                     display: inline-block;
-                    padding: 4px 10px;
-                    border-radius: 12px;
-                    font-size: 11px;
-                    font-weight: 700;
+                    padding: 4px 8px;
+                    border-radius: 8px;
+                    font-size: 10px;
+                    font-weight: 600;
                     text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    margin-bottom: 12px;
+                    margin-bottom: 10px;
                 }
 
-                .aqs-type-multiple { background: rgba(102, 126, 234, 0.2); color: var(--primary); }
-                .aqs-type-truefalse { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-                .aqs-type-matching { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-                .aqs-type-short { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+                .aqs-type-multiple { background: rgba(102, 126, 234, 0.15); color: var(--primary); }
+                .aqs-type-truefalse { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+                .aqs-type-matching { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+                .aqs-type-short { background: rgba(59, 130, 246, 0.15); color: var(--info); }
 
                 @media (max-width: 768px) {
                     #aqs-panel {
-                        right: 12px;
-                        left: 12px;
+                        right: 10px;
+                        left: 10px;
                         width: auto;
-                        max-height: 85vh;
+                        bottom: 80px;
+                    }
+                    #aqs-fab {
+                        width: 50px;
+                        height: 50px;
+                        font-size: 22px;
                     }
                 }
             `);
@@ -1296,32 +1233,24 @@
             const header = Utils.createElement('div', { class: 'aqs-header' }, [
                 Utils.createElement('div', { 
                     class: 'aqs-title', 
-                    html: '🧠 AI Quiz Solver <span class="aqs-version">v3.0 MAX</span>' 
+                    html: '🧠 AI Quiz Solver <span class="aqs-version">v3.0</span>' 
                 }),
                 Utils.createElement('button', { class: 'aqs-close', text: '×' })
             ]);
 
             // Tabs
             const tabs = Utils.createElement('div', { class: 'aqs-tabs' }, [
-                Utils.createElement('button', { class: 'aqs-tab active', 'data-tab': 'solve', text: '🎯 Solve' }),
-                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'history', text: '📚 History' }),
-                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'settings', text: '⚙️ Settings' })
+                Utils.createElement('button', { class: 'aqs-tab active', 'data-tab': 'solve', text: '🎯 Giải' }),
+                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'history', text: '📚 Lịch sử' }),
+                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'settings', text: '⚙️ Cài đặt' })
             ]);
 
-            // Content
+            // Content - lazy load tabs
             const content = Utils.createElement('div', { class: 'aqs-content' });
 
-            // Solve Tab
+            // Only create solve tab initially
             const solveTab = this.createSolveTab();
             content.appendChild(solveTab);
-
-            // History Tab
-            const historyTab = this.createHistoryTab();
-            content.appendChild(historyTab);
-
-            // Settings Tab
-            const settingsTab = this.createSettingsTab();
-            content.appendChild(settingsTab);
 
             this.panel.appendChild(header);
             this.panel.appendChild(tabs);
@@ -1331,7 +1260,8 @@
             // Store references
             this.elements.closeBtn = header.querySelector('.aqs-close');
             this.elements.tabs = Array.from(tabs.querySelectorAll('.aqs-tab'));
-            this.elements.panes = Array.from(content.querySelectorAll('.aqs-tab-pane'));
+            this.elements.content = content;
+            this.tabsCreated = { solve: true, history: false, settings: false };
         }
 
         createSolveTab() {
@@ -1376,22 +1306,22 @@
 
             // Question
             const questionGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '❓ Question / Câu hỏi' }));
+            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '❓ Câu hỏi' }));
             this.elements.questionInput = Utils.createElement('textarea', {
                 class: 'aqs-textarea',
-                placeholder: 'Paste question here or use Auto-Detect / Capture buttons...\n\nDán câu hỏi vào đây hoặc dùng nút Tự động phát hiện / Chụp...',
-                style: 'min-height: 100px;'
+                placeholder: 'Dán câu hỏi vào đây hoặc dùng nút Tự động / Chụp...',
+                style: 'min-height: 90px;'
             });
             questionGroup.appendChild(this.elements.questionInput);
             solveTab.appendChild(questionGroup);
 
             // Answer
             const answerGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            answerGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '💡 Answers / Đáp án' }));
+            answerGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '💡 Đáp án' }));
             this.elements.answerInput = Utils.createElement('textarea', {
                 class: 'aqs-textarea',
-                placeholder: 'A. Option 1\nB. Option 2\nC. Option 3\nD. Option 4\n\n(Auto-filled from selection)',
-                style: 'min-height: 120px;'
+                placeholder: 'A. Đáp án 1\nB. Đáp án 2\nC. Đáp án 3\nD. Đáp án 4',
+                style: 'min-height: 100px;'
             });
             answerGroup.appendChild(this.elements.answerInput);
             solveTab.appendChild(answerGroup);
@@ -1399,19 +1329,19 @@
             // Buttons
             this.elements.autoDetectBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>🔍</span><span>Auto-Detect from Page</span>'
+                html: '<span>🔍</span><span>Tự động phát hiện</span>'
             });
             solveTab.appendChild(this.elements.autoDetectBtn);
 
             this.elements.captureBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>📥</span><span>Capture from Selection</span>'
+                html: '<span>📥</span><span>Chụp vùng chọn</span>'
             });
             solveTab.appendChild(this.elements.captureBtn);
 
             this.elements.solveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
-                html: '<span>🧠</span><span>Solve with AI</span>',
+                html: '<span>🧠</span><span>Giải bằng AI</span>',
                 disabled: true
             });
             solveTab.appendChild(this.elements.solveBtn);
@@ -1429,15 +1359,15 @@
             this.elements.historySearch = Utils.createElement('input', {
                 class: 'aqs-input',
                 type: 'text',
-                placeholder: '🔍 Search history...',
-                style: 'margin-bottom: 16px;'
+                placeholder: '🔍 Tìm kiếm...',
+                style: 'margin-bottom: 14px;'
             });
             historyTab.appendChild(this.elements.historySearch);
 
             this.elements.clearHistoryBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>🗑️</span><span>Clear History</span>',
-                style: 'margin-bottom: 16px;'
+                html: '<span>🗑️</span><span>Xóa lịch sử</span>',
+                style: 'margin-bottom: 14px;'
             });
             historyTab.appendChild(this.elements.clearHistoryBtn);
 
@@ -1497,14 +1427,14 @@
             // Save button
             this.elements.saveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
-                html: '<span>💾</span><span>Save Settings</span>'
+                html: '<span>💾</span><span>Lưu cài đặt</span>'
             });
             settingsTab.appendChild(this.elements.saveBtn);
 
             // Clear cache button
             this.elements.clearCacheBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                html: '<span>🗑️</span><span>Clear Cache</span>'
+                html: '<span>🗑️</span><span>Xóa bộ nhớ cache</span>'
             });
             settingsTab.appendChild(this.elements.clearCacheBtn);
 
@@ -1522,36 +1452,63 @@
             this.elements.autoDetectBtn.addEventListener('click', () => this.app.autoDetect());
             this.elements.captureBtn.addEventListener('click', () => this.app.captureSelection());
             this.elements.solveBtn.addEventListener('click', () => this.app.solveQuestion());
-            this.elements.saveBtn.addEventListener('click', () => this.app.saveSettings());
-            this.elements.clearHistoryBtn.addEventListener('click', () => this.app.clearHistory());
-            this.elements.clearCacheBtn.addEventListener('click', () => this.app.clearCache());
 
-            this.elements.apiKeyInput.addEventListener('input', () => this.updateSolveButton());
             this.elements.questionInput.addEventListener('input', () => this.updateSolveButton());
-            this.elements.historySearch.addEventListener('input', (e) => this.app.searchHistory(e.target.value));
         }
 
         togglePanel(show = null) {
             const isVisible = show === null ? !this.panel.classList.contains('visible') : show;
-            this.panel.classList.toggle('visible', isVisible);
+            
             if (isVisible) {
+                this.panel.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    this.panel.classList.add('visible');
+                });
                 this.app.updateStats();
-                if (this.elements.tabs.find(t => t.dataset.tab === 'history')?.classList.contains('active')) {
+                const activeTab = this.elements.tabs.find(t => t.classList.contains('active'));
+                if (activeTab?.dataset.tab === 'history') {
                     this.app.loadHistory();
                 }
+            } else {
+                this.panel.classList.remove('visible');
+                setTimeout(() => {
+                    if (!this.panel.classList.contains('visible')) {
+                        this.panel.style.display = 'none';
+                    }
+                }, 200);
             }
         }
 
         switchTab(tabName) {
+            // Lazy load tabs
+            if (!this.tabsCreated[tabName]) {
+                if (tabName === 'history') {
+                    this.elements.content.appendChild(this.createHistoryTab());
+                    this.elements.clearHistoryBtn.addEventListener('click', () => this.app.clearHistory());
+                    this.elements.historySearch.addEventListener('input', Utils.debounce((e) => 
+                        this.app.searchHistory(e.target.value), 300));
+                } else if (tabName === 'settings') {
+                    this.elements.content.appendChild(this.createSettingsTab());
+                    this.elements.saveBtn.addEventListener('click', () => this.app.saveSettings());
+                    this.elements.clearCacheBtn.addEventListener('click', () => this.app.clearCache());
+                    this.elements.apiKeyInput.addEventListener('input', () => this.updateSolveButton());
+                }
+                this.tabsCreated[tabName] = true;
+            }
+            
             this.elements.tabs.forEach(tab => {
                 tab.classList.toggle('active', tab.dataset.tab === tabName);
             });
-            this.elements.panes.forEach(pane => {
+            
+            const panes = this.elements.content.querySelectorAll('.aqs-tab-pane');
+            panes.forEach(pane => {
                 pane.classList.toggle('active', pane.dataset.pane === tabName);
             });
             
             if (tabName === 'history') {
                 this.app.loadHistory();
+            } else if (tabName === 'settings') {
+                this.ui.loadSettings(this.app.config);
             }
         }
 
@@ -1681,24 +1638,24 @@
         setupSelectionListener() {
             document.addEventListener('selectionchange', Utils.debounce(() => {
                 const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0) {
+                if (selection && selection.rangeCount > 0 && selection.toString().trim()) {
                     const range = selection.getRangeAt(0);
                     this.selectionText = SelectionParser.extractFromRange(range);
                     this.selectionRange = range.cloneRange();
                 }
-            }, 300));
+            }, 500));
         }
 
         updateStatus() {
             if (this.config.apiKey) {
                 const platform = PlatformDetector.detect();
                 if (platform) {
-                    this.ui.showStatus(`✅ Ready! Detected: ${platform.name}. Use Auto-Detect button.`, 'success');
+                    this.ui.showStatus(`✅ Sẵn sàng! Phát hiện: ${platform.name}`, 'success');
                 } else {
-                    this.ui.showStatus('✅ Ready to solve! Select text and capture or use Auto-Detect.', 'success');
+                    this.ui.showStatus('✅ Sẵn sàng giải! Chọn văn bản và chụp hoặc dùng nút Tự động', 'success');
                 }
             } else {
-                this.ui.showStatus('⚠️ Configure Gemini API key in Settings tab first.', 'warning');
+                this.ui.showStatus('⚠️ Vui lòng cấu hình API key trong tab Cài đặt', 'warning');
             }
         }
 
@@ -1710,24 +1667,24 @@
             const platform = PlatformDetector.detect();
             
             if (!platform) {
-                this.ui.showStatus('ℹ️ No supported quiz platform detected. Use manual capture instead.', 'info');
+                this.ui.showStatus('ℹ️ Không phát hiện nền tảng quiz. Dùng chụp thủ công', 'info');
                 return;
             }
 
             const extracted = PlatformDetector.extractFromPlatform(platform);
             
             if (!extracted) {
-                this.ui.showStatus(`⚠️ Could not extract data from ${platform.name}. Try manual capture.`, 'warning');
+                this.ui.showStatus(`⚠️ Không thể trích xuất từ ${platform.name}. Thử chụp thủ công`, 'warning');
                 return;
             }
 
             this.fillQuestionData(extracted);
-            this.ui.showStatus(`✅ Auto-detected from ${platform.name}!`, 'success');
+            this.ui.showStatus(`✅ Tự động phát hiện từ ${platform.name}!`, 'success');
         }
 
         captureSelection() {
             if (!this.selectionText) {
-                this.ui.showStatus('⚠️ No text selected. Select question text on page first.', 'warning');
+                this.ui.showStatus('⚠️ Chưa chọn văn bản. Chọn câu hỏi trên trang trước', 'warning');
                 return;
             }
 
@@ -1736,7 +1693,7 @@
             
             const answerCount = Object.keys(parsed.answers).length;
             this.ui.showStatus(
-                `✅ Captured: ${parsed.type} (${answerCount} option${answerCount !== 1 ? 's' : ''})`, 
+                `✅ Đã chụp: ${answerCount} đáp án`, 
                 'success'
             );
         }
@@ -1757,7 +1714,7 @@
         async solveQuestion() {
             const question = this.ui.elements.questionInput.value.trim();
             if (!question) {
-                this.ui.showStatus('⚠️ Please enter a question first', 'warning');
+                this.ui.showStatus('⚠️ Vui lòng nhập câu hỏi trước', 'warning');
                 return;
             }
 
@@ -1776,8 +1733,8 @@
             const questionType = this.currentParsed?.type || CONFIG.QUESTION_TYPES.MULTIPLE_CHOICE;
 
             this.ui.elements.solveBtn.disabled = true;
-            this.ui.elements.solveBtn.innerHTML = '<span>⏳</span><span>AI Analyzing...</span>';
-            this.ui.showStatus('🤖 AI is analyzing... Please wait.', 'info');
+            this.ui.elements.solveBtn.textContent = '⏳ Đang phân tích...';
+            this.ui.showStatus('🤖 AI đang phân tích... Vui lòng đợi.', 'info');
 
             try {
                 // Check cache
@@ -1834,7 +1791,7 @@
                 console.error('[AI Quiz Solver] Error:', error);
             } finally {
                 this.ui.elements.solveBtn.disabled = false;
-                this.ui.elements.solveBtn.innerHTML = '<span>🧠</span><span>Solve with AI</span>';
+                this.ui.elements.solveBtn.textContent = '🧠 Giải bằng AI';
             }
         }
 
@@ -1843,30 +1800,29 @@
             
             this.ui.showResult(letter, text, confidence);
             
-            const cacheText = fromCache ? ' (from cache)' : '';
-            const confText = confidence ? ` | Confidence: ${Math.round(confidence * 100)}%` : '';
+            const cacheText = fromCache ? ' (cache)' : '';
+            const confText = confidence ? ` | ${Math.round(confidence * 100)}%` : '';
             this.ui.showStatus(
-                `✅ Answer: ${letter || 'Unknown'}${confText}${cacheText}`, 
+                `✅ Đáp án: ${letter || '?'}${confText}${cacheText}`, 
                 'success'
             );
 
             // Highlight answer on page
-            if (letter && this.currentParsed?.answers[letter]) {
-                setTimeout(() => {
+            if (letter && this.currentParsed?.answers[letter] && this.config.autoHighlight) {
+                requestAnimationFrame(() => {
                     const element = AnswerDetector.findAnswerElement(
                         letter, 
                         this.currentParsed.answers[letter]
                     );
                     if (element) {
                         // Remove previous highlights
-                        document.querySelectorAll('.aqs-highlight').forEach(el => {
-                            el.classList.remove('aqs-highlight');
-                        });
+                        const oldHighlights = document.querySelectorAll('.aqs-highlight');
+                        oldHighlights.forEach(el => el.classList.remove('aqs-highlight'));
                         
                         element.classList.add('aqs-highlight');
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-                }, 300);
+                });
             }
         }
 
@@ -1877,18 +1833,18 @@
             this.config.subject = this.ui.elements.subjectSelect.value;
 
             if (!this.config.apiKey) {
-                this.ui.showStatus('⚠️ Please enter your Gemini API key', 'warning');
+                this.ui.showStatus('⚠️ Vui lòng nhập Gemini API key', 'warning');
                 return;
             }
 
             const saved = await StorageManager.save(this.config);
             if (saved) {
-                this.ui.showStatus('✅ Settings saved successfully!', 'success');
+                this.ui.showStatus('✅ Đã lưu cài đặt thành công!', 'success');
                 this.updateStatus();
                 this.ui.updateSolveButton();
-                setTimeout(() => this.ui.switchTab('solve'), 1500);
+                setTimeout(() => this.ui.switchTab('solve'), 1200);
             } else {
-                this.ui.showStatus('❌ Failed to save settings', 'error');
+                this.ui.showStatus('❌ Lỗi khi lưu cài đặt', 'error');
             }
         }
 
@@ -1907,18 +1863,18 @@
         }
 
         async clearHistory() {
-            if (confirm('Clear all history? This cannot be undone.')) {
+            if (confirm('Xóa tất cả lịch sử? Hành động này không thể hoàn tác.')) {
                 await HistoryManager.clear();
-                this.ui.showStatus('✅ History cleared', 'success');
+                this.ui.showStatus('✅ Đã xóa lịch sử', 'success');
                 await this.loadHistory();
                 await this.updateStats();
             }
         }
 
         async clearCache() {
-            if (confirm('Clear answer cache? This cannot be undone.')) {
+            if (confirm('Xóa bộ nhớ cache? Hành động này không thể hoàn tác.')) {
                 await CacheManager.clear();
-                this.ui.showStatus('✅ Cache cleared', 'success');
+                this.ui.showStatus('✅ Đã xóa cache', 'success');
             }
         }
     }
