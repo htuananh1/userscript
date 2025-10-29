@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AI Quiz Solver Pro
 // @namespace    https://github.com/htuananh
-// @version      2.0.0
+// @version      2.5.0
 // @description  Modern AI-powered quiz solver with Gemini integration
 // @author       htuananh
 // @match        *://*/*
@@ -25,7 +25,7 @@
         STORAGE_KEY: 'ai_quiz_solver_config',
         DEFAULT_SETTINGS: {
             apiKey: '',
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-flash-exp',
             language: 'vi',
             subject: 'General',
             outputMode: 'answer',
@@ -36,9 +36,11 @@
             theme: 'dark'
         },
         MODELS: [
-            { value: 'gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash (Experimental)' },
-            { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash' },
-            { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro' }
+            { value: 'gemini-2.0-flash-exp', label: '⚡ Gemini 2.0 Flash (Experimental)', icon: '⚡' },
+            { value: 'gemini-2.5-flash-exp', label: '🚀 Gemini 2.5 Flash (Latest)', icon: '🚀' },
+            { value: 'gemini-2.5-pro-exp', label: '💎 Gemini 2.5 Pro (Premium)', icon: '💎' },
+            { value: 'gemini-1.5-flash', label: '⭐ Gemini 1.5 Flash', icon: '⭐' },
+            { value: 'gemini-1.5-pro', label: '🎯 Gemini 1.5 Pro', icon: '🎯' }
         ],
         LANGUAGES: [
             { value: 'vi', label: 'Tiếng Việt' },
@@ -209,16 +211,33 @@
 
             return [
                 `You are an expert quiz solver specializing in ${config.subject}.`,
-                `Analyze the following multiple-choice question carefully.`,
-                `Evaluate each option (A, B, C, D) and determine the most correct answer.`,
+                `Your task is to analyze the following multiple-choice question and determine the MOST CORRECT answer.`,
+                '',
+                `INSTRUCTIONS:`,
+                `1. Carefully read the question and understand what is being asked`,
+                `2. Evaluate EACH option (A, B, C, D) thoroughly`,
+                `3. Consider factual accuracy, logical reasoning, and context`,
+                `4. Eliminate obviously incorrect options first`,
+                `5. Compare remaining options to find the BEST answer`,
+                `6. If multiple answers seem correct, choose the MOST ACCURATE or COMPLETE one`,
+                `7. Double-check your answer before responding`,
+                '',
                 instruction,
                 '',
-                `Question: ${question}`,
+                `===== QUESTION =====`,
+                question,
                 '',
-                `Options:`,
+                `===== OPTIONS =====`,
                 formattedAnswers || '(No options provided)',
                 '',
-                `Respond in ${lang}.`
+                `===== EVALUATION CRITERIA =====`,
+                `- Factual correctness`,
+                `- Logical consistency`,
+                `- Completeness of answer`,
+                `- Context relevance`,
+                '',
+                `Respond in ${lang}.`,
+                `Remember: Choose ONLY ONE answer (A, B, C, or D) that is MOST correct.`
             ].join('\n');
         }
 
@@ -369,32 +388,50 @@
                     position: fixed;
                     bottom: 24px;
                     right: 24px;
-                    width: 56px;
-                    height: 56px;
+                    width: 60px;
+                    height: 60px;
                     border-radius: 50%;
                     background: linear-gradient(135deg, var(--primary), #764ba2);
                     border: none;
                     color: white;
-                    font-size: 24px;
+                    font-size: 26px;
                     font-weight: 700;
                     cursor: pointer;
                     box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
                     z-index: 999998;
-                    transition: transform 0.2s, box-shadow 0.2s;
+                    transition: transform 0.3s, box-shadow 0.3s;
                     font-family: 'Inter', sans-serif;
+                    animation: fabPulse 2s ease-in-out infinite;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                @keyframes fabPulse {
+                    0%, 100% {
+                        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+                    }
+                    50% {
+                        box-shadow: 0 8px 40px rgba(102, 126, 234, 0.6);
+                    }
                 }
 
                 #aqs-fab:hover {
-                    transform: scale(1.1);
-                    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+                    transform: scale(1.15) rotate(5deg);
+                    box-shadow: 0 12px 48px rgba(102, 126, 234, 0.6);
+                    animation: none;
+                }
+                
+                #aqs-fab:active {
+                    transform: scale(0.95);
                 }
 
                 #aqs-panel {
                     position: fixed;
                     bottom: 90px;
                     right: 24px;
-                    width: 420px;
-                    max-height: 80vh;
+                    width: 480px;
+                    max-height: 85vh;
                     background: var(--bg-dark);
                     border-radius: 16px;
                     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
@@ -465,6 +502,10 @@
                     font-weight: 500;
                     font-size: 14px;
                     transition: color 0.2s, background 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
                 }
 
                 .aqs-tab.active {
@@ -475,7 +516,7 @@
                 .aqs-content {
                     flex: 1;
                     overflow-y: auto;
-                    padding: 20px;
+                    padding: 24px;
                 }
 
                 .aqs-content::-webkit-scrollbar {
@@ -496,28 +537,28 @@
                 }
 
                 .aqs-form-group {
-                    margin-bottom: 16px;
+                    margin-bottom: 20px;
                 }
 
                 .aqs-label {
                     display: block;
-                    font-size: 12px;
+                    font-size: 13px;
                     font-weight: 600;
                     color: var(--text-muted);
-                    margin-bottom: 6px;
+                    margin-bottom: 8px;
                     text-transform: uppercase;
                     letter-spacing: 0.5px;
                 }
 
                 .aqs-input, .aqs-select, .aqs-textarea {
                     width: 100%;
-                    padding: 10px 12px;
+                    padding: 12px 14px;
                     background: var(--bg-darker);
                     border: 1px solid var(--border);
                     border-radius: 8px;
                     color: var(--text);
                     font-family: inherit;
-                    font-size: 14px;
+                    font-size: 15px;
                     transition: border-color 0.2s;
                 }
 
@@ -535,14 +576,18 @@
 
                 .aqs-btn {
                     width: 100%;
-                    padding: 12px;
+                    padding: 14px;
                     border: none;
                     border-radius: 8px;
                     font-weight: 600;
-                    font-size: 14px;
+                    font-size: 15px;
                     cursor: pointer;
                     transition: all 0.2s;
-                    margin-bottom: 8px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
                 }
 
                 .aqs-btn:last-child {
@@ -574,25 +619,33 @@
                 }
 
                 .aqs-status {
-                    padding: 12px;
+                    padding: 12px 16px;
                     border-radius: 8px;
-                    font-size: 13px;
+                    font-size: 14px;
                     margin-bottom: 16px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-weight: 500;
+                    border: 1px solid transparent;
                 }
 
                 .aqs-status.success {
                     background: rgba(16, 185, 129, 0.1);
                     color: var(--success);
+                    border-color: rgba(16, 185, 129, 0.3);
                 }
 
                 .aqs-status.error {
                     background: rgba(239, 68, 68, 0.1);
                     color: var(--danger);
+                    border-color: rgba(239, 68, 68, 0.3);
                 }
 
                 .aqs-status.warning {
                     background: rgba(245, 158, 11, 0.1);
                     color: var(--warning);
+                    border-color: rgba(245, 158, 11, 0.3);
                 }
 
                 .aqs-answer-grid {
@@ -605,20 +658,43 @@
                 .aqs-answer-item {
                     background: var(--bg-darker);
                     border: 2px solid var(--border);
-                    border-radius: 8px;
-                    padding: 12px;
-                    transition: all 0.2s;
+                    border-radius: 10px;
+                    padding: 14px;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .aqs-answer-item:hover {
+                    border-color: rgba(102, 126, 234, 0.4);
+                    background: rgba(102, 126, 234, 0.05);
+                    transform: translateY(-2px);
                 }
 
                 .aqs-answer-item.correct {
                     border-color: var(--success);
                     background: rgba(16, 185, 129, 0.1);
+                    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+                    transform: scale(1.02);
+                }
+                
+                .aqs-answer-item.correct .aqs-answer-letter::before {
+                    content: '✅';
                 }
 
                 .aqs-answer-letter {
                     font-weight: 700;
                     color: var(--primary);
                     margin-bottom: 4px;
+                    font-size: 16px;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                
+                .aqs-answer-letter::before {
+                    content: '📝';
+                    font-size: 14px;
                 }
 
                 .aqs-answer-text {
@@ -635,11 +711,20 @@
                 }
 
                 .aqs-result-answer {
-                    font-size: 24px;
+                    font-size: 28px;
                     font-weight: 700;
                     color: var(--success);
                     text-align: center;
                     margin-bottom: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                }
+                
+                .aqs-result-answer::before {
+                    content: '🎯';
+                    font-size: 32px;
                 }
 
                 .aqs-result-text {
@@ -668,8 +753,8 @@
         createFAB() {
             this.fab = Utils.createElement('button', {
                 id: 'aqs-fab',
-                text: 'AI',
-                title: 'Open AI Quiz Solver'
+                html: '🤖',
+                title: 'Open AI Quiz Solver Pro'
             });
             document.body.appendChild(this.fab);
         }
@@ -679,14 +764,14 @@
 
             // Header
             const header = Utils.createElement('div', { class: 'aqs-header' }, [
-                Utils.createElement('div', { class: 'aqs-title', text: '🤖 AI Quiz Solver' }),
+                Utils.createElement('div', { class: 'aqs-title', html: '🤖 AI Quiz Solver <span style="font-size: 12px; opacity: 0.8; font-weight: 400;">Pro v2.5</span>' }),
                 Utils.createElement('button', { class: 'aqs-close', text: '×' })
             ]);
 
             // Tabs
             const tabs = Utils.createElement('div', { class: 'aqs-tabs' }, [
-                Utils.createElement('button', { class: 'aqs-tab active', 'data-tab': 'solve', text: 'Solve' }),
-                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'settings', text: 'Settings' })
+                Utils.createElement('button', { class: 'aqs-tab active', 'data-tab': 'solve', text: '🧠 Solve' }),
+                Utils.createElement('button', { class: 'aqs-tab', 'data-tab': 'settings', text: '⚙️ Settings' })
             ]);
 
             // Content
@@ -699,10 +784,11 @@
             solveTab.appendChild(this.elements.status);
 
             const questionGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: 'Question' }));
+            questionGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '❓ Question' }));
             this.elements.questionInput = Utils.createElement('textarea', {
                 class: 'aqs-textarea',
-                placeholder: 'Paste or capture question from selection...'
+                placeholder: 'Paste your question here or use "Capture from Selection" button below...',
+                style: 'min-height: 120px;'
             });
             questionGroup.appendChild(this.elements.questionInput);
             solveTab.appendChild(questionGroup);
@@ -713,8 +799,9 @@
                 item.appendChild(Utils.createElement('div', { class: 'aqs-answer-letter', text: letter }));
                 const textarea = Utils.createElement('textarea', {
                     class: 'aqs-textarea',
-                    placeholder: `${letter}. ...`,
-                    rows: '2'
+                    placeholder: `Option ${letter}...`,
+                    rows: '3',
+                    style: 'min-height: 80px; font-size: 13px;'
                 });
                 textarea.dataset.letter = letter;
                 item.appendChild(textarea);
@@ -724,13 +811,13 @@
 
             this.elements.captureBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-secondary',
-                text: '📝 Capture from Selection'
+                html: '<span>📥</span><span>Capture from Selection</span>'
             });
             solveTab.appendChild(this.elements.captureBtn);
 
             this.elements.solveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
-                text: '🚀 Solve with AI',
+                html: '<span>🧠</span><span>Solve with AI</span>',
                 disabled: true
             });
             solveTab.appendChild(this.elements.solveBtn);
@@ -744,7 +831,7 @@
             const settingsTab = Utils.createElement('div', { class: 'aqs-tab-pane', 'data-pane': 'settings' });
 
             const apiGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            apiGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: 'Gemini API Key' }));
+            apiGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '🔑 Gemini API Key' }));
             this.elements.apiKeyInput = Utils.createElement('input', {
                 class: 'aqs-input',
                 type: 'password',
@@ -754,7 +841,7 @@
             settingsTab.appendChild(apiGroup);
 
             const modelGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            modelGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: 'Model' }));
+            modelGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '🤖 AI Model' }));
             this.elements.modelSelect = Utils.createElement('select', { class: 'aqs-select' });
             CONFIG.MODELS.forEach(model => {
                 const option = Utils.createElement('option', { value: model.value, text: model.label });
@@ -764,7 +851,7 @@
             settingsTab.appendChild(modelGroup);
 
             const langGroup = Utils.createElement('div', { class: 'aqs-form-group' });
-            langGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: 'Language' }));
+            langGroup.appendChild(Utils.createElement('label', { class: 'aqs-label', text: '🌍 Language' }));
             this.elements.langSelect = Utils.createElement('select', { class: 'aqs-select' });
             CONFIG.LANGUAGES.forEach(lang => {
                 const option = Utils.createElement('option', { value: lang.value, text: lang.label });
@@ -775,7 +862,7 @@
 
             const saveBtn = Utils.createElement('button', {
                 class: 'aqs-btn aqs-btn-primary',
-                text: '💾 Save Settings'
+                html: '<span>💾</span><span>Save Settings</span>'
             });
             settingsTab.appendChild(saveBtn);
 
@@ -910,15 +997,15 @@
 
         updateStatus() {
             if (this.config.apiKey) {
-                this.ui.showStatus('✓ Ready to solve questions', 'success');
+                this.ui.showStatus('✅ Ready to solve questions! Select text and click Capture or paste manually.', 'success');
             } else {
-                this.ui.showStatus('⚠ Please configure API key in Settings', 'warning');
+                this.ui.showStatus('⚠️ Please configure your Gemini API key in Settings tab first.', 'warning');
             }
         }
 
         captureSelection() {
             if (!this.selectionText) {
-                this.ui.showStatus('⚠ No text selected', 'warning');
+                this.ui.showStatus('⚠️ No text selected. Please select question text on the page first.', 'warning');
                 return;
             }
 
@@ -936,14 +1023,15 @@
                 }
             });
 
-            this.ui.showStatus('✓ Content captured successfully', 'success');
+            const answerCount = Object.keys(parsed.answers).length;
+            this.ui.showStatus(`✅ Content captured successfully! (Question + ${answerCount} answer${answerCount !== 1 ? 's' : ''})`, 'success');
             this.ui.updateSolveButton();
         }
 
         async solveQuestion() {
             const question = this.ui.elements.questionInput.value.trim();
             if (!question) {
-                this.ui.showStatus('⚠ Please enter a question', 'warning');
+                this.ui.showStatus('⚠️ Please enter a question first', 'warning');
                 return;
             }
 
@@ -954,8 +1042,15 @@
                 if (value) answers[letter] = value;
             });
 
+            const answerCount = Object.keys(answers).length;
+            if (answerCount === 0) {
+                this.ui.showStatus('⚠️ Please provide at least one answer option', 'warning');
+                return;
+            }
+
             this.ui.elements.solveBtn.disabled = true;
-            this.ui.showStatus('🔄 Asking AI...', 'warning');
+            this.ui.elements.solveBtn.innerHTML = '<span>⏳</span><span>Analyzing...</span>';
+            this.ui.showStatus(`🤖 AI is analyzing ${answerCount} option${answerCount !== 1 ? 's' : ''}...`, 'warning');
 
             try {
                 const client = new GeminiClient(
@@ -971,7 +1066,7 @@
                 const answerLetter = AnswerDetector.detectLetter(result.text);
                 
                 this.ui.showResult(answerLetter, result.text);
-                this.ui.showStatus('✓ Question solved!', 'success');
+                this.ui.showStatus(`✅ Question solved! AI suggests answer: ${answerLetter || 'Unknown'}`, 'success');
 
                 if (answerLetter) {
                     this.ui.highlightAnswer(answerLetter);
@@ -987,8 +1082,10 @@
                 }
             } catch (error) {
                 this.ui.showStatus(`❌ Error: ${error.message}`, 'error');
+                console.error('[AI Quiz Solver] Error:', error);
             } finally {
                 this.ui.elements.solveBtn.disabled = false;
+                this.ui.elements.solveBtn.innerHTML = '<span>🧠</span><span>Solve with AI</span>';
             }
         }
 
@@ -997,11 +1094,20 @@
             this.config.model = this.ui.elements.modelSelect.value;
             this.config.language = this.ui.elements.langSelect.value;
 
+            if (!this.config.apiKey) {
+                this.ui.showStatus('⚠️ Please enter your Gemini API key', 'warning');
+                return;
+            }
+
             const saved = await StorageManager.save(this.config);
             if (saved) {
-                this.ui.showStatus('✓ Settings saved successfully', 'success');
+                this.ui.showStatus('✅ Settings saved successfully! You can now solve questions.', 'success');
                 this.updateStatus();
                 this.ui.updateSolveButton();
+                // Switch to solve tab
+                setTimeout(() => {
+                    this.ui.switchTab('solve');
+                }, 1500);
             } else {
                 this.ui.showStatus('❌ Failed to save settings', 'error');
             }
