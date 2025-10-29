@@ -565,67 +565,18 @@
         }
 
         buildPrompt(question, answers, config, questionType) {
-            const lang = config.language === 'vi' ? 'Vietnamese' : 'English';
-            let instruction;
-
-            if (config.outputMode === 'custom' && config.customPrompt) {
-                instruction = config.customPrompt;
-            } else if (config.outputMode === 'answer') {
-                instruction = `Respond ONLY with "Answer: <letter>" (e.g., Answer: C). No explanation. Be decisive.`;
-            } else {
-                instruction = `Start with "Answer: <letter>" on the first line, then provide a concise explanation in ${lang}.`;
-            }
-
             const formattedAnswers = Object.entries(answers)
                 .filter(([, value]) => value)
                 .map(([letter, value]) => `${letter}. ${value}`)
                 .join('\n');
 
-            let typeInfo = '';
-            switch(questionType) {
-                case CONFIG.QUESTION_TYPES.TRUE_FALSE:
-                    typeInfo = 'This is a TRUE/FALSE question. Determine if the statement is true or false.';
-                    break;
-                case CONFIG.QUESTION_TYPES.MATCHING:
-                    typeInfo = 'This is a MATCHING question. Analyze the correspondences carefully.';
-                    break;
-                case CONFIG.QUESTION_TYPES.FILL_BLANK:
-                    typeInfo = 'This is a FILL-IN-THE-BLANK question. Provide the most appropriate word/phrase.';
-                    break;
-                case CONFIG.QUESTION_TYPES.SHORT_ANSWER:
-                    typeInfo = 'This is a SHORT ANSWER question. Provide a concise, accurate answer.';
-                    break;
-            }
-
             return [
-                `You are an expert ${config.subject} professor with deep knowledge and critical thinking skills.`,
-                `Your task is to solve this question with the HIGHEST ACCURACY possible.`,
+                `Question: ${question}`,
                 '',
-                typeInfo,
+                formattedAnswers ? `Options:\n${formattedAnswers}` : '',
                 '',
-                `ANALYSIS FRAMEWORK:`,
-                `1. Read the question carefully and identify key concepts`,
-                `2. Eliminate obviously incorrect options immediately`,
-                `3. Analyze each remaining option for factual accuracy`,
-                `4. Consider edge cases and common misconceptions`,
-                `5. Apply domain-specific knowledge from ${config.subject}`,
-                `6. Choose the MOST COMPLETE and ACCURATE answer`,
-                `7. Verify your choice against the question requirements`,
-                '',
-                instruction,
-                '',
-                `===== QUESTION =====`,
-                question,
-                '',
-                formattedAnswers ? `===== OPTIONS =====\n${formattedAnswers}\n` : '',
-                `===== REQUIREMENTS =====`,
-                `- Subject: ${config.subject}`,
-                `- Language: ${lang}`,
-                `- Accuracy: Critical`,
-                `- Reasoning: Logical and evidence-based`,
-                '',
-                `Provide your answer with maximum confidence and accuracy.`
-            ].join('\n');
+                `Please provide ONLY the correct answer letter (A, B, C, D, etc.) in this format: "Answer: X"`
+            ].filter(line => line !== '').join('\n');
         }
 
         async generate(prompt) {
