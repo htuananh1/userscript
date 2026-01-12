@@ -1,40 +1,34 @@
-# ===============================
-#   UBUNTU + SSHX + KEEP ALIVE
-#   Railway Ready
-# ===============================
 FROM ubuntu:22.04
 
-# Tránh hỏi khi apt install
+# Prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Timezone Việt Nam
-ENV TZ=Asia/Ho_Chi_Minh
-
-# Railway web service port
-ENV PORT=8080
-
-# -------------------------------
-# Cài các gói cần thiết
-# -------------------------------
-RUN apt update && apt install -y \
+# Update and install common VPS tools
+RUN apt-get update && apt-get install -y \
     curl \
-    tzdata \
-    ca-certificates \
+    wget \
+    git \
+    nano \
+    vim \
+    htop \
+    net-tools \
+    iputils-ping \
     python3 \
-    && ln -fs /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime \
-    && dpkg-reconfigure -f noninteractive tzdata \
-    && apt clean \
+    python3-pip \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------
-# Command chạy:
-# 1. Start web service ảo (8080)
-# 2. Chạy sshx
-# -------------------------------
-CMD bash -c '\
-echo "🇻🇳 Timezone: $TZ"; \
-echo "🌐 Starting fake web service on port $PORT"; \
-python3 -m http.server $PORT >/dev/null 2>&1 & \
-echo "🚀 Starting SSHX..."; \
-curl -sSf https://sshx.io/get | sh -s run \
-'
+# Install ttyd (Web Terminal)
+RUN wget -O /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64 \
+    && chmod +x /usr/local/bin/ttyd
+
+# Set default shell to bash
+ENV SHELL=/bin/bash
+
+# Expose the port (Render sets $PORT dynamically, but we document 8080)
+EXPOSE 8080
+
+# Run ttyd on the port defined by Render ($PORT)
+# -W: Writeable (clients can type)
+# bash: The shell to run
+CMD ttyd -p $PORT -W bash
