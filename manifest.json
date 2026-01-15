@@ -1,0 +1,32 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "Addon Minecraft Bedrock: Fix Lag, Dọn Sách, Auto-Collect, Trade bằng Sắt/Đồng",
+        "name": "Jules Utility Addon",
+        "uuid": "6f2d5e10-3b4a-11eb-adc1-0242ac120002",
+        "version": [1, 0, 0],
+        "min_engine_version": [1, 20, 0]
+    },
+    "modules": [
+        {
+            "description": "Behavior Pack Logic",
+            "type": "data",
+            "uuid": "7a3e6f20-3b4a-11eb-adc1-0242ac120002",
+            "version": [1, 0, 0]
+        },
+        {
+            "description": "GameTest Scripts",
+            "type": "script",
+            "language": "javascript",
+            "uuid": "8b4f7030-3b4a-11eb-adc1-0242ac120002",
+            "entry": "scripts/main.js",
+            "version": [1, 0, 0]
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.8.0"
+        }
+    ]
+}
