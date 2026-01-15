@@ -1,8 +1,8 @@
 {
     "format_version": 2,
     "header": {
-        "description": "Utility Addon: Lag Fix, Auto-Collect, Iron Currency Trades",
-        "name": "Jules Utility Addon",
+        "description": "Dọn rác, fix lag, chặn nổ Creeper. (Lag Fix, Anti-Grief)",
+        "name": "DPT Utility Addon",
         "uuid": "6f2d5e10-3b4a-11eb-adc1-0242ac120002",
         "version": [1, 0, 0],
         "min_engine_version": [1, 20, 0]
