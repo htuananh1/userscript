@@ -1,0 +1,396 @@
+{
+    "tiers": [
+        {
+            "total_exp_required": 0,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:brick_block",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:clay_ball",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:stone",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:cobblestone",
+                                    "quantity": 20
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:granite",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 10,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:chiselled_stone_bricks",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:stone_bricks",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:andesite",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:diorite",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:polished_granite",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 70,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:polished_andesite",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:polished_diorite",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:dripstone_block",
+                                    "quantity": 10
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 2
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:end_stone",
+                                    "quantity": 5
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 150,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:hardened_clay",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 1
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:glazed_terracotta",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 2
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:quartz_block",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 250,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 2
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:quartz_block",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 2
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:quartz_pillar",
+                                    "quantity": 4
+                                }
+                            ],
+                            "max_uses": 16,
+                            "xp": 2,
+                            "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

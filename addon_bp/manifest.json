@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "header": {
-        "description": "Addon Minecraft Bedrock: Fix Lag, Dọn Sách, Auto-Collect, Trade bằng Sắt/Đồng",
+        "description": "Utility Addon: Lag Fix, Auto-Collect, Iron Currency Trades",
         "name": "Jules Utility Addon",
         "uuid": "6f2d5e10-3b4a-11eb-adc1-0242ac120002",
         "version": [1, 0, 0],
@@ -15,7 +15,7 @@
             "version": [1, 0, 0]
         },
         {
-            "description": "GameTest Scripts",
+            "description": "Script Logic",
             "type": "script",
             "language": "javascript",
             "uuid": "8b4f7030-3b4a-11eb-adc1-0242ac120002",
