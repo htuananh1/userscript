@@ -36,9 +36,34 @@ const MONSTER_DROPS = new Set([
     "minecraft:arrow",
     "minecraft:glass_bottle", // Witch drops
     "minecraft:stick", // Witch drops
-    "minecraft:sugar", // Witch drops
-    "minecraft:redstone", // Witch drops
-    "minecraft:glowstone_dust" // Witch drops
+    "minecraft:sugar" // Witch drops
+]);
+
+// Valuable Items (Khoáng sản quý)
+const VALUABLE_ITEMS = new Set([
+    // Iron
+    "minecraft:iron_ingot", "minecraft:raw_iron", "minecraft:iron_block", "minecraft:iron_nugget",
+    // Gold
+    "minecraft:gold_ingot", "minecraft:raw_gold", "minecraft:gold_block", "minecraft:gold_nugget",
+    // Diamond
+    "minecraft:diamond", "minecraft:diamond_block",
+    // Netherite
+    "minecraft:netherite_ingot", "minecraft:netherite_block", "minecraft:netherite_scrap",
+    // Emerald
+    "minecraft:emerald", "minecraft:emerald_block",
+    // Coal
+    "minecraft:coal", "minecraft:coal_block",
+    // Redstone
+    "minecraft:redstone", "minecraft:redstone_block",
+    // Lapis
+    "minecraft:lapis_lazuli", "minecraft:lapis_block",
+    // Copper
+    "minecraft:copper_ingot", "minecraft:raw_copper", "minecraft:copper_block",
+    // Quartz
+    "minecraft:quartz",
+    // Others
+    "minecraft:glowstone_dust",
+    "minecraft:amethyst_shard"
 ]);
 
 // Combine sets for auto-collect exclusion
@@ -48,7 +73,7 @@ const TRASH_ITEMS = new Set([...SAPLINGS, ...MONSTER_DROPS]);
 // CLEANUP: SAPLINGS AND MONSTER DROPS (2 MINUTES)
 // =============================================================================
 system.runInterval(() => {
-    world.sendMessage("§e[System] Cleaning saplings and monster drops...");
+    world.sendMessage("§l§6[HỆ THỐNG] §r§eĐang dọn dẹp rác và vật phẩm quái vật...");
 
     let clearedCount = 0;
     const dimensions = ["overworld", "nether", "the_end"];
@@ -84,7 +109,7 @@ system.runInterval(() => {
 // CLEANUP: REMAINING ITEMS (10 MINUTES)
 // =============================================================================
 system.runInterval(() => {
-    world.sendMessage("§c[System] Cleaning all remaining dropped items...");
+    world.sendMessage("§l§6[HỆ THỐNG] §r§cĐang quét dọn vật phẩm rơi rớt (Giữ lại khoáng sản quý)...");
 
     let clearedCount = 0;
     const dimensions = ["overworld", "nether", "the_end"];
@@ -95,9 +120,19 @@ system.runInterval(() => {
 
         for (const entity of entities) {
             try {
-                // We remove EVERYTHING that is an item entity
-                entity.remove();
-                clearedCount++;
+                const itemComp = entity.getComponent("minecraft:item");
+                if (itemComp && itemComp.itemStack) {
+                    const typeId = itemComp.itemStack.typeId;
+
+                    // Skip if valuable
+                    if (VALUABLE_ITEMS.has(typeId)) {
+                        continue;
+                    }
+
+                    // Remove everything else
+                    entity.remove();
+                    clearedCount++;
+                }
             } catch (e) {
                 // Entity might have been removed already
             }
