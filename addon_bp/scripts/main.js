@@ -1,8 +1,31 @@
 import { world, system } from "@minecraft/server";
 
 // =============================================================================
-// LAG FIX: CLEAR DROPPED BOOKS
-// Run every 30 seconds (600 ticks)
+// CONFIGURATION
+// =============================================================================
+const LAG_FIX_INTERVAL = 600; // 30 seconds
+const AUTO_COLLECT_INTERVAL = 20; // 1 second
+
+// Items to be removed by the lag fix
+const JUNK_ITEMS = new Set([
+    "minecraft:rotten_flesh",
+    "minecraft:bone",
+    "minecraft:spider_eye",
+    "minecraft:arrow",
+    "minecraft:dirt",
+    "minecraft:cobblestone",
+    "minecraft:stone",
+    "minecraft:gravel",
+    "minecraft:sand",
+    "minecraft:wheat_seeds",
+    "minecraft:book",
+    "minecraft:writable_book",
+    "minecraft:written_book",
+    "minecraft:enchanted_book" // Clean dropped books too as per original
+]);
+
+// =============================================================================
+// LAG FIX: CLEAR DROPPED ITEMS
 // =============================================================================
 system.runInterval(() => {
     let clearedCount = 0;
@@ -19,12 +42,8 @@ system.runInterval(() => {
                 const itemComp = entity.getComponent("minecraft:item");
                 if (itemComp && itemComp.itemStack) {
                     const typeId = itemComp.itemStack.typeId;
-                    if (
-                        typeId === "minecraft:book" ||
-                        typeId === "minecraft:writable_book" ||
-                        typeId === "minecraft:written_book" ||
-                        typeId === "minecraft:enchanted_book"
-                    ) {
+
+                    if (JUNK_ITEMS.has(typeId)) {
                         entity.remove();
                         clearedCount++;
                     }
@@ -36,13 +55,12 @@ system.runInterval(() => {
     }
 
     if (clearedCount > 0) {
-        console.warn(`[Addon] Cleaned ${clearedCount} dropped book entities`);
+        console.warn(`[Addon] Cleaned ${clearedCount} junk items to reduce lag.`);
     }
-}, 600);
+}, LAG_FIX_INTERVAL);
 
 // =============================================================================
 // AUTO-COLLECT DROPPED ITEMS
-// Run every 1 second (20 ticks)
 // =============================================================================
 system.runInterval(() => {
     const players = world.getAllPlayers();
@@ -53,7 +71,6 @@ system.runInterval(() => {
             const location = player.location;
 
             // Search radius 6-8 blocks. We'll use 8.
-            // Exclude items very close (1 block) to avoid jitter/noise
             const options = {
                 type: "minecraft:item",
                 location: location,
@@ -68,13 +85,13 @@ system.runInterval(() => {
                     const itemComp = item.getComponent("minecraft:item");
                     if (itemComp && itemComp.itemStack) {
                         const typeId = itemComp.itemStack.typeId;
-                        // Exclude books to avoid conflict with cleanup or spam
-                        if (
-                            typeId === "minecraft:book" ||
-                            typeId === "minecraft:writable_book" ||
-                            typeId === "minecraft:written_book" ||
-                            typeId === "minecraft:enchanted_book"
-                        ) {
+
+                        // Don't auto-collect if it's in the junk list (it will be deleted soon)
+                        // OR we can collect it. Let's collect it, user might want it.
+                        // But original script excluded books. Let's keep excluding books from auto-collect if intended?
+                        // Actually, auto-collecting junk fills inventory.
+                        // Let's exclude junk items from auto-collect.
+                        if (JUNK_ITEMS.has(typeId)) {
                             continue;
                         }
                     }
@@ -82,11 +99,11 @@ system.runInterval(() => {
                     // Teleport item to player's location
                     item.teleport(location);
                 } catch (e) {
-                    // Ignore errors (e.g. item picked up or despawned)
+                    // Ignore errors
                 }
             }
         } catch (e) {
-            // Player might have disconnected or dimension invalid
+            // Player disconnected
         }
     }
-}, 20);
+}, AUTO_COLLECT_INTERVAL);

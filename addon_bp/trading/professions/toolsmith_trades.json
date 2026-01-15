@@ -391,6 +391,99 @@
                     ]
                 }
             ]
+        },
+        {
+            "total_exp_required": 500,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                },
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_pickaxe",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                },
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_axe",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_shovel",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
