@@ -41,60 +41,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 1
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:book",
-                                    "quantity": 5
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 2
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:writable_book",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 1
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:ink_sac",
-                                    "quantity": 5
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -141,60 +87,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 3
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:compass",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 3
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:clock",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 1
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:glass_pane",
-                                    "quantity": 10
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -223,60 +115,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 1
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:ink_sac",
-                                    "quantity": 5
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 2
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:glow_ink_sac",
-                                    "quantity": 5
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 2
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:lectern",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -298,43 +136,14 @@
                             "gives": [
                                 {
                                     "item": "minecraft:enchanted_book",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 4
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:compass",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 4
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:clock",
-                                    "quantity": 1
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 30
+                                        }
+                                    ]
                                 }
                             ],
                             "max_uses": 16,
@@ -380,12 +189,79 @@
                             "gives": [
                                 {
                                     "item": "minecraft:enchanted_book",
-                                    "quantity": 1
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 30
+                                        }
+                                    ]
                                 }
                             ],
                             "max_uses": 16,
                             "xp": 2,
                             "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 500,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:enchanted_book",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                         {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:enchanted_book",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
                             "reward_exp": true
                         }
                     ]

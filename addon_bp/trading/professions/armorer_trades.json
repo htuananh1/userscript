@@ -41,60 +41,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 1
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:leather_boots",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 2
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:leather_helmet",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 5
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:chainmail_boots",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -141,60 +87,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 6
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:chainmail_leggings",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 8
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:chainmail_chestplate",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 10
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:bell",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -228,48 +120,12 @@
                             "wants": [
                                 {
                                     "item": "minecraft:iron_ingot",
-                                    "quantity": 3
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:lava_bucket",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
                                     "quantity": 20
                                 }
                             ],
                             "gives": [
                                 {
                                     "item": "minecraft:diamond_horse_armor",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 10
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:iron_horse_armor",
                                     "quantity": 1
                                 }
                             ],
@@ -323,24 +179,6 @@
                             "xp": 2,
                             "trader_exp": 2,
                             "reward_exp": true
-                        },
-                        {
-                            "wants": [
-                                {
-                                    "item": "minecraft:iron_ingot",
-                                    "quantity": 10
-                                }
-                            ],
-                            "gives": [
-                                {
-                                    "item": "minecraft:golden_boots",
-                                    "quantity": 1
-                                }
-                            ],
-                            "max_uses": 16,
-                            "xp": 2,
-                            "trader_exp": 2,
-                            "reward_exp": true
                         }
                     ]
                 }
@@ -386,6 +224,124 @@
                             "max_uses": 16,
                             "xp": 2,
                             "trader_exp": 2,
+                            "reward_exp": true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 500,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                },
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_chestplate",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                },
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_leggings",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_boots",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
+                            "reward_exp": true
+                        },
+                        {
+                            "wants": [
+                                {
+                                    "item": "minecraft:iron_ingot",
+                                    "quantity": 64
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "minecraft:netherite_helmet",
+                                    "quantity": 1,
+                                    "functions": [
+                                        {
+                                            "function": "enchant_with_levels",
+                                            "treasure": true,
+                                            "levels": 50
+                                        }
+                                    ]
+                                }
+                            ],
+                            "max_uses": 10,
+                            "xp": 100,
+                            "trader_exp": 100,
                             "reward_exp": true
                         }
                     ]
