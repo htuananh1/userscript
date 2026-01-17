@@ -1,0 +1,117 @@
+{
+  "namespace": "backpack",
+  "__comment": "Màn hình rút item - danh sách cuộn, icon item_renderer bên trái.",
+  "backpack_withdraw_screen": {
+    "type": "screen",
+    "anchor_from": "center",
+    "anchor_to": "center",
+    "size": [360, 270],
+    "__comment_header": "Khung chính, dùng stack_panel dọc để chia tiêu đề + danh sách.",
+    "controls": {
+      "root_panel": {
+        "type": "panel",
+        "size": ["100%", "100%"],
+        "controls": {
+          "content_stack": {
+            "type": "stack_panel",
+            "orientation": "vertical",
+            "size": ["100%", "100%"],
+            "controls": {
+              "title_panel": {
+                "type": "panel",
+                "size": ["100%", 28],
+                "controls": {
+                  "title_label": {
+                    "type": "label",
+                    "text": "📦 Rút Items (gộp theo tên)",
+                    "font_size": 16,
+                    "text_alignment": "center",
+                    "anchor_from": "center",
+                    "anchor_to": "center",
+                    "offset": [0, 0]
+                  }
+                }
+              },
+              "divider": {
+                "type": "image",
+                "size": ["100%", 2],
+                "color": [0.2, 0.2, 0.2, 0.9]
+              },
+              "list_panel": {
+                "type": "scroll_panel",
+                "size": ["100%", "100%"],
+                "anchor_from": "top_left",
+                "anchor_to": "top_left",
+                "controls": {
+                  "item_list": {
+                    "type": "collection_panel",
+                    "collection_name": "items",
+                    "item_template": "item_row",
+                    "size": ["100%", "100%"],
+                    "orientation": "vertical",
+                    "item_spacing": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "__comment_row": "Template dòng item: icon 32x32 bên trái + label bên phải, cao ~40px.",
+      "item_row": {
+        "type": "panel",
+        "size": ["100%", 40],
+        "controls": {
+          "row_button": {
+            "type": "button",
+            "size": ["100%", "100%"],
+            "hover_color": [0.25, 0.25, 0.25, 0.9],
+            "pressed_color": [0.4, 0.4, 0.4, 0.9],
+            "controls": {
+              "row_content": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "anchor_from": "left",
+                "anchor_to": "left",
+                "offset": [8, 0],
+                "size": ["100%", "100%"],
+                "controls": {
+                  "item_icon": {
+                    "type": "item_renderer",
+                    "size": [32, 32],
+                    "anchor_from": "left",
+                    "anchor_to": "left",
+                    "offset": [0, 4],
+                    "item_name": "#item_id"
+                  },
+                  "text_stack": {
+                    "type": "stack_panel",
+                    "orientation": "vertical",
+                    "anchor_from": "left",
+                    "anchor_to": "left",
+                    "offset": [10, 2],
+                    "size": ["100%", "100%"],
+                    "controls": {
+                      "item_name_label": {
+                        "type": "label",
+                        "text": "#item_name",
+                        "font_size": 14,
+                        "text_alignment": "left"
+                      },
+                      "item_total_label": {
+                        "type": "label",
+                        "text": "Tổng: §e#total_amount",
+                        "font_size": 12,
+                        "text_alignment": "left"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
