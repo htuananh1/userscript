@@ -1,0 +1,29 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "Clear Lag Plus [ v1.1.0 ]",
+        "description": "Professional lag management for Bedrock 1.21.120+",
+        "uuid": "5f3a1b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+        "version": [1, 0, 0],
+        "min_engine_version": [1, 21, 100]
+    },
+    "metadata": {
+        "authors": ["BlockCraftAddons"],
+        "product_type": "addon"
+    },
+    "modules": [
+        {
+            "description": "Script module",
+            "type": "script",
+            "uuid": "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6",
+            "version": [1, 0, 0],
+            "entry": "scripts/main.js"
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.13.0"
+        }
+    ]
+}
