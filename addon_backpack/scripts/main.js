@@ -13,6 +13,8 @@ const BACKPACK_ITEM_LORE = ["§7Click để mở UI backpack", "§8Nhập/Rút v
 
 // New storage key (map: typeId -> amount)
 const STORE_KEY = "backpack_store";
+const AUTO_DEPOSIT_KEY = "backpack_auto_deposit";
+const NIGHT_VISION_KEY = "backpack_night_vision";
 
 // Legacy (v2.1.0) key pattern
 const LEGACY_PAGE_KEY = "backpack_page_0";
@@ -87,6 +89,46 @@ function getItemIcon(typeId) {
     if (typeId.includes(key)) return icon;
   }
   return "📦";
+}
+
+function formatItemName(typeId) {
+  const raw = String(typeId || "").replace("minecraft:", "");
+  return raw
+    .split("_")
+    .map((part) => (part ? part[0].toUpperCase() + part.slice(1) : ""))
+    .join(" ");
+}
+
+function getDisplayName(typeId, sampleItem) {
+  try {
+    if (sampleItem && sampleItem.nameTag) return sampleItem.nameTag;
+  } catch (e) {}
+  return formatItemName(typeId);
+}
+
+function isToolOrArmor(item) {
+  if (!item) return false;
+  try {
+    const durability = item.getComponent("minecraft:durability");
+    if (durability) return true;
+  } catch (e) {}
+  return false;
+}
+
+function getPlayerToggle(player, key, defaultValue) {
+  try {
+    const raw = player.getDynamicProperty(key);
+    if (raw === undefined || raw === null) return defaultValue;
+    return Boolean(raw);
+  } catch (e) {
+    return defaultValue;
+  }
+}
+
+function setPlayerToggle(player, key, value) {
+  try {
+    player.setDynamicProperty(key, Boolean(value));
+  } catch (e) {}
 }
 
 /**
@@ -278,16 +320,20 @@ function clampInt(n, min, max) {
 async function showBackpackUI(player) {
   const store = loadStore(player);
   const stats = getStoreStats(store);
+  const autoDeposit = getPlayerToggle(player, AUTO_DEPOSIT_KEY, false);
+  const nightVision = getPlayerToggle(player, NIGHT_VISION_KEY, false);
 
   const form = new ActionFormData();
   const vnTime = getVietnamTime();
 
   form.title(`§6§lKho Vô Hạn\n§7${vnTime} VN (UTC+7)`);
-  form.body(`§7Gộp theo typeId\n§e${stats.distinct} §7loại • §e${stats.total} §7tổng số lượng\n\n§7Chọn hành động:`);
+  form.body(`§7Gộp theo tên item\n§e${stats.distinct} §7loại • §e${stats.total} §7tổng số lượng\n\n§7Chọn hành động:`);
 
   form.button("§a📥 Nhập Items\n§7Bỏ vào backpack");
   form.button("§e📤 Rút Items\n§7Lấy ra inventory");
   form.button("§b📋 Danh Sách\n§7Xem tất cả");
+  form.button(`§d⚡ Auto nhập kho: ${autoDeposit ? "§aON" : "§cOFF"}\n§7Không nhập tools/giáp`);
+  form.button(`§9👁 Night Vision: ${nightVision ? "§aON" : "§cOFF"}`);
   form.button("§c✖ Đóng");
 
   const response = await form.show(player);
@@ -303,6 +349,23 @@ async function showBackpackUI(player) {
     case 2:
       await showViewItemsUI(player);
       break;
+    case 3:
+      setPlayerToggle(player, AUTO_DEPOSIT_KEY, !autoDeposit);
+      await showBackpackUI(player);
+      break;
+    case 4:
+      setPlayerToggle(player, NIGHT_VISION_KEY, !nightVision);
+      if (!nightVision) {
+        try {
+          player.addEffect("night_vision", 999999, { amplifier: 0, showParticles: false });
+        } catch (e) {}
+      } else {
+        try {
+          player.removeEffect("night_vision");
+        } catch (e) {}
+      }
+      await showBackpackUI(player);
+      break;
   }
 }
 
@@ -316,12 +379,13 @@ async function showDepositUI(player) {
   }
 
   const form = new ActionFormData();
-  form.title("§a📥 Nhập Items (gộp theo ID)");
-  form.body("§7Chọn typeId để nhập:");
+  form.title("§a📥 Nhập Items (gộp theo tên)");
+  form.body("§7Chọn item để nhập:");
 
   for (const typeId of typeIds) {
     const icon = getItemIcon(typeId);
-    const name = typeId.replace("minecraft:", "");
+    const sampleItem = (slotsByType[typeId] || [])[0]?.sampleItem;
+    const name = getDisplayName(typeId, sampleItem);
     form.button(`${icon} ${name}\n§7Tổng: §e${totals[typeId]}`);
   }
   form.button("§c« Back");
@@ -337,7 +401,8 @@ async function showDepositUI(player) {
 
   // Quantity input (textField) instead of slider
   const qForm = new ModalFormData();
-  qForm.title(`§aNhập: ${selectedTypeId.replace("minecraft:", "")}`);
+  const selectedSampleItem = (slotsByType[selectedTypeId] || [])[0]?.sampleItem;
+  qForm.title(`§aNhập: ${getDisplayName(selectedTypeId, selectedSampleItem)}`);
   qForm.textField(`§7Số lượng (1 → ${max})`, "VD: 64", String(max));
   qForm.toggle("§e✓ ALL (Tất cả)", true);
 
@@ -366,7 +431,7 @@ async function showDepositUI(player) {
   saveStore(player, store);
 
   const icon = getItemIcon(selectedTypeId);
-  player.sendMessage(`§a✓ ${icon} §e${removed}x §f${selectedTypeId.replace("minecraft:", "")} §7→ Backpack`);
+  player.sendMessage(`§a✓ ${icon} §e${removed}x §f${getDisplayName(selectedTypeId, selectedSampleItem)} §7→ Backpack`);
   await showBackpackUI(player);
 }
 
@@ -384,12 +449,12 @@ async function showWithdrawUI(player) {
   }
 
   const form = new ActionFormData();
-  form.title("§e📤 Rút Items (gộp theo ID)");
-  form.body(`§7Chọn typeId để rút:`);
+  form.title("§e📤 Rút Items (gộp theo tên)");
+  form.body(`§7Chọn item để rút:`);
 
   for (const [typeId, amt] of entries) {
     const icon = getItemIcon(typeId);
-    const name = typeId.replace("minecraft:", "");
+    const name = getDisplayName(typeId, null);
     form.button(`${icon} ${name}\n§7Tổng: §e${amt}`);
   }
   form.button("§c« Back");
@@ -404,7 +469,7 @@ async function showWithdrawUI(player) {
   const max = Number(selectedTotal) || 0;
 
   const qForm = new ModalFormData();
-  qForm.title(`§eRút: ${selectedTypeId.replace("minecraft:", "")}`);
+  qForm.title(`§eRút: ${getDisplayName(selectedTypeId, null)}`);
   qForm.textField(`§7Số lượng (1 → ${max})`, "VD: 64", String(max));
   qForm.toggle("§e✓ ALL (Tất cả)", true);
 
@@ -434,9 +499,9 @@ async function showWithdrawUI(player) {
 
   const icon = getItemIcon(selectedTypeId);
   if (added < amountWanted) {
-    player.sendMessage(`§e⚠ Chỉ rút được §a${icon} §e${added}x §f${selectedTypeId.replace("minecraft:", "")} §7(vì inventory đầy)`);
+    player.sendMessage(`§e⚠ Chỉ rút được §a${icon} §e${added}x §f${getDisplayName(selectedTypeId, null)} §7(vì inventory đầy)`);
   } else {
-    player.sendMessage(`§a✓ ${icon} §e${added}x §f${selectedTypeId.replace("minecraft:", "")} §7→ Inventory`);
+    player.sendMessage(`§a✓ ${icon} §e${added}x §f${getDisplayName(selectedTypeId, null)} §7→ Inventory`);
   }
 
   await showBackpackUI(player);
@@ -449,7 +514,7 @@ async function showViewItemsUI(player) {
     .filter(([, v]) => (Number(v) || 0) > 0)
     .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
 
-  let body = `§e=== Tất Cả Items (gộp theo ID) ===\n`;
+  let body = `§e=== Tất Cả Items (gộp theo tên) ===\n`;
   if (entries.length === 0) {
     body += "§7(Trống)\n";
   } else {
@@ -457,7 +522,7 @@ async function showViewItemsUI(player) {
     body += `§7Loại: §e${stats.distinct} §7• Tổng: §e${stats.total}\n\n`;
     for (const [typeId, amt] of entries) {
       const icon = getItemIcon(typeId);
-      body += `${icon} §f${typeId.replace("minecraft:", "")} §7x§e${amt}\n`;
+      body += `${icon} §f${getDisplayName(typeId, null)} §7x§e${amt}\n`;
     }
   }
 
@@ -534,4 +599,38 @@ system.runInterval(() => {
   }
 }, 100);
 
-broadcast("§a§l[BACKPACK] v2.2.0 - Gộp ID + Nhập số lượng + VN time (UTC+7)");
+system.runInterval(() => {
+  for (const player of world.getAllPlayers()) {
+    if (!getPlayerToggle(player, AUTO_DEPOSIT_KEY, false)) continue;
+
+    const inventory = player.getComponent("minecraft:inventory").container;
+    const store = loadStore(player);
+    let changed = false;
+
+    for (let i = 0; i < inventory.size; i++) {
+      const item = inventory.getItem(i);
+      if (!item || isBackpackItem(item) || isToolOrArmor(item)) continue;
+
+      const typeId = item.typeId;
+      const amount = item.amount;
+      if (amount <= 0) continue;
+
+      store[typeId] = (store[typeId] || 0) + amount;
+      inventory.setItem(i, undefined);
+      changed = true;
+    }
+
+    if (changed) saveStore(player, store);
+  }
+}, 40);
+
+system.runInterval(() => {
+  for (const player of world.getAllPlayers()) {
+    if (!getPlayerToggle(player, NIGHT_VISION_KEY, false)) continue;
+    try {
+      player.addEffect("night_vision", 260, { amplifier: 0, showParticles: false });
+    } catch (e) {}
+  }
+}, 200);
+
+broadcast("§a§l[BACKPACK] v2.3.0 - Tên item + Auto nhập kho + Night Vision");
