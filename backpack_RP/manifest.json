@@ -1,0 +1,17 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Infinite Backpack UI",
+    "description": "UI Resource Pack cho màn hình rút item (gộp theo tên)",
+    "uuid": "9123bbc7-b030-4cf6-88aa-ada90a284587",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 0]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "66582a75-285e-4654-a8ed-83573ee5f8f3",
+      "version": [1, 0, 0]
+    }
+  ]
+}
