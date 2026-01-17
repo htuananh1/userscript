@@ -1,7 +1,7 @@
 import { world } from "@minecraft/server";
 
 export const MESSAGES = {
-    PREFIX: "§8[§bClearLag§8]§r ",
+    PREFIX: "§l§6[HỆ THỐNG] ",
     INFO: "§7",
     SUCCESS: "§a",
     WARNING: "§e",

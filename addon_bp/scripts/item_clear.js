@@ -2,14 +2,38 @@ import { world } from "@minecraft/server";
 import { CONFIG } from "./config.js";
 import { MESSAGES } from "./message_system.js";
 
-const VANILLA_RARE_ITEMS = [
+const PROTECTED_ITEMS = [
     "minecraft:diamond",
+    "minecraft:emerald",
+    "minecraft:gold_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:coal",
+    "minecraft:lapis_lazuli",
+    "minecraft:redstone",
+    "minecraft:quartz",
+    "minecraft:copper_ingot",
     "minecraft:netherite_ingot",
     "minecraft:netherite_scrap",
+    "minecraft:amethyst_shard",
+    "minecraft:raw_iron",
+    "minecraft:raw_gold",
+    "minecraft:raw_copper",
     "minecraft:elytra",
-    "minecraft:dragon_egg",
+    "minecraft:totem_of_undying",
+    "minecraft:nether_star",
     "minecraft:beacon",
-    "minecraft:nether_star"
+    "minecraft:conduit",
+    "minecraft:dragon_egg",
+    "minecraft:enchanted_golden_apple",
+    "minecraft:golden_apple"
+];
+
+const PROTECTED_FAMILIES = [
+    "shulker_box",
+    "trident",
+    "bow",
+    "apple",
+    "book"
 ];
 
 export function clearDroppedItems() {
@@ -34,10 +58,11 @@ export function clearDroppedItems() {
             const itemStack = item.getComponent("minecraft:item").itemStack;
             const itemId = itemStack.typeId;
 
-            // Check if item is Vanilla Rare or in Safe Zone
-            const isRare = VANILLA_RARE_ITEMS.includes(itemId);
+            // Check if item is Protected or in Safe Zone
+            const isProtectedItem = PROTECTED_ITEMS.includes(itemId);
+            const isProtectedFamily = PROTECTED_FAMILIES.some(family => itemId.includes(family));
             
-            if (isRare || isSafe(item)) continue;
+            if (isProtectedItem || isProtectedFamily || isSafe(item)) continue;
 
             item.remove();
             removedCount++;
@@ -46,7 +71,7 @@ export function clearDroppedItems() {
         }
     }
 
-    MESSAGES.broadcast(`Cleanup complete. Removed ${removedCount} dropped items.`, "SUCCESS");
+    MESSAGES.broadcast(`Đã dọn dẹp xong. Xóa ${removedCount} vật phẩm rơi.`, "SUCCESS");
     return removedCount;
 }
 

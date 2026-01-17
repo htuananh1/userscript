@@ -8,6 +8,6 @@ export function updateActionBar() {
     const items = dimension.getEntities({ type: "minecraft:item" }).length;
 
     for (const player of world.getAllPlayers()) {
-        player.onScreenDisplay.setActionBar(`§bEntities: §f${allEntities} §8| §bItems: §f${items}`);
+        player.onScreenDisplay.setActionBar(`§bThực thể: §f${allEntities} §8| §bVật phẩm: §f${items}`);
     }
 }

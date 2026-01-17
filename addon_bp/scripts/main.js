@@ -44,7 +44,7 @@ system.runInterval(() => {
     timer--;
 
     if (CONFIG.AUTO_CLEAR.WARNINGS.includes(timer)) {
-        MESSAGES.broadcast(`Item cleanup will begin in ${timer} seconds.`, "WARNING");
+        MESSAGES.broadcast(`Dọn dẹp vật phẩm sẽ bắt đầu trong ${timer} giây.`, "WARNING");
     }
 
     if (timer <= 0) {
