@@ -67,29 +67,7 @@ function giveBackpackItem(player) {
   } catch (e) {}
 }
 
-function getItemIcon(typeId) {
-  const icons = {
-    diamond: "💎",
-    iron: "⚙️",
-    gold: "🟡",
-    emerald: "💚",
-    coal: "⚫",
-    wood: "🪵",
-    stone: "🪨",
-    dirt: "🟫",
-    apple: "🍎",
-    bread: "🍞",
-    sword: "⚔️",
-    pickaxe: "⛏️",
-    axe: "🪓",
-    bow: "🏹",
-    arrow: "➡️",
-  };
-  for (const [key, icon] of Object.entries(icons)) {
-    if (typeId.includes(key)) return icon;
-  }
-  return "📦";
-}
+const STORE_ITEM_LIMIT = 99999;
 
 function formatItemName(typeId) {
   const raw = String(typeId || "").replace("minecraft:", "");
@@ -99,11 +77,35 @@ function formatItemName(typeId) {
     .join(" ");
 }
 
+// Prefer localized display name from ItemStack (client language),
+// fallback to a readable typeId format when missing.
 function getDisplayName(typeId, sampleItem) {
   try {
-    if (sampleItem && sampleItem.nameTag) return sampleItem.nameTag;
+    if (sampleItem) {
+      const display = sampleItem.getComponent?.("minecraft:display_name");
+      const localized = display?.value;
+      if (localized) return localized;
+      if (sampleItem.nameTag) return sampleItem.nameTag;
+    }
   } catch (e) {}
   return formatItemName(typeId);
+}
+
+// Use a valid ItemStack for UI icon rendering (no null / fake).
+function addButtonWithItemIcon(form, label, itemStack) {
+  if (!itemStack) {
+    form.button(label);
+    return;
+  }
+  try {
+    form.button(label, itemStack);
+  } catch (e) {
+    try {
+      form.button(label, itemStack.typeId);
+    } catch (e2) {
+      form.button(label);
+    }
+  }
 }
 
 function isToolOrArmor(item) {
@@ -113,6 +115,90 @@ function isToolOrArmor(item) {
     if (durability) return true;
   } catch (e) {}
   return false;
+}
+
+function isFoodItem(item) {
+  if (!item) return false;
+  try {
+    return Boolean(item.getComponent?.("minecraft:food"));
+  } catch (e) {
+    return false;
+  }
+}
+
+function isNonMinecraftItem(typeId) {
+  return !String(typeId || "").startsWith("minecraft:");
+}
+
+function isBlockedMaterial(typeId) {
+  const id = String(typeId || "");
+  if (!id) return true;
+
+  if (id.includes("deepslate_ore") || id.endsWith("_ore")) return true;
+  if (id.startsWith("minecraft:raw_") || id.includes("_ingot")) return true;
+
+  const gems = [
+    "minecraft:diamond",
+    "minecraft:emerald",
+    "minecraft:lapis",
+    "minecraft:quartz",
+    "minecraft:redstone",
+    "minecraft:amethyst",
+    "minecraft:netherite",
+    "minecraft:coal",
+    "minecraft:charcoal",
+  ];
+  for (const gem of gems) {
+    if (id.includes(gem)) return true;
+  }
+
+  return false;
+}
+
+function isBlockedToolOrArmorId(typeId) {
+  const id = String(typeId || "");
+  if (!id) return true;
+  const blockedSuffixes = [
+    "_pickaxe",
+    "_axe",
+    "_shovel",
+    "_hoe",
+    "_helmet",
+    "_chestplate",
+    "_leggings",
+    "_boots",
+  ];
+  for (const suffix of blockedSuffixes) {
+    if (id.endsWith(suffix)) return true;
+  }
+  const blockedExact = [
+    "minecraft:fishing_rod",
+    "minecraft:shears",
+    "minecraft:flint_and_steel",
+    "minecraft:bow",
+    "minecraft:crossbow",
+    "minecraft:trident",
+  ];
+  return blockedExact.includes(id);
+}
+
+// Auto-deposit filter: whitelist minecraft namespace + block food/material/tool/armor.
+function shouldAutoDeposit(item) {
+  if (!item || isBackpackItem(item)) return false;
+  const typeId = item.typeId;
+  if (isNonMinecraftItem(typeId)) return false;
+  if (isFoodItem(item)) return false;
+  if (isToolOrArmor(item) || isBlockedToolOrArmorId(typeId)) return false;
+  if (isBlockedMaterial(typeId)) return false;
+  return true;
+}
+
+function createSampleItemStack(typeId) {
+  try {
+    return new ItemStack(typeId, 1);
+  } catch (e) {
+    return null;
+  }
 }
 
 function getPlayerToggle(player, key, defaultValue) {
@@ -196,7 +282,7 @@ function saveStore(player, store) {
     // Cleanup invalid / zero
     const cleaned = {};
     for (const [k, v] of Object.entries(store || {})) {
-      const amt = Math.floor(Number(v) || 0);
+      const amt = Math.min(Math.floor(Number(v) || 0), STORE_ITEM_LIMIT);
       if (amt > 0) cleaned[String(k)] = amt;
     }
     player.setDynamicProperty(STORE_KEY, JSON.stringify(cleaned));
@@ -383,10 +469,9 @@ async function showDepositUI(player) {
   form.body("§7Chọn item để nhập:");
 
   for (const typeId of typeIds) {
-    const icon = getItemIcon(typeId);
     const sampleItem = (slotsByType[typeId] || [])[0]?.sampleItem;
     const name = getDisplayName(typeId, sampleItem);
-    form.button(`${icon} ${name}\n§7Tổng: §e${totals[typeId]}`);
+    addButtonWithItemIcon(form, `${name}\n§7Tổng: §e${totals[typeId]}`, sampleItem);
   }
   form.button("§c« Back");
 
@@ -397,7 +482,15 @@ async function showDepositUI(player) {
   }
 
   const selectedTypeId = typeIds[response.selection];
-  const max = totals[selectedTypeId];
+  const store = loadStore(player);
+  const currentStored = Number(store[selectedTypeId]) || 0;
+  const maxCapacity = Math.max(0, STORE_ITEM_LIMIT - currentStored);
+  const max = Math.min(totals[selectedTypeId], maxCapacity);
+  if (max <= 0) {
+    player.sendMessage("§cKho đã đầy cho item này (99999).");
+    await showBackpackUI(player);
+    return;
+  }
 
   // Quantity input (textField) instead of slider
   const qForm = new ModalFormData();
@@ -426,12 +519,10 @@ async function showDepositUI(player) {
     return;
   }
 
-  const store = loadStore(player);
-  store[selectedTypeId] = (store[selectedTypeId] || 0) + removed;
+  store[selectedTypeId] = Math.min((store[selectedTypeId] || 0) + removed, STORE_ITEM_LIMIT);
   saveStore(player, store);
 
-  const icon = getItemIcon(selectedTypeId);
-  player.sendMessage(`§a✓ ${icon} §e${removed}x §f${getDisplayName(selectedTypeId, selectedSampleItem)} §7→ Backpack`);
+  player.sendMessage(`§a✓ §e${removed}x §f${getDisplayName(selectedTypeId, selectedSampleItem)} §7→ Backpack`);
   await showBackpackUI(player);
 }
 
@@ -453,9 +544,9 @@ async function showWithdrawUI(player) {
   form.body(`§7Chọn item để rút:`);
 
   for (const [typeId, amt] of entries) {
-    const icon = getItemIcon(typeId);
-    const name = getDisplayName(typeId, null);
-    form.button(`${icon} ${name}\n§7Tổng: §e${amt}`);
+    const sampleItem = createSampleItemStack(typeId);
+    const name = getDisplayName(typeId, sampleItem);
+    addButtonWithItemIcon(form, `${name}\n§7Tổng: §e${amt}`, sampleItem);
   }
   form.button("§c« Back");
 
@@ -466,10 +557,11 @@ async function showWithdrawUI(player) {
   }
 
   const [selectedTypeId, selectedTotal] = entries[response.selection];
+  const selectedSampleItem = createSampleItemStack(selectedTypeId);
   const max = Number(selectedTotal) || 0;
 
   const qForm = new ModalFormData();
-  qForm.title(`§eRút: ${getDisplayName(selectedTypeId, null)}`);
+  qForm.title(`§eRút: ${getDisplayName(selectedTypeId, selectedSampleItem)}`);
   qForm.textField(`§7Số lượng (1 → ${max})`, "VD: 64", String(max));
   qForm.toggle("§e✓ ALL (Tất cả)", true);
 
@@ -497,11 +589,10 @@ async function showWithdrawUI(player) {
   if ((Number(store[selectedTypeId]) || 0) <= 0) delete store[selectedTypeId];
   saveStore(player, store);
 
-  const icon = getItemIcon(selectedTypeId);
   if (added < amountWanted) {
-    player.sendMessage(`§e⚠ Chỉ rút được §a${icon} §e${added}x §f${getDisplayName(selectedTypeId, null)} §7(vì inventory đầy)`);
+    player.sendMessage(`§e⚠ Chỉ rút được §a${added}x §f${getDisplayName(selectedTypeId, selectedSampleItem)} §7(vì inventory đầy)`);
   } else {
-    player.sendMessage(`§a✓ ${icon} §e${added}x §f${getDisplayName(selectedTypeId, null)} §7→ Inventory`);
+    player.sendMessage(`§a✓ §e${added}x §f${getDisplayName(selectedTypeId, selectedSampleItem)} §7→ Inventory`);
   }
 
   await showBackpackUI(player);
@@ -521,8 +612,8 @@ async function showViewItemsUI(player) {
     const stats = getStoreStats(store);
     body += `§7Loại: §e${stats.distinct} §7• Tổng: §e${stats.total}\n\n`;
     for (const [typeId, amt] of entries) {
-      const icon = getItemIcon(typeId);
-      body += `${icon} §f${getDisplayName(typeId, null)} §7x§e${amt}\n`;
+      const sampleItem = createSampleItemStack(typeId);
+      body += `§f${getDisplayName(typeId, sampleItem)} §7x§e${amt}\n`;
     }
   }
 
@@ -609,14 +700,34 @@ system.runInterval(() => {
 
     for (let i = 0; i < inventory.size; i++) {
       const item = inventory.getItem(i);
-      if (!item || isBackpackItem(item) || isToolOrArmor(item)) continue;
+      if (!shouldAutoDeposit(item)) continue;
 
       const typeId = item.typeId;
       const amount = item.amount;
       if (amount <= 0) continue;
 
-      store[typeId] = (store[typeId] || 0) + amount;
-      inventory.setItem(i, undefined);
+      const currentStored = Number(store[typeId]) || 0;
+      const capacity = STORE_ITEM_LIMIT - currentStored;
+      if (capacity <= 0) continue;
+
+      const toMove = Math.min(amount, capacity);
+      store[typeId] = currentStored + toMove;
+
+      if (toMove >= amount) {
+        inventory.setItem(i, undefined);
+      } else {
+        const remain = amount - toMove;
+        const newStack = new ItemStack(typeId, remain);
+        try {
+          if (item.nameTag) newStack.nameTag = item.nameTag;
+        } catch (e) {}
+        try {
+          const lore = item.getLore?.() || [];
+          if (Array.isArray(lore) && lore.length > 0) newStack.setLore(lore);
+        } catch (e) {}
+        inventory.setItem(i, newStack);
+      }
+
       changed = true;
     }
 
