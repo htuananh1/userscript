@@ -15,7 +15,7 @@ if (world.beforeEvents && world.beforeEvents.chatSend) {
                 try {
                     clearDroppedItems();
                     limitEntities();
-                    MESSAGES.broadcast("Manual cleanup executed successfully.", "SUCCESS");
+                    MESSAGES.broadcast("Đã thực hiện dọn dẹp thủ công thành công.", "SUCCESS");
                 } catch (error) {
                     console.warn("Execution Error: " + error);
                 }
