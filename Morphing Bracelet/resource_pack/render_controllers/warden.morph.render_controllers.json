@@ -1,0 +1,136 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.morph.warden.first_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden" } ],
+      "textures": [ "Texture.warden" ],
+      "part_visibility": [
+        { "*": false },
+        { "right_arm": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "left_arm": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.warden_bioluminescent_layer.first_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_bioluminescent_layer" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "0.7"
+      },
+      "part_visibility": [
+        { "*": false },
+        { "right_arm": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "left_arm": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.warden_spots_1.first_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_spots_1" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "variable.spots_1_alpha"
+      },
+      "part_visibility": [
+        { "*": false },
+        { "right_arm": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "left_arm": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.warden_spots_2.first_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_spots_2" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "variable.spots_2_alpha"
+      },
+      "part_visibility": [
+        { "*": false },
+        { "right_arm": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "left_arm": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.warden_heart.first_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_heart" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "query.hurt_time > 0 ? 0.2 : variable.heart_alpha"
+      },
+      "part_visibility": [
+        { "*": false },
+        { "right_arm": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "left_arm": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.warden.third_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden" } ],
+      "textures": [ "Texture.warden" ]
+    },
+    "controller.render.morph.warden_bioluminescent_layer.third_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_bioluminescent_layer" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "0.7"
+      }
+    },
+    "controller.render.morph.warden_spots_1.third_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_spots_1" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "variable.spots_1_alpha"
+      }
+    },
+    "controller.render.morph.warden_spots_2.third_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_spots_2" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "variable.spots_2_alpha"
+      }
+    },
+    "controller.render.morph.warden_heart.third_person": {
+      "geometry": "Geometry.warden",
+      "materials": [ { "*": "Material.warden_bioluminescent_layer" } ],
+      "textures": [ "Texture.warden_heart" ],
+      "ignore_lighting": true,
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": "query.hurt_time > 0 ? 0.2 : variable.heart_alpha"
+      }
+    }
+  }
+}

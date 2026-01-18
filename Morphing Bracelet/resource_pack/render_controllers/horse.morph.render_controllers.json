@@ -1,0 +1,78 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.morph.horse.first_person": {
+      "arrays": {
+        "textures": {
+          "Array.base": [
+            "Texture.horse_base_white",
+            "Texture.horse_base_creamy",
+            "Texture.horse_base_chestnut",
+            "Texture.horse_base_brown",
+            "Texture.horse_base_black",
+            "Texture.horse_base_gray",
+            "Texture.horse_base_darkbrown"
+          ],
+          "Array.markings": [
+            "Texture.horse_markings_none",
+            "Texture.horse_markings_white",
+            "Texture.horse_markings_whitefield",
+            "Texture.horse_markings_whitedots",
+            "Texture.horse_markings_blackdots"
+          ]
+        }
+      },
+      "geometry": "Geometry.horse",
+      "materials": [
+        { "*": "Material.horse" }
+      ],
+      "textures": [
+        "Array.base[query.variant]",
+        "Array.markings[query.mark_variant]"
+      ],
+      "part_visibility": [
+        { "*": false },
+        { "LegFR": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "LegFL": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ]
+    },
+    "controller.render.morph.horse.third_person": {
+      "part_visibility": [
+        { "Saddle": "query.is_saddled" },
+        { "Bit*": "query.is_saddled" },
+        { "Bridle": "query.is_saddled" },
+        { "Reins*": "query.is_saddled && query.has_rider" },
+        { "Bag*": false },
+        { "MuleEar*": false }
+      ],
+      "arrays": {
+        "textures": {
+          "Array.base": [
+            "Texture.horse_base_white",
+            "Texture.horse_base_creamy",
+            "Texture.horse_base_chestnut",
+            "Texture.horse_base_brown",
+            "Texture.horse_base_black",
+            "Texture.horse_base_gray",
+            "Texture.horse_base_darkbrown"
+          ],
+          "Array.markings": [
+            "Texture.horse_markings_none",
+            "Texture.horse_markings_white",
+            "Texture.horse_markings_whitefield",
+            "Texture.horse_markings_whitedots",
+            "Texture.horse_markings_blackdots"
+          ]
+        }
+      },
+      "geometry": "Geometry.horse",
+      "materials": [
+        { "*": "Material.horse" }
+      ],
+      "textures": [
+        "Array.base[query.variant]",
+        "Array.markings[query.mark_variant]"
+      ]
+    }
+  }
+}
