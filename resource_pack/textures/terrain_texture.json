@@ -1,0 +1,9 @@
+{
+   "resource_pack_name" : "Morphing Bracelet",
+   "texture_data" : {
+      "morph:soul_glass" : {
+         "textures" : "textures/blocks/soul_glass"
+      }
+   },
+   "texture_name" : "atlas.terrain"
+}

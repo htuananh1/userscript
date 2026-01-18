@@ -1,0 +1,30 @@
+item.morph:morphing_bracelet=Morphing Bracelet
+item.morph:scroll_of_souls=Scroll of Souls
+item.morph:scroll_of_souls.filled=Scroll of Souls
+item.morph:scroll_of_souls.invalid=Morph into a mob to be able to use this item
+item.morph:teleportation=Teleportation
+item.morph:snowball=Snowball
+item.morph:small_fireball=Small Fireball
+item.morph:llama_spit=Llama Spit
+item.morph:wither_skull=Wither Skull
+item.morph:blue_wither_skull=Blue Wither Skull
+item.morph:fireball=Fireball
+item.morph:evoker_fangs=Evoker Fangs
+item.morph:guardian_curse=Guardian Curse
+item.morph:sonic_boom=Sonic Boom
+item.morph:dragon_fireball=Dragon Fireball
+item.morph:wind_charge=Wind Charge
+
+tile.morph:soul_glass.name=Soul Glass
+
+action.hint.exit.player=Tap sneak to dismount
+action.hint.exit.scheme.player=Tap dismount to dismount
+action.hint.exit.console.player=Press :_input_key.sneak: to dismount
+
+experiments.holiday_creator_features.warning=§c§lWARNING!§r§c The Holiday Creator Features experimental toggle is currently enabled.%s             Make sure to have it disabled for the add-on to work properly§r
+
+morph.menu.title=Morph Menu
+morph.unavailable.vanilla=This mob is currently in development and has not been added yet.
+morph.unavailable.modded=Mobs from other add-ons are not supported in this add-on.
+morph.shulker.invalid_location=This location is invalid, make sure you are standing on a solid block!
+morph.breeze.wind_charge_unavailable=The wind charge ability is currently not yet functional.

@@ -1,0 +1,32 @@
+{
+  "format_version": "1.21.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "morph:blue_wither_skull",
+      "menu_category": {
+        "category": "none",
+        "is_hidden_in_commands": true
+      }
+    },
+    "components": {
+      "minecraft:cooldown": {
+        "category": "morph:blue_wither_skull",
+        "duration": 3.35
+      },
+      "minecraft:custom_components": [
+        "morph:blue_wither_skull"
+      ],
+      "minecraft:glint": {
+        "value": true
+      },
+      "minecraft:icon": {
+        "textures": {
+          "default": "morph:blue_wither_skull"
+        }
+      },
+      "minecraft:max_stack_size": {
+        "value": 1
+      }
+    }
+  }
+}

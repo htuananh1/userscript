@@ -1,0 +1,24 @@
+{
+  "format_version": "1.16",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "morph:morphing_bracelet"
+    },
+    "tags": [ "crafting_table" ],
+    "pattern": [
+      "X X",
+      "XOX"
+    ],
+    "key": {
+      "X": {
+        "item": "minecraft:soul_soil"
+      },
+      "O": {
+        "item": "morph:soul_glass"
+      }
+    },
+    "result": {
+      "item": "morph:morphing_bracelet"
+    }
+  }
+}

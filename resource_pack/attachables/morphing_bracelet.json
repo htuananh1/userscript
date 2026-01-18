@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:attachable": {
+    "description": {
+      "identifier": "morph:morphing_bracelet",
+      "item": "morph:morphing_bracelet",
+      "materials": {
+        "default": "entity_emissive_alpha"
+      },
+      "textures": {
+        "default": "textures/models/morphing_bracelet"
+      },
+      "geometry": {
+        "default": "geometry.morphing_bracelet"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.is_visible = query.is_owner_identifier_any('minecraft:player') ? (query.property('morph:entity') == 0 || query.property('morph:entity') == 1 || query.property('morph:entity') == 3 || query.property('morph:entity') == 11 || query.property('morph:entity') == 13 || query.property('morph:entity') == 15 || query.property('morph:entity') == 19 || query.property('morph:entity') == 21 || query.property('morph:entity') == 25 || query.property('morph:entity') == 31 || query.property('morph:entity') == 79) : true;"
+        ]
+      },
+      "render_controllers": [ "controller.render.morphing_bracelet" ]
+    }
+  }
+}

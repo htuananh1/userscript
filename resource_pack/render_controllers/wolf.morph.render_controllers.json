@@ -1,0 +1,84 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.morph.wolf.first_person": {
+      "arrays": {
+        "textures": {
+          "Array.default": [
+            "Texture.wolf_pale_default",
+            "Texture.wolf_ashen_default",
+            "Texture.wolf_black_default",
+            "Texture.wolf_chestnut_default",
+            "Texture.wolf_rusty_default",
+            "Texture.wolf_snowy_default",
+            "Texture.wolf_spotted_default",
+            "Texture.wolf_striped_default",
+            "Texture.wolf_woods_default"
+          ],
+          "Array.tame": [
+            "Texture.wolf_pale_tame",
+            "Texture.wolf_ashen_tame",
+            "Texture.wolf_black_tame",
+            "Texture.wolf_chestnut_tame",
+            "Texture.wolf_rusty_tame",
+            "Texture.wolf_snowy_tame",
+            "Texture.wolf_spotted_tame",
+            "Texture.wolf_striped_tame",
+            "Texture.wolf_woods_tame"
+          ]
+        }
+      },
+      "geometry": "Geometry.wolf",
+      "materials": [ { "*": "Material.wolf" } ],
+      "textures": [ "query.is_tamed ? Array.tame[query.variant] : Array.default[query.variant]" ],
+      "part_visibility": [
+        { "*": false },
+        { "leg2": "query.get_equipped_item_name(0, 1) == '' || query.get_equipped_item_name(0, 1) == 'filled_map' || query.get_equipped_item_name(0) == 'morphing_bracelet'" },
+        { "leg3": "(query.get_equipped_item_name(0, 1) == 'filled_map' && query.get_equipped_item_name('off_hand') != 'shield') || (query.get_equipped_item_name('off_hand') == 'filled_map' && !query.item_is_charged) || (!query.item_is_charged && (variable.item_use_normalized > 0 && variable.item_use_normalized < 1.0))" }
+      ],
+      "color": {
+        "r": "variable.color.r",
+        "g": "variable.color.g",
+        "b": "variable.color.b",
+        "a": 1.0
+      }
+    },
+    "controller.render.morph.wolf.third_person": {
+      "arrays": {
+        "textures": {
+          "Array.default": [
+            "Texture.wolf_pale_default",
+            "Texture.wolf_ashen_default",
+            "Texture.wolf_black_default",
+            "Texture.wolf_chestnut_default",
+            "Texture.wolf_rusty_default",
+            "Texture.wolf_snowy_default",
+            "Texture.wolf_spotted_default",
+            "Texture.wolf_striped_default",
+            "Texture.wolf_woods_default"
+          ],
+          "Array.tame": [
+            "Texture.wolf_pale_tame",
+            "Texture.wolf_ashen_tame",
+            "Texture.wolf_black_tame",
+            "Texture.wolf_chestnut_tame",
+            "Texture.wolf_rusty_tame",
+            "Texture.wolf_snowy_tame",
+            "Texture.wolf_spotted_tame",
+            "Texture.wolf_striped_tame",
+            "Texture.wolf_woods_tame"
+          ]
+        }
+      },
+      "geometry": "Geometry.wolf",
+      "materials": [ { "*": "Material.wolf" } ],
+      "textures": [ "query.is_tamed ? Array.tame[query.variant] : Array.default[query.variant]" ],
+      "color": {
+        "r": "variable.color.r",
+        "g": "variable.color.g",
+        "b": "variable.color.b",
+        "a": 1.0
+      }
+    }
+  }
+}

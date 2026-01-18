@@ -1,0 +1,13 @@
+{
+	"format_version" : "1.8.0",
+	"animations" : {
+		"animation.morph.guardian.move_eye" : {
+			"loop" : true,
+			"bones" : {
+				"eye" : {
+					"position" : [ "-this", "25 - this", "-8.25 - this" ]
+				}
+			}
+		}
+	}
+}

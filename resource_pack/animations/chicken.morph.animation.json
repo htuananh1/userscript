@@ -1,0 +1,16 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.morph.chicken.move": {
+			"loop": true,
+			"bones": {
+				"leg0": {
+					"rotation": ["(math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) *  80.0", 0, 0]
+				},
+				"leg1": {
+					"rotation": ["(math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * -80.0", 0, 0]
+				}
+			}
+		}
+	}
+}

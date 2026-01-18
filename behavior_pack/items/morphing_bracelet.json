@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "morph:morphing_bracelet",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:custom_components": [
+        "morph:morphing_bracelet"
+      ],
+      "minecraft:durability": {
+        "max_durability": 100
+      },
+      "minecraft:icon": {
+        "textures": {
+          "default": "morph:morphing_bracelet"
+        }
+      },
+      "minecraft:max_stack_size": {
+        "value": 1
+      }
+    }
+  }
+}

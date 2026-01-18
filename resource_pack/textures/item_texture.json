@@ -1,0 +1,42 @@
+{
+   "resource_pack_name" : "Morphing Bracelet",
+   "texture_data" : {
+      "morph:morphing_bracelet" : {
+         "textures" : "textures/items/morphing_bracelet"
+      },
+      "morph:scroll_of_souls" : {
+         "textures" : "textures/items/scroll_of_souls"
+      },
+      "morph:scroll_of_souls.filled" : {
+         "textures" : "textures/items/scroll_of_souls.filled"
+      },
+      "morph:llama_spit" : {
+         "textures" : "textures/items/llama_spit"
+      },
+      "morph:wither_skull" : {
+         "textures" : "textures/items/wither_skull"
+      },
+      "morph:blue_wither_skull" : {
+         "textures" : "textures/items/blue_wither_skull"
+      },
+      "morph:vex" : {
+         "textures" : "textures/items/vex"
+      },
+      "morph:vex_spawned" : {
+         "textures" : "textures/items/vex_spawned"
+      },
+      "morph:evoker_fangs" : {
+         "textures" : "textures/items/evoker_fangs"
+      },
+      "morph:guardian_curse" : {
+         "textures" : "textures/items/guardian_curse"
+      },
+      "morph:sonic_boom" : {
+         "textures" : "textures/items/sonic_boom"
+      },
+      "morph:dragon_fireball" : {
+         "textures" : "textures/items/dragon_fireball"
+      }
+   },
+   "texture_name" : "atlas.items"
+}

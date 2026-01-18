@@ -1,0 +1,16 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.morphing_bracelet": {
+      "geometry": "Geometry.default",
+      "materials": [ { "*": "Material.default" } ],
+      "textures": [ "Texture.default" ],
+      "part_visibility": [
+        { "0": "variable.is_visible && math.mod(math.floor(query.life_time * 6), 4) == 0" },
+        { "1": "variable.is_visible && math.mod(math.floor(query.life_time * 6), 4) == 1" },
+        { "2": "variable.is_visible && math.mod(math.floor(query.life_time * 6), 4) == 2" },
+        { "3": "variable.is_visible && math.mod(math.floor(query.life_time * 6), 4) == 3" }
+      ]
+    }
+  }
+}

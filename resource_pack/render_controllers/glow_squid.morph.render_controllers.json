@@ -1,0 +1,10 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.morph.glow_squid": {
+      "geometry": "Geometry.glow_squid",
+      "materials": [ { "*": "Material.glow_squid" } ],
+      "textures": [ "Texture.glow_squid" ]
+    }
+  }
+}
