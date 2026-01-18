@@ -1,0 +1,15 @@
+{
+    "format_version": "1.21.20",
+    "chest:infinite_chest": {
+        "textures": {
+            "down" : "infinite_chest_side",
+            "east" : "infinite_chest_side",
+            "north" : "infinite_chest_front",
+            "south" : "infinite_chest_side",
+            "up" : "infinite_chest_top",
+            "west" : "infinite_chest_side"
+            
+        }, // This texture shortname should be defined in `terrain_texture.json`, as shown below
+        "sound": "metal"
+    }
+}

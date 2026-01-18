@@ -1,0 +1,6 @@
+tile.chest:infinite_chest.name=Infinite chest
+item.chest:next_page=Next page
+item.chest:previous_page=Previous page
+entity.chest:chest.name=Chest entity
+entity.chest:temp_chest.name=infinite chest
+item.chest:settings=Chest Settings

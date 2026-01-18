@@ -1,0 +1,33 @@
+{
+    "resource_pack_name": "wiki",
+    "texture_name": "atlas.items",
+    "texture_data": {
+        "next_page": {
+            "textures": "textures/ui/my_right_arrow.png"
+        },
+        "previous_page": {
+            "textures": "textures/ui/my_left_arrow.png"
+        },
+        "low_arrow": {
+            "textures": "textures/ui/low_arrow.png"
+        },
+        "up": {
+            "textures": "textures/ui/up.png"
+        },
+        "lock": {
+            "textures": "textures/ui/lock.png"
+        },
+        "unlock": {
+            "textures": "textures/ui/unlock.png"
+        },
+        "triple_right_arrow": {
+            "textures": "textures/ui/triple_right.png"
+        },
+        "triple_left_arrow": {
+            "textures": "textures/ui/triple_left.png"
+        },
+        "gear": {
+            "textures": "textures/ui/gear.png"
+        }
+    }
+}
