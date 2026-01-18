@@ -1,0 +1,33 @@
+{
+	"format_version" : "1.8.0",
+	"animations" : {
+		"animation.morph.tropical_fish.flop" : {
+			"loop" : true,
+			"bones" : {
+				"body" : {
+					"position" : [ "query.variant == 0 ? -1.0 : (query.variant == 1 ? -2.5 : 0.0)", 0.0, 0.0 ],
+					"rotation" : [ 0.0, "math.cos((query.time_stamp + query.frame_alpha) * 45.0) * 2.0", 90.0 ]
+				},
+				"tailfin" : {
+					"rotation" : [ 0.0, "math.cos((query.time_stamp + query.frame_alpha) * 45.0) * -25.75", 0.0 ]
+				}
+			}
+		},
+		"animation.morph.tropical_fish.swim" : {
+			"loop" : true,
+			"bones" : {
+				"tailfin" : {
+					"rotation" : [ 0.0, "math.cos((query.time_stamp + query.frame_alpha) * 30.0) * -25.75", 0.0 ]
+				}
+			}
+		},
+		"animation.morph.tropical_fish.look_at_target": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"rotation": [ 0.0, "query.target_y_rotation", 0.0 ]
+				}
+			}
+		}
+	}
+}
