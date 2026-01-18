@@ -1,0 +1,45 @@
+{
+  "main_screen_content": {
+    "type": "panel",
+    "size": ["100%", "100%"],
+    "controls": [
+      {
+        "server_form_factory": {
+          "type": "factory",
+          "control_ids": {
+            "long_form": "@server_form.long_forms",
+            "custom_form": "@server_form.custom_form"
+          }
+        }
+      }
+    ]
+  },
+  "long_forms": {
+    "type": "panel",
+    "size": ["100%", "100%"],
+    "controls": [
+      {
+        "vanilla_long_form@server_form.long_form": {
+          "bindings": [
+            {
+              "binding_type": "view",
+              "source_property_name": "(not (#form_text = 'morph:morph_menu'))",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "morph_long_form@morph_menu.long_form": {
+          "bindings": [
+            {
+              "binding_type": "view",
+              "source_property_name": "(#form_text = 'morph:morph_menu')",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

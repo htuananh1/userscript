@@ -1,0 +1,162 @@
+{
+  "namespace": "morph_menu",
+
+  "dynamic_dialog_screen@common.base_screen": {
+    "type": "screen",
+    "$screen_content": "morph_menu.screen_content",
+    "$header_safezone_control": "common_store.store_top_bar_filler",
+    "$header_bar_control": "common_store.store_top_bar",
+    "$is_full_screen_layout": true
+  },
+
+  "screen_content": {
+    "type": "panel",
+    "controls": [
+      {
+        "common_panel@common.fullscreen_header": {
+          "$dialog_background": "dialog_background_hollow_3"
+        }
+      },
+      {
+        "title_label@common_dialogs.title_label": {
+          "$title_offset": [ 0, 6 ]
+        }
+      }
+    ]
+  },
+
+  "long_form@morph_menu.dynamic_dialog_screen": {
+    "$title_panel": "common_dialogs.standard_title_label",
+    "$title_size": [ "100% - 14px", 10 ],
+    "size": ["100%", "100%"],
+    "$text_name": "#title_text",
+    "$title_text_binding_type": "none",
+    "$child_control": "morph_menu.long_form_panel",
+    "layer": 2
+  },
+
+  "long_form_panel" : {
+    "type": "stack_panel",
+    "size": ["100%", "100%"],
+    "orientation": "vertical",
+    "layer": 1,
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "controls": [
+      
+      {
+        "scrolling_panel@common.scrolling_panel": {
+          "anchor_to": "top_left",
+          "anchor_from": "top_left",
+          "$show_background": false,
+          "size": [ "100%", "100%" ],
+          "$scrolling_content": "morph_menu.long_form_scrolling_content",
+          "$scroll_size": [ 5, "100% - 4px" ],
+          "$scrolling_pane_size": [ "100% - 4px", "100% - 2px" ],
+          "$scrolling_pane_offset": [ 2, 0 ],
+          "$scroll_bar_right_padding_size": [ 0, 0 ]
+        }
+      }
+    ]
+  },
+
+  "long_form_scrolling_content": {
+    "type": "stack_panel",
+    "size": [ "100% - 4px", "100%c" ],
+    "orientation": "vertical",
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+
+    "controls": [
+      {
+        "padding": {
+          "type": "panel",
+          "size": [ "100%", 4 ]
+        }
+      },
+      {
+        "wrapping_panel": {
+          "type": "panel",
+          "size": [ "100%", "100%c" ],
+          "controls": [
+            {
+              "long_form_dynamic_buttons_panel@morph_menu.long_form_dynamic_buttons_panel": {}
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "long_form_dynamic_buttons_panel": {
+    "type": "grid",
+    "size": ["100%", "100%c"],
+    "grid_item_template": "morph_menu.dynamic_button",
+    "grid_rescaling_type": "horizontal",
+    "anchor_from": "top_middle",
+    "anchor_to": "top_middle",
+
+    "collection_name": "form_buttons",
+    "bindings": [
+      {
+        "binding_name": "#form_button_length",
+        "binding_name_override": "#maximum_grid_items"
+      }
+    ]
+  },
+
+  "dynamic_button": {
+    "type": "panel",
+    "size": [64, 64],
+    "controls":[
+      {
+        "image": {
+          "type": "image",
+          "layer": 9,
+          "size": [36, 36],
+          "offset": [0, 0],
+          "bindings":[
+            {
+              "binding_name": "#form_button_texture",
+              "binding_name_override": "#texture",
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons"
+            },
+            {
+              "binding_name": "#form_button_texture_file_system",
+              "binding_name_override": "#texture_file_system",
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons"
+            },
+            {
+              "binding_type": "view",
+              "source_property_name": "(not ((#texture = '') or (#texture = 'loading')))",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "form_button@common_buttons.light_text_button": {
+          "$default_button_texture": "textures/ui/morph_button",
+          "$hover_button_texture": "textures/ui/morph_button_pressed",
+          "$pressed_button_texture": "textures/ui/morph_button_pressed",
+          "$locked_button_texture": "textures/ui/morph_button",
+          "$border_visible": false,
+          "$default_button_alpha": 0.5,
+          "$default_hover_alpha": 0.25,
+          "$default_pressed_alpha": 0.5,
+          "$default_locked_alpha": 0.25,
+          "$pressed_button_name": "button.form_button_click",
+          "size": [ 64, 64 ],
+          "bindings": [
+            {
+              "binding_type": "collection_details",
+              "binding_collection_name": "form_buttons"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
