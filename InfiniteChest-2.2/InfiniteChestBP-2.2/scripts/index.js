@@ -151,11 +151,20 @@ class InfiniteChest {
 		this.filterPage = 0;
 		this.filterItem = undefined;
 		this.preFilterPage = undefined;
+		this.openedFromItem = false;
 	}
 	static groupIndex(page){ return Math.floor(page/4); }
 	static keyForGroup(playerId, groupIndex){ return `${playerId.replace(/[^A-Za-z0-9_]/g, "_")}_${groupIndex}`; }
 	get tempInv(){ return this.tempEntity?.getComponent("minecraft:inventory")?.container; }
 	ensureTempEntity(blockLookedAt, faceLocation){
+		const targetLocation = {
+			x: blockLookedAt.location.x + faceLocation.x,
+			y: blockLookedAt.location.y + faceLocation.y,
+			z: blockLookedAt.location.z + faceLocation.z
+		};
+		this.ensureTempEntityAt(targetLocation, false);
+	}
+	ensureTempEntityAt(targetLocation, openedFromItem){
 		// if locked, do nothing
 		let locked = false;
 		if (this.tempEntity) {
@@ -169,27 +178,29 @@ class InfiniteChest {
 			if (element.startsWith("temp_chest:")) { exist = true; entityId = element.replace("temp_chest:", ""); }
 		});
 		if (!exist) {
-			let entity = this.player.dimension.spawnEntity("chest:temp_chest", {x: blockLookedAt.location.x + faceLocation.x, y: blockLookedAt.location.y + faceLocation.y, z: blockLookedAt.location.z + faceLocation.z});
+			let entity = this.player.dimension.spawnEntity("chest:temp_chest", targetLocation);
 			entity.addTag("player:" + this.player.id);
 			const tameable = entity.getComponent("minecraft:tameable");
 			tameable.tame(this.player);
 			let key = "temp_chest:" + entity.id;
 			this.player.setDynamicProperty(key, key);
 			entity.addTag("page:0");
-			entity.nameTag = "§c§h§e§s§t§l§cInfinite Chest";
+			entity.nameTag = "§c§h§e§s§t§l§cRương Vô Hạn";
 			this.tempEntity = entity;
 			this.page = 0;
+			this.openedFromItem = openedFromItem;
 			this.preparePage(0);
 		} else {
 			try {
 				let entity = world.getEntity(entityId);
 				this.tempEntity = entity;
-				let z= blockLookedAt.location.z + faceLocation.z;
-				let y= blockLookedAt.location.y + faceLocation.y;
-				let x= blockLookedAt.location.x + faceLocation.x;
+				let z= targetLocation.z;
+				let y= targetLocation.y;
+				let x= targetLocation.x;
 				if (entity.location.x != Math.floor(x) && entity.location.y != Math.floor(y) && entity.location.z != Math.floor(z)) {
 					entity.teleport({x: x,y: y,z: z});
 				}
+				this.openedFromItem = openedFromItem;
 			} catch {
 				this.cleanup(true);
 			}
@@ -239,37 +250,37 @@ class InfiniteChest {
 				}
 			} catch { inv.setItem(i - 63 * (page % 4), undefined); }
 		}
-		let item = new ItemStack("chest:next_page", 1); item.nameTag = "§l§3Page §a" + JSON.stringify(page + 2); item.setLore(["§r§7Go to next page"]); inv.setItem(64, item);
+		let item = new ItemStack("chest:next_page", 1); item.nameTag = "§l§3Trang §a" + JSON.stringify(page + 2); item.setLore(["§r§7Sang trang tiếp theo"]); inv.setItem(64, item);
 		
 		// Show lock item when unlocked, unlock item when locked
 		if (this.tempEntity.hasTag("locked")) {
 			item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở khóa rương"; 
+			item.setLore(["§r§7Bấm để mở khóa rương"]);
 		} else {
 			item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa rương"; 
+			item.setLore(["§r§7Bấm để khóa rương", "§r§7Cho phép rương hoạt động với phễu"]);
 		}
 		inv.setItem(65, item);
 		
-		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aTake 5 items"; inv.setItem(66, item);
-		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aTake 18 items"; inv.setItem(67, item);
-		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aTake 36 items"; inv.setItem(68, item);
-		item = new ItemStack("chest:up", 9); item.nameTag = "§aMove this row"; inv.setItem(69, item); inv.setItem(70, item); inv.setItem(71, item); inv.setItem(72, item);
+		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aLấy 5 vật phẩm"; inv.setItem(66, item);
+		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aLấy 18 vật phẩm"; inv.setItem(67, item);
+		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aLấy 36 vật phẩm"; inv.setItem(68, item);
+		item = new ItemStack("chest:up", 9); item.nameTag = "§aChuyển hàng này"; inv.setItem(69, item); inv.setItem(70, item); inv.setItem(71, item); inv.setItem(72, item);
 		
 		// Add triple page navigation buttons
 		item = new ItemStack("chest:triple_left", 1); 
-		item.nameTag = "§l§3Page §a" + JSON.stringify(Math.max(0, page - 9)); 
-		item.setLore(["§r§7Go back 10 pages"]); 
+		item.nameTag = "§l§3Trang §a" + JSON.stringify(Math.max(0, page - 9)); 
+		item.setLore(["§r§7Lùi 10 trang"]); 
 		inv.setItem(73, item);
 		
 		item = new ItemStack("chest:triple_right", 1); 
-		item.nameTag = "§l§3Page §a" + JSON.stringify(page + 11); 
-		item.setLore(["§r§7Go forward 10 pages"]); 
+		item.nameTag = "§l§3Trang §a" + JSON.stringify(page + 11); 
+		item.setLore(["§r§7Tiến 10 trang"]); 
 		inv.setItem(74, item);
 		
-		if (page > 0) { let pitem = new ItemStack("chest:previous_page", 1); pitem.nameTag = "§l§3Page §a" + JSON.stringify(page); pitem.setLore(["§r§7Go to previous page"]); inv.setItem(63, pitem); } else { inv.setItem(63, undefined); }
+		if (page > 0) { let pitem = new ItemStack("chest:previous_page", 1); pitem.nameTag = "§l§3Trang §a" + JSON.stringify(page); pitem.setLore(["§r§7Quay lại trang trước"]); inv.setItem(63, pitem); } else { inv.setItem(63, undefined); }
 		let entitytags = this.tempEntity.getTags();
 		entitytags.forEach((element) => { if (element.startsWith("page:")) this.tempEntity.removeTag(element); });
 		if (!this.tempEntity.hasTag("prepared")) this.tempEntity.addTag("prepared");
@@ -332,26 +343,26 @@ class InfiniteChest {
 		}
 		// navigation conditionally
 		if (this.filterPage > 0) {
-			let p = new ItemStack("chest:previous_page", 1); p.nameTag = "§l§3Page §a" + JSON.stringify(this.filterPage); p.setLore(["§r§7Prev filtered page"]); inv.setItem(63, p);
+			let p = new ItemStack("chest:previous_page", 1); p.nameTag = "§l§3Trang §a" + JSON.stringify(this.filterPage); p.setLore(["§r§7Trang lọc trước"]); inv.setItem(63, p);
 		} else { inv.setItem(63, undefined); }
 		if (this.filterPage < maxPageIndex) {
-			let n = new ItemStack("chest:next_page", 1); n.nameTag = "§l§3Page §a" + JSON.stringify(this.filterPage + 2); n.setLore(["§r§7Next filtered page"]); inv.setItem(64, n);
+			let n = new ItemStack("chest:next_page", 1); n.nameTag = "§l§3Trang §a" + JSON.stringify(this.filterPage + 2); n.setLore(["§r§7Trang lọc tiếp theo"]); inv.setItem(64, n);
 		} else { inv.setItem(64, undefined); }
 		// lock/unlock and take buttons in filter mode
 		let item;
 		if (this.tempEntity.hasTag("locked")) {
 			item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở khóa rương"; 
+			item.setLore(["§r§7Bấm để mở khóa rương"]);
 		} else {
 			item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa rương"; 
+			item.setLore(["§r§7Bấm để khóa rương", "§r§7Cho phép rương hoạt động với phễu"]);
 		}
 		inv.setItem(65, item);
-		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aTake 5 items"; inv.setItem(66, item);
-		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aTake 18 items"; inv.setItem(67, item);
-		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aTake 36 items"; inv.setItem(68, item);
+		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aLấy 5 vật phẩm"; inv.setItem(66, item);
+		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aLấy 18 vật phẩm"; inv.setItem(67, item);
+		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aLấy 36 vật phẩm"; inv.setItem(68, item);
 		for (let i=69;i<=74;i++){
 			try { inv.setItem(i, undefined); } catch {}
 		}
@@ -515,23 +526,23 @@ class InfiniteChest {
 		const inv = this.tempInv; if (!inv) return;
 		let locked = false; this.tempEntity.getTags().forEach(t=>{ if (t.startsWith("locked")) locked = true; });
 		if (!locked) { 
-			this.player.sendMessage("Chest locked"); 
+			this.player.sendMessage("Đã khóa rương"); 
 			clearItems(this.player); 
 			this.tempEntity.addTag("locked"); 
 			// Manually change to unlock item
 			let item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở khóa rương"; 
+			item.setLore(["§r§7Bấm để mở khóa rương"]);
 			inv.setItem(65, item);
 		}
 		else { 
-			this.player.sendMessage("Chest unlocked"); 
+			this.player.sendMessage("Đã mở khóa rương"); 
 			clearItems(this.player); 
 			this.tempEntity.removeTag("locked"); 
 			// Manually change to lock item
 			let item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa rương"; 
+			item.setLore(["§r§7Bấm để khóa rương", "§r§7Cho phép rương hoạt động với phễu"]);
 			inv.setItem(65, item);
 		}
 	}
@@ -688,6 +699,7 @@ class InfiniteChest {
 			this.preFilterPage = undefined; // Clear the preFilterPage
 			this.filterPage = 0;
 			this.filterDisplayStart = 0;
+			this.openedFromItem = false;
 			// As a safety net, sweep any leftover orphaned entities when forced
 			if (force) { try { chestManager.sweepPlayerTempChests(this.player); } catch {} }
 		}
@@ -905,6 +917,7 @@ class InfiniteChestManager {
 			}
 			
 			const blockRay = player.getBlockFromViewDirection();
+			const inst = this.get(player);
 			
 			// Improved raycast calculation
 			const headLocation = player.getHeadLocation();
@@ -925,14 +938,23 @@ class InfiniteChestManager {
 			if (blockRay?.block?.isValid) {
 				if (blockRay.block.typeId === "chest:infinite_chest") {
 					if (!player.isSneaking) {
-						this.get(player).ensureTempEntity(blockRay.block, blockRay.faceLocation);
+						inst.ensureTempEntity(blockRay.block, blockRay.faceLocation);
 					} else {
 						// If sneaking while looking at the chest and a temp entity exists, cleanup
-						const inst = this.get(player);
 						if (inst.tempEntity) inst.cleanup(false);
 					}
 				} else {
-					this.get(player).cleanup(false);
+					if (!inst.openedFromItem) {
+						inst.cleanup(false);
+					} else if (!isHoldingInfiniteChestItem(player)) {
+						inst.cleanup(false);
+					}
+				}
+			} else {
+				if (!inst.openedFromItem) {
+					inst.cleanup(false);
+				} else if (!isHoldingInfiniteChestItem(player)) {
+					inst.cleanup(false);
 				}
 			}
 			
@@ -940,7 +962,7 @@ class InfiniteChestManager {
 			if (!player.isSneaking && entityRaycast && entityRaycast.length > 0) {
 				const hitEntity = entityRaycast[0].entity;
 				if (hitEntity && hitEntity.isValid && hitEntity.typeId === "chest:temp_chest") {
-					this.get(player).handleEntityRaycast(hitEntity);
+					inst.handleEntityRaycast(hitEntity);
 				}
 			}
 		}
@@ -956,9 +978,18 @@ world.afterEvents.worldLoad.subscribe(() => {
 });
 
 world.afterEvents.itemUse.subscribe((data) => {
+  if (data.itemStack.typeId == "chest:infinite_chest") {
+	const player = data.source;
+	ensureChestManager();
+	const inst = chestManager?.get(player);
+	if (!inst) return;
+	const spawnLocation = getPortableChestLocation(player);
+	inst.ensureTempEntityAt(spawnLocation, true);
+	return;
+  }
   if (data.itemStack.typeId == "chest:settings") {
     let player = data.source;
-    let actionform = new ActionFormData().title("Chest Settings").button("§2Unlock").button("§gClean").button("§cForce Clean");
+    let actionform = new ActionFormData().title("Cài đặt rương").button("§2Mở khóa").button("§gDọn dẹp").button("§cDọn dẹp cưỡng bức");
     actionform.show(player).then((response) =>{
       if (response.canceled) return;
       let tags = player.getDynamicPropertyIds();
@@ -976,10 +1007,10 @@ world.afterEvents.itemUse.subscribe((data) => {
       if (response.selection == 0) {
         if (entity) {
           entity.removeTag("locked");
-          player.sendMessage("§aUnlocked");
+          player.sendMessage("§aĐã mở khóa");
         }
         else {
-          player.sendMessage("§6Chest already unlocked");
+          player.sendMessage("§6Rương đã được mở khóa");
         }
       }
       else if (response.selection == 1) {
@@ -990,22 +1021,22 @@ world.afterEvents.itemUse.subscribe((data) => {
       else if (response.selection == 2) {
         // Force Clean option - show confirmation dialog
         const confirmForm = new MessageFormData()
-          .title("§cForce Clean Confirmation")
-          .body("§7This may interfere with other players' unsaved chests.\n\n§cAre you sure you want to continue?")
-          .button1("§cYes, Force Clean")
-          .button2("§aCancel");
+          .title("§cXác nhận dọn dẹp cưỡng bức")
+          .body("§7Thao tác này có thể ảnh hưởng đến rương chưa lưu của người chơi khác.\n\n§cBạn chắc chắn muốn tiếp tục?")
+          .button1("§cCó, dọn dẹp cưỡng bức")
+          .button2("§aHủy");
         
         confirmForm.show(player).then((confirmResponse) => {
           if (confirmResponse.canceled || confirmResponse.selection !== 0) {
-            player.sendMessage("§6Force clean cancelled");
+            player.sendMessage("§6Đã hủy dọn dẹp cưỡng bức");
             return;
           }
           
           // Perform force clean
           chestManager.forceCleanTempChests();
-          player.sendMessage("§aForce clean completed - removed all orphaned temp chest entities");
+          player.sendMessage("§aHoàn tất dọn dẹp cưỡng bức - đã xóa các rương tạm bị bỏ lại");
         }).catch((error) => {
-          player.sendMessage("§cError showing confirmation dialog: " + error);
+          player.sendMessage("§cLỗi hiển thị hộp thoại xác nhận: " + error);
         });
       }
     })
@@ -1030,16 +1061,7 @@ world.afterEvents.playerSpawn.subscribe((data) => {
 	initPageCountIfMissing(player);
 
 	  // Add a small delay to ensure QIDB is fully initialized
-	  if (!chestManager){
-		chestManager = new InfiniteChestManager(chestDB);
-		
-		system.runInterval(() => {
-		  if (chestManager) {
-			chestManager.tick();
-		  }
-		}, 1);
-
-	}
+	  ensureChestManager();
 	// Set tick delay for this player (5 ticks delay)
 	if (chestManager) {
 		chestManager.playerTickDelays.set(player.id, system.currentTick + 5);
@@ -1067,13 +1089,13 @@ function takeItems (x, temp,inv,player) {
   catch {}
   }
   let item = new ItemStack("chest:arrow", 5);
-  item.nameTag = "§aTake 5 items";
+  item.nameTag = "§aLấy 5 vật phẩm";
   temp.setItem(66, item);
   item = new ItemStack("chest:arrow", 18);
-  item.nameTag = "§aTake 18 items";
+  item.nameTag = "§aLấy 18 vật phẩm";
   temp.setItem(67, item);
   item = new ItemStack("chest:arrow", 36);
-  item.nameTag = "§aTake 36 items";
+  item.nameTag = "§aLấy 36 vật phẩm";
   temp.setItem(68, item);
 
 
@@ -1105,7 +1127,7 @@ function moveItems (x, temp,inv,player) {
   catch {}
   }
   let item = new ItemStack("chest:up", 9);
-  item.nameTag = "§aMove this row";
+  item.nameTag = "§aChuyển hàng này";
   temp.setItem(69, item);
   temp.setItem(70, item);
   temp.setItem(71, item);
@@ -1151,4 +1173,35 @@ function clearItems(player) {
   player.runCommand("clear @s chest:triple_left");
   player.runCommand("clear @s chest:arrow");
   player.runCommand("clear @s chest:up");
+}
+
+function getPortableChestLocation(player){
+	const headLocation = player.getHeadLocation();
+	const viewDirection = player.getViewDirection();
+	return {
+		x: headLocation.x + viewDirection.x * 1.6,
+		y: headLocation.y + viewDirection.y * 0.2,
+		z: headLocation.z + viewDirection.z * 1.6
+	};
+}
+
+function isHoldingInfiniteChestItem(player){
+	try {
+		const inv = player.getComponent("minecraft:inventory")?.container;
+		if (!inv) return false;
+		const item = inv.getItem(player.selectedSlot);
+		return item?.typeId === "chest:infinite_chest";
+	} catch {
+		return false;
+	}
+}
+
+function ensureChestManager(){
+	if (chestManager) return;
+	chestManager = new InfiniteChestManager(chestDB);
+	system.runInterval(() => {
+		if (chestManager) {
+			chestManager.tick();
+		}
+	}, 1);
 }
