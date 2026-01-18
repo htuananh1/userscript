@@ -155,7 +155,23 @@ class InfiniteChest {
 	static groupIndex(page){ return Math.floor(page/4); }
 	static keyForGroup(playerId, groupIndex){ return `${playerId.replace(/[^A-Za-z0-9_]/g, "_")}_${groupIndex}`; }
 	get tempInv(){ return this.tempEntity?.getComponent("minecraft:inventory")?.container; }
-	ensureTempEntity(blockLookedAt, faceLocation){
+
+	// Refactored ensureTempEntity to handle both block interactions and portable usage
+	ensureTempEntity(locationOrBlock, faceLocation = null){
+		// Determine target location from arguments
+		let targetLoc;
+		if (faceLocation) {
+			// Called with Block + FaceLocation (from block interaction)
+			targetLoc = {
+				x: locationOrBlock.location.x + faceLocation.x,
+				y: locationOrBlock.location.y + faceLocation.y,
+				z: locationOrBlock.location.z + faceLocation.z
+			};
+		} else {
+			// Called with Vector3 location (portable usage)
+			targetLoc = locationOrBlock;
+		}
+
 		// if locked, do nothing
 		let locked = false;
 		if (this.tempEntity) {
@@ -169,14 +185,14 @@ class InfiniteChest {
 			if (element.startsWith("temp_chest:")) { exist = true; entityId = element.replace("temp_chest:", ""); }
 		});
 		if (!exist) {
-			let entity = this.player.dimension.spawnEntity("chest:temp_chest", {x: blockLookedAt.location.x + faceLocation.x, y: blockLookedAt.location.y + faceLocation.y, z: blockLookedAt.location.z + faceLocation.z});
+			let entity = this.player.dimension.spawnEntity("chest:temp_chest", targetLoc);
 			entity.addTag("player:" + this.player.id);
 			const tameable = entity.getComponent("minecraft:tameable");
 			tameable.tame(this.player);
 			let key = "temp_chest:" + entity.id;
 			this.player.setDynamicProperty(key, key);
 			entity.addTag("page:0");
-			entity.nameTag = "§c§h§e§s§t§l§cInfinite Chest";
+			entity.nameTag = "§c§h§e§s§t§l§cRương Vô Tận";
 			this.tempEntity = entity;
 			this.page = 0;
 			this.preparePage(0);
@@ -184,10 +200,14 @@ class InfiniteChest {
 			try {
 				let entity = world.getEntity(entityId);
 				this.tempEntity = entity;
-				let z= blockLookedAt.location.z + faceLocation.z;
-				let y= blockLookedAt.location.y + faceLocation.y;
-				let x= blockLookedAt.location.x + faceLocation.x;
-				if (entity.location.x != Math.floor(x) && entity.location.y != Math.floor(y) && entity.location.z != Math.floor(z)) {
+
+				// Calculate floored coordinates for comparison and teleport
+				let x = targetLoc.x;
+				let y = targetLoc.y;
+				let z = targetLoc.z;
+
+				// Only teleport if significant distance
+				if (Math.abs(entity.location.x - x) > 0.5 || Math.abs(entity.location.y - y) > 0.5 || Math.abs(entity.location.z - z) > 0.5) {
 					entity.teleport({x: x,y: y,z: z});
 				}
 			} catch {
@@ -239,37 +259,37 @@ class InfiniteChest {
 				}
 			} catch { inv.setItem(i - 63 * (page % 4), undefined); }
 		}
-		let item = new ItemStack("chest:next_page", 1); item.nameTag = "§l§3Page §a" + JSON.stringify(page + 2); item.setLore(["§r§7Go to next page"]); inv.setItem(64, item);
+		let item = new ItemStack("chest:next_page", 1); item.nameTag = "§l§3Trang §a" + JSON.stringify(page + 2); item.setLore(["§r§7Trang sau"]); inv.setItem(64, item);
 		
 		// Show lock item when unlocked, unlock item when locked
 		if (this.tempEntity.hasTag("locked")) {
 			item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở Khóa Rương";
+			item.setLore(["§r§7Nhấn để mở khóa rương"]);
 		} else {
 			item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa Rương";
+			item.setLore(["§r§7Nhấn để khóa rương", "§r§7Cho phép dùng rương với phễu"]);
 		}
 		inv.setItem(65, item);
 		
-		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aTake 5 items"; inv.setItem(66, item);
-		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aTake 18 items"; inv.setItem(67, item);
-		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aTake 36 items"; inv.setItem(68, item);
-		item = new ItemStack("chest:up", 9); item.nameTag = "§aMove this row"; inv.setItem(69, item); inv.setItem(70, item); inv.setItem(71, item); inv.setItem(72, item);
+		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aLấy 5 món"; inv.setItem(66, item);
+		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aLấy 18 món"; inv.setItem(67, item);
+		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aLấy 36 món"; inv.setItem(68, item);
+		item = new ItemStack("chest:up", 9); item.nameTag = "§aChuyển hàng này"; inv.setItem(69, item); inv.setItem(70, item); inv.setItem(71, item); inv.setItem(72, item);
 		
 		// Add triple page navigation buttons
 		item = new ItemStack("chest:triple_left", 1); 
-		item.nameTag = "§l§3Page §a" + JSON.stringify(Math.max(0, page - 9)); 
-		item.setLore(["§r§7Go back 10 pages"]); 
+		item.nameTag = "§l§3Trang §a" + JSON.stringify(Math.max(0, page - 9));
+		item.setLore(["§r§7Lùi 10 trang"]);
 		inv.setItem(73, item);
 		
 		item = new ItemStack("chest:triple_right", 1); 
-		item.nameTag = "§l§3Page §a" + JSON.stringify(page + 11); 
-		item.setLore(["§r§7Go forward 10 pages"]); 
+		item.nameTag = "§l§3Trang §a" + JSON.stringify(page + 11);
+		item.setLore(["§r§7Tiến 10 trang"]);
 		inv.setItem(74, item);
 		
-		if (page > 0) { let pitem = new ItemStack("chest:previous_page", 1); pitem.nameTag = "§l§3Page §a" + JSON.stringify(page); pitem.setLore(["§r§7Go to previous page"]); inv.setItem(63, pitem); } else { inv.setItem(63, undefined); }
+		if (page > 0) { let pitem = new ItemStack("chest:previous_page", 1); pitem.nameTag = "§l§3Trang §a" + JSON.stringify(page); pitem.setLore(["§r§7Về trang trước"]); inv.setItem(63, pitem); } else { inv.setItem(63, undefined); }
 		let entitytags = this.tempEntity.getTags();
 		entitytags.forEach((element) => { if (element.startsWith("page:")) this.tempEntity.removeTag(element); });
 		if (!this.tempEntity.hasTag("prepared")) this.tempEntity.addTag("prepared");
@@ -332,26 +352,26 @@ class InfiniteChest {
 		}
 		// navigation conditionally
 		if (this.filterPage > 0) {
-			let p = new ItemStack("chest:previous_page", 1); p.nameTag = "§l§3Page §a" + JSON.stringify(this.filterPage); p.setLore(["§r§7Prev filtered page"]); inv.setItem(63, p);
+			let p = new ItemStack("chest:previous_page", 1); p.nameTag = "§l§3Trang §a" + JSON.stringify(this.filterPage); p.setLore(["§r§7Trang lọc trước"]); inv.setItem(63, p);
 		} else { inv.setItem(63, undefined); }
 		if (this.filterPage < maxPageIndex) {
-			let n = new ItemStack("chest:next_page", 1); n.nameTag = "§l§3Page §a" + JSON.stringify(this.filterPage + 2); n.setLore(["§r§7Next filtered page"]); inv.setItem(64, n);
+			let n = new ItemStack("chest:next_page", 1); n.nameTag = "§l§3Trang §a" + JSON.stringify(this.filterPage + 2); n.setLore(["§r§7Trang lọc sau"]); inv.setItem(64, n);
 		} else { inv.setItem(64, undefined); }
 		// lock/unlock and take buttons in filter mode
 		let item;
 		if (this.tempEntity.hasTag("locked")) {
 			item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở Khóa Rương";
+			item.setLore(["§r§7Nhấn để mở khóa rương"]);
 		} else {
 			item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa Rương";
+			item.setLore(["§r§7Nhấn để khóa rương", "§r§7Cho phép dùng rương với phễu"]);
 		}
 		inv.setItem(65, item);
-		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aTake 5 items"; inv.setItem(66, item);
-		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aTake 18 items"; inv.setItem(67, item);
-		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aTake 36 items"; inv.setItem(68, item);
+		item = new ItemStack("chest:arrow", 5); item.nameTag = "§aLấy 5 món"; inv.setItem(66, item);
+		item = new ItemStack("chest:arrow", 18); item.nameTag = "§aLấy 18 món"; inv.setItem(67, item);
+		item = new ItemStack("chest:arrow", 36); item.nameTag = "§aLấy 36 món"; inv.setItem(68, item);
 		for (let i=69;i<=74;i++){
 			try { inv.setItem(i, undefined); } catch {}
 		}
@@ -515,23 +535,23 @@ class InfiniteChest {
 		const inv = this.tempInv; if (!inv) return;
 		let locked = false; this.tempEntity.getTags().forEach(t=>{ if (t.startsWith("locked")) locked = true; });
 		if (!locked) { 
-			this.player.sendMessage("Chest locked"); 
+			this.player.sendMessage("Rương đã khóa");
 			clearItems(this.player); 
 			this.tempEntity.addTag("locked"); 
 			// Manually change to unlock item
 			let item = new ItemStack("chest:unlock", 1); 
-			item.nameTag = "§l§3Unlock Chest"; 
-			item.setLore(["§r§7Click to unlock the chest"]);
+			item.nameTag = "§l§3Mở Khóa Rương";
+			item.setLore(["§r§7Nhấn để mở khóa rương"]);
 			inv.setItem(65, item);
 		}
 		else { 
-			this.player.sendMessage("Chest unlocked"); 
+			this.player.sendMessage("Rương đã mở khóa");
 			clearItems(this.player); 
 			this.tempEntity.removeTag("locked"); 
 			// Manually change to lock item
 			let item = new ItemStack("chest:lock", 1); 
-			item.nameTag = "§l§3Lock Chest"; 
-			item.setLore(["§r§7Click to lock the chest", "§r§7Enables the chest to be used with hoppers"]);
+			item.nameTag = "§l§3Khóa Rương";
+			item.setLore(["§r§7Nhấn để khóa rương", "§r§7Cho phép dùng rương với phễu"]);
 			inv.setItem(65, item);
 		}
 	}
@@ -958,7 +978,24 @@ world.afterEvents.worldLoad.subscribe(() => {
 world.afterEvents.itemUse.subscribe((data) => {
   if (data.itemStack.typeId == "chest:settings") {
     let player = data.source;
-    let actionform = new ActionFormData().title("Chest Settings").button("§2Unlock").button("§gClean").button("§cForce Clean");
+
+	// Portable Chest Implementation
+	if (!player.isSneaking) {
+		const head = player.getHeadLocation();
+		const view = player.getViewDirection();
+		const dist = 1.5;
+		const targetLoc = {
+			x: head.x + view.x * dist,
+			y: head.y + view.y * dist,
+			z: head.z + view.z * dist
+		};
+
+		chestManager.get(player).ensureTempEntity(targetLoc);
+		player.sendMessage("§aRương đã được mở tại vị trí của bạn");
+		return;
+	}
+
+    let actionform = new ActionFormData().title("Cài Đặt Rương").button("§2Mở khóa").button("§gDọn dẹp").button("§cBuộc dọn dẹp");
     actionform.show(player).then((response) =>{
       if (response.canceled) return;
       let tags = player.getDynamicPropertyIds();
@@ -976,10 +1013,10 @@ world.afterEvents.itemUse.subscribe((data) => {
       if (response.selection == 0) {
         if (entity) {
           entity.removeTag("locked");
-          player.sendMessage("§aUnlocked");
+          player.sendMessage("§aĐã mở khóa");
         }
         else {
-          player.sendMessage("§6Chest already unlocked");
+          player.sendMessage("§6Rương đã mở khóa");
         }
       }
       else if (response.selection == 1) {
@@ -990,22 +1027,22 @@ world.afterEvents.itemUse.subscribe((data) => {
       else if (response.selection == 2) {
         // Force Clean option - show confirmation dialog
         const confirmForm = new MessageFormData()
-          .title("§cForce Clean Confirmation")
-          .body("§7This may interfere with other players' unsaved chests.\n\n§cAre you sure you want to continue?")
-          .button1("§cYes, Force Clean")
-          .button2("§aCancel");
+          .title("§cXác nhận Buộc Dọn Dẹp")
+          .body("§7Việc này có thể ảnh hưởng đến rương chưa lưu của người chơi khác.\n\n§cBạn có chắc muốn tiếp tục không?")
+          .button1("§cCó, Buộc dọn dẹp")
+          .button2("§aHủy");
         
         confirmForm.show(player).then((confirmResponse) => {
           if (confirmResponse.canceled || confirmResponse.selection !== 0) {
-            player.sendMessage("§6Force clean cancelled");
+            player.sendMessage("§6Đã hủy buộc dọn dẹp");
             return;
           }
           
           // Perform force clean
           chestManager.forceCleanTempChests();
-          player.sendMessage("§aForce clean completed - removed all orphaned temp chest entities");
+          player.sendMessage("§aĐã buộc dọn dẹp - xóa tất cả thực thể rương tạm thời mồ côi");
         }).catch((error) => {
-          player.sendMessage("§cError showing confirmation dialog: " + error);
+          player.sendMessage("§cLỗi hiển thị hộp thoại xác nhận: " + error);
         });
       }
     })
@@ -1067,13 +1104,13 @@ function takeItems (x, temp,inv,player) {
   catch {}
   }
   let item = new ItemStack("chest:arrow", 5);
-  item.nameTag = "§aTake 5 items";
+  item.nameTag = "§aLấy 5 món";
   temp.setItem(66, item);
   item = new ItemStack("chest:arrow", 18);
-  item.nameTag = "§aTake 18 items";
+  item.nameTag = "§aLấy 18 món";
   temp.setItem(67, item);
   item = new ItemStack("chest:arrow", 36);
-  item.nameTag = "§aTake 36 items";
+  item.nameTag = "§aLấy 36 món";
   temp.setItem(68, item);
 
 
@@ -1105,7 +1142,7 @@ function moveItems (x, temp,inv,player) {
   catch {}
   }
   let item = new ItemStack("chest:up", 9);
-  item.nameTag = "§aMove this row";
+  item.nameTag = "§aChuyển hàng này";
   temp.setItem(69, item);
   temp.setItem(70, item);
   temp.setItem(71, item);
