@@ -1,7 +1,0 @@
-[
-  {
-    "flipbook_texture": "textures/blocks/soulifier_fluid",
-    "atlas_tile": "morph:soulifier_fluid",
-    "ticks_per_frame": 16
-  }
-]
