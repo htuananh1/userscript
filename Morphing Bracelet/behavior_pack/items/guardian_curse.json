@@ -1,0 +1,32 @@
+{
+  "format_version": "1.21.10",
+  "minecraft:item": {
+    "description": {
+      "identifier": "morph:guardian_curse",
+      "menu_category": {
+        "category": "none",
+        "is_hidden_in_commands": true
+      }
+    },
+    "components": {
+      "minecraft:cooldown": {
+        "category": "morph:guardian_curse",
+        "duration": 2.68
+      },
+      "minecraft:custom_components": [
+        "morph:guardian_curse"
+      ],
+      "minecraft:glint": {
+        "value": true
+      },
+      "minecraft:icon": {
+        "textures": {
+          "default": "morph:guardian_curse"
+        }
+      },
+      "minecraft:max_stack_size": {
+        "value": 1
+      }
+    }
+  }
+}

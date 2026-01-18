@@ -1,0 +1,27 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.morph.spider.climb": {
+      "loop": true,
+      "animation_length": 0.1,
+      "timeline": {
+        "0.0": [
+          "/execute unless block ~0.71 ~ ~ air run effect @s levitation 15 4 true",
+          "/execute unless block ~-0.71 ~ ~ air run effect @s levitation 15 4 true",
+          "/execute unless block ~ ~ ~0.71 air run effect @s levitation 15 4 true",
+          "/execute unless block ~ ~ ~-0.71 air run effect @s levitation 15 4 true",
+          "/execute if block ~0.71 ~ ~ air if block ~-0.71 ~ ~ air if block ~ ~ ~0.71 air if block ~ ~ ~-0.71 air run effect @s levitation 0"
+        ]
+      }
+    },
+    "animation.morph.spider.climb.stop": {
+      "loop": true,
+      "animation_length": 0.1,
+      "timeline": {
+        "0.0": [
+          "/effect @s levitation 0"
+        ]
+      }
+    }
+  }
+}

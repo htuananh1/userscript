@@ -1,0 +1,11 @@
+{
+  "format_version": "1.16",
+  "minecraft:recipe_furnace": {
+    "description": {
+      "identifier": "morph:soul_glass"
+    },
+    "tags": [ "furnace" ],
+    "input": "minecraft:soul_sand",
+    "output": "morph:soul_glass"
+  }
+}
