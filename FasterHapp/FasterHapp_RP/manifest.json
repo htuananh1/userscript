@@ -1,0 +1,18 @@
+{
+  "format_version": 2,
+  "header": {
+    "description": "Tài nguyên tiếng Việt cho Faster Happy Ghast.",
+    "name": "Faster Happy Ghast - Vietnamese RP",
+    "uuid": "6271c55a-3040-4566-ac7b-de319272d90d",
+    "version": [1, 1, 0],
+    "min_engine_version": [1, 21, 90]
+  },
+  "modules": [
+    {
+      "description": "Tài nguyên ngôn ngữ tiếng Việt.",
+      "type": "resources",
+      "uuid": "c6b3a326-2d7a-43fb-9671-f81277adec6e",
+      "version": [1, 1, 0]
+    }
+  ]
+}
