@@ -187,14 +187,6 @@
             "event": "minecraft:on_stop_tempting"
           }
         },
-        "minecraft:behavior.random_hover": {
-          "priority": 8,
-          "xz_dist": 8,
-          "y_dist": 8,
-          "y_offset": -1,
-          "interval": 1,
-          "hover_height": [ 1, 4 ]
-        },
         "minecraft:home": {
           "restriction_radius": 32,
           "restriction_type": "random_movement"
@@ -267,18 +259,6 @@
         "minecraft:pushable": {
           "is_pushable": true,
           "is_pushable_by_piston": true
-        },
-        "minecraft:behavior.float_wander": {
-          "priority": 7,
-          "must_reach": true,
-          "random_reselect": true,
-          "navigate_around_surface": true,
-          "additional_collision_buffer": true,
-          "allow_navigating_through_liquids": false,
-          "use_home_position_restriction": true,
-          "surface_xz_dist": 16,
-          "surface_y_dist": 16,
-          "float_duration": [2.0, 7.0]
         }
       },
       "minecraft:adult_immobile": {
