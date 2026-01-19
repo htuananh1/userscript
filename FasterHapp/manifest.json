@@ -15,53 +15,6 @@
         "version": [ 1, 0, 0 ]
     }
     ],
-    "subpacks": [
-        {
-            "folder_name": "50Speed",
-            "name": "x50 Speed",
-            "memory_tier": 1
-        },
-        {
-            "folder_name": "20Speed",
-            "name": "x20 Speed",
-            "memory_tier": 1
-        },
-		{
-            "folder_name": "15Speed",
-            "name": "x15 Speed",
-            "memory_tier": 1
-        },
-        {
-            "folder_name": "10Speed",
-            "name": "x10 Speed",
-            "memory_tier": 1
-        },
-		{
-            "folder_name": "5Speed",
-            "name": "x5 Speed",
-            "memory_tier": 1
-        },
-        {
-            "folder_name": "4Speed",
-            "name": "x4 Speed",
-            "memory_tier": 1
-        },
-        {
-            "folder_name": "3Speed",
-            "name": "x3 Speed",
-            "memory_tier": 1
-        },
-		{
-            "folder_name": "2Speed",
-            "name": "x2 Speed",
-            "memory_tier": 1
-        },
-        {
-            "folder_name": "1Speed",
-            "name": "x1 Speed",
-            "memory_tier": 1
-        }
-    ],
     "metadata": {
         "authors": [ "CaveCraft" ],
         "url": "https://www.curseforge.com/members/cavecraft",
