@@ -160,7 +160,7 @@
       "total_exp_required": 70,
       "groups": [
         {
-        "num_to_select": 1,
+          "num_to_select": 1,
           "trades": [
             {
               "wants": [
