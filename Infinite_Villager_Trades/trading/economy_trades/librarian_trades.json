@@ -33,7 +33,7 @@
               "wants": [
                 {
                   "item": "minecraft:emerald",
-                  "quantity": 9,
+                  "quantity": 5,
                   "price_multiplier": 0.05
                 }
               ],
@@ -246,7 +246,6 @@
         }
       ]
     },
-
     {
       "total_exp_required": 150,
       "groups": [
@@ -254,7 +253,6 @@
           "num_to_select": 1,
           "trades": [
             {
-              // Book and quill can only have a single item per stack
               "wants": [
                 {
                   "item": "minecraft:writable_book",
@@ -286,7 +284,7 @@
               "wants": [
                 {
                   "item": "minecraft:emerald",
-                  "quantity": 4,
+                  "quantity": 2,
                   "price_multiplier": 0.05
                 }
               ],
@@ -304,7 +302,7 @@
               "wants": [
                 {
                   "item": "minecraft:emerald",
-                  "quantity": 5,
+                  "quantity": 3,
                   "price_multiplier": 0.05
                 }
               ],
@@ -363,7 +361,7 @@
               "wants": [
                 {
                   "item": "minecraft:emerald",
-                  "quantity": 20,
+                  "quantity": 10,
                   "price_multiplier": 0.05
                 }
               ],
