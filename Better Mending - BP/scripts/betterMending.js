@@ -1,41 +1,54 @@
-import { Player, system, world } from '@minecraft/server';
+import { system, world } from '@minecraft/server';
 
+const MAX_XP_PER_ITEM = 8;
+const REPAIR_PER_XP = 4;
 
 world.beforeEvents.itemUse.subscribe(eventData => {
     const player = eventData.source;
 
-    if ( !player.isSneaking ) return;
-    
+    const equipment = player.getComponent("equippable");
+    if (!equipment) return;
 
-    const mainHandSlotIndex = player.selectedSlotIndex;
-    const mainHandItem = player.getComponent("minecraft:inventory").container.getItem(mainHandSlotIndex);
-    
-    if ( !mainHandItem.getComponent("enchantable").hasEnchantment("mending") ) return;
+    let remainingXp = player.getTotalXp();
+    if (remainingXp <= 0) return;
 
-    const itemCurrentDamage = mainHandItem.getComponent("durability").damage
+    const slotsToRepair = [
+        "Mainhand",
+        "Head",
+        "Chest",
+        "Legs",
+        "Feet",
+    ];
 
-    if ( itemCurrentDamage == 0) return;
+    let totalXpUsed = 0;
 
-    let currentLevelXp = player.getTotalXp()
+    for (const slot of slotsToRepair) {
+        if (remainingXp <= 0) break;
+        const item = equipment.getEquipment(slot);
+        if (!item) continue;
 
-    if ( currentLevelXp < 12 ) return;
+        const enchantable = item.getComponent("enchantable");
+        if (!enchantable || !enchantable.hasEnchantment("mending")) continue;
 
-    const equipment = player.getComponent('equippable');
+        const durability = item.getComponent("durability");
+        if (!durability || durability.damage <= 0) continue;
 
-    if ( itemCurrentDamage >= 24 ) {
-        currentLevelXp -= 12
-        removeExperience(player,currentLevelXp)
-        repairItem(mainHandItem,equipment, 24)
+        const maxXpForItem = Math.min(remainingXp, MAX_XP_PER_ITEM);
+        const xpNeededForDamage = Math.ceil(durability.damage / REPAIR_PER_XP);
+        const xpToUse = Math.min(maxXpForItem, xpNeededForDamage);
+
+        if (xpToUse <= 0) continue;
+
+        const repairAmount = Math.min(durability.damage, xpToUse * REPAIR_PER_XP);
+        repairItem(item, equipment, slot, repairAmount);
+        remainingXp -= xpToUse;
+        totalXpUsed += xpToUse;
     }
-    else if ( itemCurrentDamage < 24 ) {
-        currentLevelXp -= itemCurrentDamage/2
-        removeExperience(player,currentLevelXp)
-        repairItem(mainHandItem,equipment, itemCurrentDamage)
+
+    if (totalXpUsed > 0) {
+        removeExperience(player, remainingXp);
     }
-
-    eventData.cancel = true
-
-})
+});
 
 export function removeExperience(player, amount){
     system.run( () => {
@@ -44,10 +57,10 @@ export function removeExperience(player, amount){
     })
 }
 
-export function repairItem(mainHandItem, equipment, amount){
+export function repairItem(item, equipment, slot, amount){
     system.run( () => {
-        const durability = mainHandItem.getComponent("durability")
+        const durability = item.getComponent("durability")
         durability.damage -= amount;
-        equipment.setEquipment('Mainhand', mainHandItem);
+        equipment.setEquipment(slot, item);
     })
 }
