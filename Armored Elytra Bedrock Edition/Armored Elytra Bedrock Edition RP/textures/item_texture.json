@@ -1,0 +1,21 @@
+{
+	"resource_pack_name": "Armored Elytra Bedrock Edition",
+	"texture_name": "atlas.items",
+	"texture_data": {
+		"ae_iron_armored_elytra_chestplate": {
+			"textures": "textures/items/iron_armored_elytra_chestplate"
+		},
+		"ae_gold_armored_elytra_chestplate": {
+			"textures": "textures/items/gold_elytra"
+		},
+		"ae_chainmail_armored_elytra_chestplate": {
+			"textures": "textures/items/chainmail_elytra"
+		},
+		"ae_diamond_armored_elytra_chestplate": {
+			"textures": "textures/items/diamond_elytra"
+		},
+		"ae_netherite_armored_elytra_chestplate": {
+			"textures": "textures/items/netherrite_elytra"
+		}
+	}
+}

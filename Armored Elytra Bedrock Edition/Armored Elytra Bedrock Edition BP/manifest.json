@@ -1,0 +1,67 @@
+{
+	"format_version": 2,
+	"metadata": {
+		"authors": [
+			"ArcAce"
+		],
+		"generated_with": {
+			"bridge": [
+				"2.7.54"
+			],
+			"dash": [
+				"0.11.7"
+			]
+		}
+	},
+	"header": {
+		"name": "Armored Elytra Bedrock Edition",
+		"description": "Armor or Elytra? why not both! Gear up and wear your Armored Elytra, by ArcAce",
+		"min_engine_version": [
+			1,
+			21,
+			50
+		],
+		"uuid": "343c099d-8a40-4ef0-b66c-d2b8ef8db69a",
+		"version": [
+			1,
+			0,
+			0
+		]
+	},
+	"modules": [
+		{
+			"type": "data",
+			"uuid": "e27179b3-6357-48e5-b068-f0e882d0b41b",
+			"version": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"type": "script",
+			"language": "javascript",
+			"uuid": "b9002900-a0e1-4dbc-b7a5-c35520803396",
+			"entry": "scripts/armored_elytra.js",
+			"version": [
+				1,
+				0,
+				0
+			]
+		}
+	],
+	"dependencies": [
+		{
+			"module_name": "@minecraft/server",
+			"version": "1.16.0"
+		},
+		{
+			"module_name": "@minecraft/server-gametest",
+			"version": "1.0.0-beta"
+		},
+		{
+			"module_name": "@minecraft/server-ui",
+			"version": "1.3.0"
+		}
+	]
+}

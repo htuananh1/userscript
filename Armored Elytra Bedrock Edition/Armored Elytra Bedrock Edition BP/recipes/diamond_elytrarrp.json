@@ -1,0 +1,22 @@
+{
+	"format_version": "1.12",
+	"minecraft:recipe_shapeless": {
+		"description": {
+			"identifier": "ae:diamond_elytrarrp"
+		},
+		"tags": [
+			"crafting_table"
+		],
+		"ingredients": [
+			{
+				"item": "minecraft:elytra"
+			},
+			{
+				"item": "minecraft:diamond_chestplate"
+			}
+		],
+		"result": {
+			"item": "ae:diamond_armored_elytra_chestplate"
+		}
+	}
+}
