@@ -41,46 +41,50 @@ function getVillagerRole(villager) {
     return null;
 }
 
-// Main Loop
-system.runInterval(() => {
-    try {
-        const overworld = world.getDimension("overworld");
-        // Get all villagers - Optimized by filtering type
-        const villagers = overworld.getEntities({ type: "minecraft:villager_v2" });
+function startLoops() {
+    // Main Villager Loop
+    system.runInterval(() => {
+        try {
+            const overworld = world.getDimension("overworld");
+            // Get all villagers - Optimized by filtering type
+            const villagers = overworld.getEntities({ type: "minecraft:villager_v2" });
 
-        for (const villager of villagers) {
-            if (!villager.isValid()) continue;
+            for (const villager of villagers) {
+                if (!villager.isValid()) continue;
 
-            const roleModule = getVillagerRole(villager);
-            if (roleModule) {
-                // Initialize if needed
-                if (!villager.hasTag("overhaul_initialized")) {
-                    roleModule.applyTrades(villager);
-                    villager.addTag("overhaul_initialized");
+                const roleModule = getVillagerRole(villager);
+                if (roleModule) {
+                    // Initialize if needed
+                    if (!villager.hasTag("overhaul_initialized")) {
+                        roleModule.applyTrades(villager);
+                        villager.addTag("overhaul_initialized");
+                    }
+
+                    // Run Tick Logic
+                    roleModule.tick(villager);
                 }
-
-                // Run Tick Logic
-                roleModule.tick(villager);
             }
+        } catch (e) {
+            if (Config.DEBUG) console.warn("Error in Villager Loop: " + e);
         }
-    } catch (e) {
-        if (Config.DEBUG) console.warn("Error in Villager Loop: " + e);
-    }
-}, Config.TICK_INTERVAL);
+    }, Config.TICK_INTERVAL);
 
-// Trader Junk Collector Loop
-system.runInterval(() => {
-    try {
-        TraderJunkCollector.tick();
-    } catch (e) {
-        if (Config.DEBUG) console.warn("Error in Trader Loop: " + e);
-    }
-}, Config.SCAN_INTERVAL_TICKS);
+    // Trader Junk Collector Loop
+    system.runInterval(() => {
+        try {
+            TraderJunkCollector.tick();
+        } catch (e) {
+            if (Config.DEBUG) console.warn("Error in Trader Loop: " + e);
+        }
+    }, Config.SCAN_INTERVAL_TICKS);
+}
 
 // Initialize
 world.afterEvents.worldInitialize.subscribe(() => {
-    Config.load(); // Load saved config
+    Config.load(); // Load saved config first
     if (Config.DEBUG) console.warn("Villager Overhaul Initialized");
+
+    startLoops(); // Start loops with loaded config
     WanderingTraderController.start();
 });
 
@@ -88,11 +92,29 @@ world.afterEvents.worldInitialize.subscribe(() => {
 world.beforeEvents.chatSend.subscribe((event) => {
     const message = event.message.trim();
     if (message === "!vs" || message === "!villager") {
-        event.cancel = true; // Stop message from appearing in chat
+        event.cancel = true;
 
-        // UI must be opened in system.run to avoid context issues with events
+        // Only allow ops (if isOp is available) or all players if not strict
+        // system.run required for UI
         system.run(() => {
-            showAdminMenu(event.sender);
+            if (event.sender.isOp()) {
+                showAdminMenu(event.sender);
+            } else {
+                event.sender.sendMessage("§cYou must be an operator to use this command.");
+            }
+        });
+    }
+});
+
+// Item Use Listener (Alternative to Chat Command)
+world.afterEvents.itemUse.subscribe((event) => {
+    if (event.itemStack.typeId === "minecraft:clock" && event.source.isSneaking) {
+        system.run(() => {
+             if (event.source.isOp()) {
+                showAdminMenu(event.source);
+            } else {
+                event.source.sendMessage("§cYou must be an operator to access the Admin Menu.");
+            }
         });
     }
 });
