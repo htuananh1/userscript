@@ -105,7 +105,7 @@ world.afterEvents.worldInitialize.subscribe(() => {
     if (Config.DEBUG) console.warn("Villager Overhaul Initialized");
 
     startLoops();
-    WanderingTraderController.start();
+    // WanderingTraderController.start();
 });
 
 // Wandering Trader Interaction Listener

@@ -12,8 +12,8 @@ const DEFAULTS = {
 
     // Roles Configuration
     FARMER: {
-        MAX_ACTIONS_PER_TICK: 3,
-        SEARCH_RADIUS: 10,
+        MAX_ACTIONS_PER_TICK: 16,
+        SEARCH_RADIUS: 8,
         CHEST_SEARCH_RADIUS: 5
     },
     LIBRARIAN: {
