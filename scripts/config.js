@@ -1,9 +1,11 @@
-export const Config = {
+import { world } from "@minecraft/server";
+
+const DEFAULTS = {
     // Global settings
-    TICK_INTERVAL: 40, // Run logic every 2 seconds (40 ticks)
+    TICK_INTERVAL: 40,
     DEBUG: false,
 
-    // Radii for detecting things
+    // Radii
     WORK_RADIUS: 16,
     VILLAGE_RADIUS: 32,
     INTERACT_RADIUS: 5,
@@ -20,20 +22,20 @@ export const Config = {
     },
     CLERIC: {
         BUFF_RADIUS: 10,
-        BUFF_DURATION: 100, // ticks
-        BUFF_COOLDOWN: 600, // 30 seconds
+        BUFF_DURATION: 100,
+        BUFF_COOLDOWN: 600,
         PVP_ENABLED: false
     },
     FLETCHER: {
-        AMMO_RESTOCK_COOLDOWN: 1200, // 60 seconds
+        AMMO_RESTOCK_COOLDOWN: 1200,
         DEFENSE_RADIUS: 15
     },
     FISHERMAN: {
-        FISHING_INTERVAL: 200, // ticks
+        FISHING_INTERVAL: 200,
         MAX_FISH_PER_HOUR: 20
     },
     CARTOGRAPHER: {
-        SURVEY_INTERVAL: 6000, // 5 minutes
+        SURVEY_INTERVAL: 6000,
         POI_SEARCH_RADIUS: 100
     },
     SHEPHERD: {
@@ -50,15 +52,15 @@ export const Config = {
     },
     LEATHERWORKER: {
         DYE_COOLDOWN: 200,
-        VILLAGE_COLOR: 'red' // Default fallback
+        VILLAGE_COLOR: 'red'
     },
     ARMORER: {
-        REPAIR_COOLDOWN: 1200, // 1 minute
+        REPAIR_COOLDOWN: 1200,
         GOLEM_HEAL_AMOUNT: 10,
         GOLEM_SEARCH_RADIUS: 10
     },
     TOOLSMITH: {
-        REPAIR_COST: 1, // Emeralds
+        REPAIR_COST: 1,
         REPAIR_RADIUS: 4
     },
     WEAPONSMITH: {
@@ -77,6 +79,68 @@ export const Config = {
     TRADER_TAG: "addon:managed_wt",
     TRADER_PROFILE_PROPERTY: "addon:profile",
     TRADER_PROFILE_VALUE: "junk_collector"
+};
+
+export const Config = {
+    ...JSON.parse(JSON.stringify(DEFAULTS)), // Deep copy defaults
+
+    /**
+     * Loads configuration from World Dynamic Properties.
+     * Should be called on worldInitialize.
+     */
+    load() {
+        try {
+            const savedConfig = world.getDynamicProperty("villager_overhaul_config");
+            if (savedConfig) {
+                const parsed = JSON.parse(savedConfig);
+                // Merge saved config with current (defaults)
+                this.merge(parsed);
+                if (this.DEBUG) console.warn("Villager Overhaul Config Loaded.");
+            }
+        } catch (e) {
+            console.warn("Failed to load config: " + e);
+        }
+    },
+
+    /**
+     * Saves current configuration to World Dynamic Properties.
+     */
+    save() {
+        try {
+            // Create a clean object to save (exclude methods)
+            const toSave = {};
+            for (const key of Object.keys(DEFAULTS)) {
+                toSave[key] = this[key];
+            }
+            world.setDynamicProperty("villager_overhaul_config", JSON.stringify(toSave));
+            if (this.DEBUG) console.warn("Villager Overhaul Config Saved.");
+        } catch (e) {
+            console.warn("Failed to save config: " + e);
+            // Note: Dynamic Property limit is around 9KB string length.
+            // Our config is small enough.
+        }
+    },
+
+    /**
+     * Resets configuration to defaults.
+     */
+    reset() {
+        this.merge(DEFAULTS);
+        this.save();
+    },
+
+    /**
+     * Helper to merge objects deeply
+     */
+    merge(source) {
+        for (const key of Object.keys(source)) {
+            if (source[key] instanceof Object && !Array.isArray(source[key]) && this[key]) {
+                Object.assign(this[key], source[key]);
+            } else {
+                this[key] = source[key];
+            }
+        }
+    }
 };
 
 export const ROLE_IDS = {
