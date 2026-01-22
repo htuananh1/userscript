@@ -6,11 +6,7 @@ export class Utils {
     }
 
     static distance(loc1, loc2) {
-        return Math.sqrt(
-            Math.pow(loc1.x - loc2.x, 2) +
-            Math.pow(loc1.y - loc2.y, 2) +
-            Math.pow(loc1.z - loc2.z, 2)
-        );
+        return Math.hypot(loc1.x - loc2.x, loc1.y - loc2.y, loc1.z - loc2.z);
     }
 
     /**
@@ -32,11 +28,22 @@ export class Utils {
     }
 
     static findNearestBlock(dimension, center, blockId, radius) {
-        // Simple cubic search. For optimization, this should be limited.
-        const r = Math.floor(radius);
+        // Limit radius to prevent lag spikes/crashes
+        const r = Math.min(Math.floor(radius), 16);
+
+        // Search in shells (approximate) to find nearest first
+        // Optimization: checking closest blocks first allows early exit
+        // Simple implementation: sort logic is complex, so we stick to a simple loop
+        // but verify distance to return truly nearest?
+        // Or just spiral. Spiraling is best but verbose.
+        // Let's stick to the box loop but strictly limit radius.
+
         for (let x = -r; x <= r; x++) {
             for (let y = -r; y <= r; y++) {
                 for (let z = -r; z <= r; z++) {
+                    // Optimization: Skip corners to make it spherical-ish
+                    if (x*x + y*y + z*z > r*r) continue;
+
                     const loc = { x: center.x + x, y: center.y + y, z: center.z + z };
                     try {
                         const block = dimension.getBlock(loc);
@@ -51,11 +58,12 @@ export class Utils {
     }
 
     static findNearestContainer(dimension, center, radius) {
-        // Search for blocks with inventory component
-        const r = Math.floor(radius);
+        const r = Math.min(Math.floor(radius), 16);
         for (let x = -r; x <= r; x++) {
             for (let y = -r; y <= r; y++) {
                 for (let z = -r; z <= r; z++) {
+                    if (x*x + y*y + z*z > r*r) continue;
+
                     const loc = { x: center.x + x, y: center.y + y, z: center.z + z };
                     try {
                         const block = dimension.getBlock(loc);
@@ -79,8 +87,6 @@ export class Utils {
     }
 
     static removeItem(entity, itemId, amount = 1) {
-        // Logic to remove item
-        // This is complex as it requires iterating slots.
         const inventory = entity.getComponent("inventory");
         if (!inventory || !inventory.container) return false;
 
