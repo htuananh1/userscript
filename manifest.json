@@ -1,0 +1,42 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "Villager Overhaul Full Addon",
+        "name": "Villager Overhaul",
+        "uuid": "2e10df5a-9fb4-4c2c-88a4-0c41f161fa17",
+        "version": [
+            1,
+            0,
+            0
+        ],
+        "min_engine_version": [
+            1,
+            20,
+            0
+        ]
+    },
+    "modules": [
+        {
+            "description": "Villager Overhaul Scripts",
+            "type": "script",
+            "language": "javascript",
+            "uuid": "1ce64c39-1832-41ed-b595-4294a82f76bf",
+            "entry": "scripts/main.js",
+            "version": [
+                1,
+                0,
+                0
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.11.0"
+        },
+        {
+            "module_name": "@minecraft/server-ui",
+            "version": "1.2.0"
+        }
+    ]
+}
