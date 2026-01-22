@@ -1,6 +1,7 @@
 import { world, system } from "@minecraft/server";
 import { Config } from "./config.js";
-import { showAdminMenu } from "./ui/adminMenu.js";
+import { showTraderShop } from "./ui/traderShop.js";
+import { SmartVillager } from "./ai/smartVillager.js";
 import * as Farmer from "./roles/farmer.js";
 import * as Fisherman from "./roles/fisherman.js";
 import * as Shepherd from "./roles/shepherd.js";
@@ -63,6 +64,9 @@ function startLoops() {
                     // Run Tick Logic
                     roleModule.tick(villager);
                 }
+
+                // Apply General Smart AI
+                SmartVillager.tick(villager);
             }
         } catch (e) {
             if (Config.DEBUG) console.warn("Error in Villager Loop: " + e);
@@ -88,33 +92,19 @@ world.afterEvents.worldInitialize.subscribe(() => {
     WanderingTraderController.start();
 });
 
-// Chat Command Listener
-world.beforeEvents.chatSend.subscribe((event) => {
-    const message = event.message.trim();
-    if (message === "!vs" || message === "!villager") {
+// Wandering Trader Interaction Listener
+world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+    if (event.target.typeId === "minecraft:wandering_trader") {
+        const player = event.player;
+        const trader = event.target;
+
+        // Cancel vanilla trade GUI
         event.cancel = true;
 
-        // Only allow ops (if isOp is available) or all players if not strict
-        // system.run required for UI
+        // Show custom shop
         system.run(() => {
-            if (event.sender.isOp()) {
-                showAdminMenu(event.sender);
-            } else {
-                event.sender.sendMessage("§cYou must be an operator to use this command.");
-            }
+            showTraderShop(player, trader);
         });
     }
 });
 
-// Item Use Listener (Alternative to Chat Command)
-world.afterEvents.itemUse.subscribe((event) => {
-    if (event.itemStack.typeId === "minecraft:clock" && event.source.isSneaking) {
-        system.run(() => {
-             if (event.source.isOp()) {
-                showAdminMenu(event.source);
-            } else {
-                event.source.sendMessage("§cYou must be an operator to access the Admin Menu.");
-            }
-        });
-    }
-});
