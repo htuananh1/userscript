@@ -13,6 +13,8 @@ import * as Leatherworker from "./roles/leatherworker.js";
 import * as Armorer from "./roles/armorer.js";
 import * as Toolsmith from "./roles/toolsmith.js";
 import * as Weaponsmith from "./roles/weaponsmith.js";
+import { TraderJunkCollector } from "./traders/traderJunkCollector.js";
+import { WanderingTraderController } from "./spawn/wanderingTraderController.js";
 
 // Mapping Variant ID to Role Module
 // Based on standard Bedrock Villager Variant IDs
@@ -67,6 +69,16 @@ system.runInterval(() => {
     }
 }, Config.TICK_INTERVAL);
 
+// Trader Junk Collector Loop
+system.runInterval(() => {
+    try {
+        TraderJunkCollector.tick();
+    } catch (e) {
+        if (Config.DEBUG) console.warn("Error in Trader Loop: " + e);
+    }
+}, Config.SCAN_INTERVAL_TICKS);
+
 world.afterEvents.worldInitialize.subscribe(() => {
     if (Config.DEBUG) console.warn("Villager Overhaul Initialized");
+    WanderingTraderController.start();
 });
