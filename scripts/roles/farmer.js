@@ -26,20 +26,50 @@ export function tick(villager) {
 }
 
 function harvestLogic(villager) {
-    const cropType = CROPS[Math.floor(Math.random() * CROPS.length)];
-    const block = Utils.findNearestBlock(villager.dimension, villager.location, cropType.block, Config.FARMER.SEARCH_RADIUS || 8);
+    const dimension = villager.dimension;
+    const center = villager.location;
+    const radius = Config.FARMER.SEARCH_RADIUS || 8;
+    const maxActions = Config.FARMER.MAX_ACTIONS_PER_TICK || 16;
+    let actions = 0;
 
-    if (block) {
-        try {
-            const growth = block.permutation.getState("growth");
-            // Assuming max growth is 7 for standard crops
-            if (growth >= 7) {
-                const { x, y, z } = block.location;
-                // Break and replant
-                villager.dimension.runCommandAsync(`setblock ${x} ${y} ${z} air destroy`);
-                villager.dimension.runCommandAsync(`setblock ${x} ${y} ${z} ${cropType.block}`);
+    for (let x = -radius; x <= radius; x++) {
+        for (let z = -radius; z <= radius; z++) {
+            if (actions >= maxActions) return;
+
+            for (let y = -1; y <= 1; y++) {
+                if (actions >= maxActions) break;
+
+                const blockLocation = { x: center.x + x, y: center.y + y, z: center.z + z };
+                try {
+                    const block = dimension.getBlock(blockLocation);
+                    if (!block) continue;
+
+                    const cropDef = CROPS.find(c => c.block === block.typeId);
+                    if (cropDef) {
+                        const growth = block.permutation.getState("growth");
+                        // Assuming max growth is 7 for standard crops
+                        if (growth >= 7) {
+                            // Determine drop amount
+                            let amount = 1;
+                            if (cropDef.product.includes("carrot") || cropDef.product.includes("potato")) {
+                                amount = Math.floor(Math.random() * 3) + 2;
+                            }
+
+                            // Try to give item directly to inventory to ensure collection
+                            if (Utils.giveItem(villager, cropDef.product, amount)) {
+                                // Replant without destroy (no drops on ground)
+                                villager.dimension.runCommandAsync(`setblock ${blockLocation.x} ${blockLocation.y} ${blockLocation.z} air`);
+                                villager.dimension.runCommandAsync(`setblock ${blockLocation.x} ${blockLocation.y} ${blockLocation.z} ${cropDef.block}`);
+                                actions++;
+                            } else {
+                                // Inventory full, stop harvesting
+                                return;
+                            }
+                        }
+                    }
+                } catch (e) {}
             }
-        } catch (e) {}
+        }
     }
 }
 
