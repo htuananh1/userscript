@@ -1,0 +1,1 @@
+export const trades = [{'wants': 'minecraft:paper', 'amount': 24, 'gives': 'minecraft:emerald', 'reward': 1}, {'wants': 'minecraft:emerald', 'amount': 2, 'gives': 'minecraft:empty_map', 'reward': 1}];
