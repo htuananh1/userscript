@@ -2,6 +2,7 @@ import { world, system } from "@minecraft/server";
 import { Config } from "./config.js";
 import { showTraderShop } from "./ui/traderShop.js";
 import { SmartVillager } from "./ai/smartVillager.js";
+import { Utils } from "./utils/common.js";
 import * as Farmer from "./roles/farmer.js";
 import * as Fisherman from "./roles/fisherman.js";
 import * as Shepherd from "./roles/shepherd.js";
@@ -15,6 +16,7 @@ import * as Toolsmith from "./roles/toolsmith.js";
 import * as Butcher from "./roles/butcher.js";
 import * as Leatherworker from "./roles/leatherworker.js";
 import * as Mason from "./roles/mason.js";
+import * as Nitwit from "./roles/nitwit.js";
 import { TraderJunkCollector } from "./traders/traderJunkCollector.js";
 import { WanderingTraderController } from "./spawn/wanderingTraderController.js";
 
@@ -31,7 +33,8 @@ const ROLE_MAP = {
     10: Toolsmith,
     11: Butcher,
     12: Leatherworker,
-    13: Mason
+    13: Mason,
+    14: Nitwit
 };
 
 function getVillagerRole(villager) {
@@ -43,68 +46,83 @@ function getVillagerRole(villager) {
 }
 
 function startLoops() {
-    // Main Villager Loop
+    // Single Central Loop
     system.runInterval(() => {
         try {
+            // 1. Villager AI
             const overworld = world.getDimension("overworld");
-            // Get all villagers - Optimized by filtering type
             const villagers = overworld.getEntities({ type: "minecraft:villager_v2" });
+
+            // Limit processing per interval for performance
+            // Simple approach: process all, relying on internal cooldowns to reduce load.
+            // If massive counts become an issue, a round-robin index would be needed.
+            // For 2GB server target, <50 active villagers is standard.
 
             for (const villager of villagers) {
                 if (!villager.isValid()) continue;
 
                 const roleModule = getVillagerRole(villager);
                 if (roleModule) {
-                    // Initialize if needed
                     if (!villager.hasTag("overhaul_initialized")) {
                         roleModule.applyTrades(villager);
                         villager.addTag("overhaul_initialized");
                     }
 
-                    // Run Tick Logic
-                    roleModule.tick(villager);
+                    // Run Job Skills
+                    // Try-catch handled inside specific methods or here?
+                    // Better here to isolate failures.
+                    try {
+                        roleModule.tick(villager);
+                    } catch (e) {
+                         if (Config.DEBUG) console.warn(`Error in role tick for ${villager.id}: ${e}`);
+                    }
                 }
 
                 // Apply General Smart AI
-                SmartVillager.tick(villager);
+                try {
+                    SmartVillager.tick(villager);
+                } catch (e) {
+                    if (Config.DEBUG) console.warn(`Error in SmartVillager tick for ${villager.id}: ${e}`);
+                }
             }
+
+            // 2. Trader Junk Collector
+            try {
+                 TraderJunkCollector.tick();
+            } catch (e) {
+                if (Config.DEBUG) console.warn("Error in Trader Junk Collector: " + e);
+            }
+
         } catch (e) {
-            if (Config.DEBUG) console.warn("Error in Villager Loop: " + e);
+            if (Config.DEBUG) console.warn("Error in Main Loop: " + e);
         }
     }, Config.TICK_INTERVAL);
-
-    // Trader Junk Collector Loop
-    system.runInterval(() => {
-        try {
-            TraderJunkCollector.tick();
-        } catch (e) {
-            if (Config.DEBUG) console.warn("Error in Trader Loop: " + e);
-        }
-    }, Config.SCAN_INTERVAL_TICKS);
 }
 
 // Initialize
 world.afterEvents.worldInitialize.subscribe(() => {
-    Config.load(); // Load saved config first
+    Config.load();
     if (Config.DEBUG) console.warn("Villager Overhaul Initialized");
 
-    startLoops(); // Start loops with loaded config
+    startLoops();
     WanderingTraderController.start();
 });
 
 // Wandering Trader Interaction Listener
-world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+world.afterEvents.playerInteractWithEntity.subscribe((event) => {
     if (event.target.typeId === "minecraft:wandering_trader") {
         const player = event.player;
         const trader = event.target;
 
-        // Cancel vanilla trade GUI
-        event.cancel = true;
+        // Anti-abuse / Debounce
+        // Using ~800ms (16 ticks) cooldown
+        if (!Utils.checkCooldown(player, "trader_interact", Config.TRADER_SHOP.INTERACTION_COOLDOWN)) return;
 
         // Show custom shop
+        // Note: Vanilla trade UI might open simultaneously.
+        // We attempt to open ours.
         system.run(() => {
             showTraderShop(player, trader);
         });
     }
 });
-

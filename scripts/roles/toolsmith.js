@@ -1,32 +1,26 @@
 import { system } from "@minecraft/server";
 import { Config } from "../config.js";
 import { Utils } from "../utils/common.js";
-import { trades } from "../trading/toolsmith_trades.js";
-import { ItemStack } from "@minecraft/server";
+import { smithDefenseSkill } from "./smith_skill.js";
 
 export const ROLE_ID = "minecraft:toolsmith";
 export const JOB_BLOCK_ID = "minecraft:smithing_table";
 
 export function tick(villager) {
+    if (!villager.isValid()) return;
 
     // Ability: Repair Service (Mock)
     if (Utils.checkCooldown(villager, 'repair', 200)) {
-        // Look for item entities on ground?
-        const items = villager.dimension.getEntities({ type: "minecraft:item", location: villager.location, maxDistance: Config.TOOLSMITH.REPAIR_RADIUS });
-        for (const itemEntity of items) {
-            const itemStack = itemEntity.getComponent("minecraft:item").itemStack;
-            // If damageable and damaged (Checking damage is complex in script without specific component access)
-            // Just a placeholder effect
-            // itemEntity.dimension.spawnParticle("minecraft:villager_happy", itemEntity.location);
-        }
+        try {
+            const items = villager.dimension.getEntities({ type: "minecraft:item", location: villager.location, maxDistance: Config.TOOLSMITH.REPAIR_RADIUS });
+            // Placeholder for future logic
+        } catch(e) {}
     }
 
+    // New Ability: Defense Craft
+    smithDefenseSkill(villager);
 }
 
 export function applyTrades(villager) {
-    // Mark as having trades applied
     villager.addTag("villager_overhaul_trades_applied");
-
-    // Trigger event for BP integration
-    // villager.triggerEvent("villager_overhaul:apply_toolsmith_trades");
 }
