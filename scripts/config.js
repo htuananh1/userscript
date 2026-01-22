@@ -64,7 +64,19 @@ export const Config = {
     WEAPONSMITH: {
         DISENCHANT_COST: 1,
         GRINDSTONE_RADIUS: 4
-    }
+    },
+
+    // Junk Collector Configuration
+    SCAN_INTERVAL_TICKS: 60,
+    JUNK_RADIUS: 12,
+    MAX_ITEMS_PER_SCAN: 40,
+    ACTIVE_PLAYER_RADIUS: 32,
+    ENABLE_EMERALD_REWARD: true,
+    POINTS_PER_EMERALD: 64,
+    MAX_EMERALDS_PER_MINUTE_PER_PLAYER: 8,
+    TRADER_TAG: "addon:managed_wt",
+    TRADER_PROFILE_PROPERTY: "addon:profile",
+    TRADER_PROFILE_VALUE: "junk_collector"
 };
 
 export const ROLE_IDS = {
