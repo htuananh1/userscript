@@ -1,37 +1,43 @@
 import { system } from "@minecraft/server";
 import { Config } from "../config.js";
 import { Utils } from "../utils/common.js";
-import { trades } from "../trading/librarian_trades.js";
-import { ItemStack } from "@minecraft/server";
 
 export const ROLE_ID = "minecraft:librarian";
-export const JOB_BLOCK_ID = "minecraft:lectern";
 
 export function tick(villager) {
+    if (!villager.isValid()) return;
 
-    // Ability: Reroll Window Monitor
-    let firstSeen = villager.getDynamicProperty("first_seen");
-    if (firstSeen === undefined) {
-        firstSeen = system.currentTick;
-        villager.setDynamicProperty("first_seen", firstSeen);
+    if (Utils.checkCooldown(villager, 'research_aura', Config.SKILLS.RESEARCH_AURA_COOLDOWN)) {
+        applyResearchAura(villager);
+    }
+}
+
+function applyResearchAura(villager) {
+    const r = Config.SKILLS.RESEARCH_AURA_RADIUS || 10;
+    const options = {
+        location: villager.location,
+        maxDistance: r,
+        type: "minecraft:villager_v2"
+    };
+
+    const targets = villager.dimension.getEntities(options);
+    let count = 0;
+    for (const target of targets) {
+        if (target.id === villager.id) continue;
+
+        try {
+            target.addEffect("regeneration", 200, { amplifier: 0, showParticles: true });
+            count++;
+        } catch (e) {}
     }
 
-    // Only allow specific logic if within window
-    const elapsed = system.currentTick - firstSeen;
-    if (elapsed < Config.LIBRARIAN.REROLL_WINDOW_MINUTES * 1200) { // ticks
-        // Logic: If player interacts with book, maybe reroll?
-        // Passive: Just maintain the 'fresh' tag
-        if (!villager.hasTag("can_reroll")) villager.addTag("can_reroll");
-    } else {
-        if (villager.hasTag("can_reroll")) villager.removeTag("can_reroll");
+    if (count > 0) {
+        try {
+            villager.dimension.runCommandAsync(`particle minecraft:villager_happy ${villager.location.x} ${villager.location.y + 2} ${villager.location.z}`);
+        } catch (e) {}
     }
-
 }
 
 export function applyTrades(villager) {
-    // Mark as having trades applied
     villager.addTag("villager_overhaul_trades_applied");
-
-    // Trigger event for BP integration
-    // villager.triggerEvent("villager_overhaul:apply_librarian_trades");
 }

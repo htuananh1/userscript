@@ -78,7 +78,36 @@ const DEFAULTS = {
     MAX_EMERALDS_PER_MINUTE_PER_PLAYER: 8,
     TRADER_TAG: "addon:managed_wt",
     TRADER_PROFILE_PROPERTY: "addon:profile",
-    TRADER_PROFILE_VALUE: "junk_collector"
+    TRADER_PROFILE_VALUE: "junk_collector",
+
+    // Wandering Trader Premium Shop
+    TRADER_SHOP: {
+        CACHE_DURATION_TICKS: 6000, // 5 minutes
+        INTERACTION_COOLDOWN: 16, // ~0.8s
+        PROBABILITIES: {
+            NETHERITE: 0.20,
+            ENCHANTED_GOLDEN_APPLE: 0.10,
+            GOLDEN_APPLE: 0.35,
+            RARE_UTILITY: 0.25,
+            EMPTY: 0.10
+        }
+    },
+
+    // New Role Skills Configuration
+    NITWIT: {
+        WANDER_RADIUS: 10,
+        SHARE_FOOD_RADIUS: 5,
+        SHARE_COOLDOWN: 600
+    },
+    SKILLS: {
+        RESEARCH_AURA_RADIUS: 10,
+        RESEARCH_AURA_COOLDOWN: 600,
+        DEFENSE_CRAFT_RADIUS: 16,
+        DEFENSE_CRAFT_COOLDOWN: 600,
+        HEALER_RADIUS: 10,
+        HEALER_COOLDOWN: 200,
+        HEAL_AMOUNT: 4
+    }
 };
 
 export const Config = {
@@ -156,5 +185,6 @@ export const ROLE_IDS = {
     LEATHERWORKER: "minecraft:leatherworker",
     ARMORER: "minecraft:armorer",
     TOOLSMITH: "minecraft:toolsmith",
-    WEAPONSMITH: "minecraft:weaponsmith"
+    WEAPONSMITH: "minecraft:weaponsmith",
+    NITWIT: "minecraft:nitwit" // Variant 14 usually, but we define ID here for reference
 };
