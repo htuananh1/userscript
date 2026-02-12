@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { system, BlockPermutation } from "@minecraft/server";
 import { Config } from "../config.js";
 import { Utils } from "../utils/common.js";
 
@@ -58,8 +58,8 @@ function harvestLogic(villager) {
                             // Try to give item directly to inventory to ensure collection
                             if (Utils.giveItem(villager, cropDef.product, amount)) {
                                 // Replant without destroy (no drops on ground)
-                                villager.dimension.runCommandAsync(`setblock ${blockLocation.x} ${blockLocation.y} ${blockLocation.z} air`);
-                                villager.dimension.runCommandAsync(`setblock ${blockLocation.x} ${blockLocation.y} ${blockLocation.z} ${cropDef.block}`);
+                                // Optimized: Use setPermutation instead of runCommandAsync for better performance
+                                block.setPermutation(BlockPermutation.resolve(cropDef.block));
                                 actions++;
                             } else {
                                 // Inventory full, stop harvesting
