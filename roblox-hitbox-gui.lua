@@ -937,7 +937,6 @@ for name, btn in pairs(sidebarButtons) do
         switchTo(name)
     end)
 end
-end
 
 -- ═══════════════════════════════════════════════════════════════
 -- UI COMPONENTS (per-page counter)
