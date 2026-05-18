@@ -483,24 +483,26 @@ local function isPartVisible(targetPart)
     local myChar = LocalPlayer.Character
     if not myChar or not myChar:FindFirstChild("Head") then return false end
 
+    -- Dùng GetPartsObscuringTarget (chuẩn hơn Raycast thủ công)
     local origin = Camera.CFrame.Position
-    local direction = targetPart.Position - origin
-    local distance = direction.Magnitude
+    local direction = (targetPart.Position - origin).Magnitude
+    local ignoreList = {myChar}
 
-    local params = RaycastParams.new()
-    params.FilterType = Enum.RaycastFilterType.Exclude
-    params.FilterDescendantsInstances = {myChar}
-
-    local result = workspace:Raycast(origin, direction, params)
-    if result then
-        -- Nếu trúng 1 part thuộc character target → visible
-        local hitChar = result.Instance:FindFirstAncestorOfClass("Model")
-        if hitChar and hitChar:FindFirstChildOfClass("Humanoid") then
-            return true  -- trúng player khác → visible
+    local parts = Camera:GetPartsObscuringTarget({targetPart.Position}, ignoreList)
+    if #parts > 0 then
+        -- Kiểm tra xem part bị trúng có phải thuộc target character không
+        for _, part in ipairs(parts) do
+            local ancestor = part:FindFirstAncestorOfClass("Model")
+            if ancestor and ancestor:FindFirstChildOfClass("Humanoid") then
+                -- Trúng player khác → visible
+                if ancestor == targetPart:FindFirstAncestorOfClass("Model") then
+                    return true
+                end
+            end
         end
-        return false  -- trúng tường/object → bị block
+        return false -- bị tường/object chặn
     end
-    return true  -- không bị chặn
+    return true -- không bị chặn
 end
 
 -- ═══════════════════════════════════════════════════════
@@ -544,7 +546,8 @@ local function getTarget()
 
     local bestTarget = nil
     local bestDist = CFG.AimFOV
-    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    -- Dùng MouseLocation (chính xác hơn screenCenter cho cả PC và mobile)
+    local screenCenter = UserInputService:GetMouseLocation()
 
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
@@ -594,15 +597,22 @@ local function aimAt(target)
 
     local aimPos = target.part.Position
 
-    -- Prediction: chỉ dùng velocity, KHÔNG thêm lookDir (tránh lệch)
+    -- Prediction: dùng MoveDirection (chuẩn hơn velocity)
     if CFG.AimPrediction and target.character then
+        local hum = target.character:FindFirstChildOfClass("Humanoid")
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
-        if hrp then
-            local velocity = hrp.AssemblyLinearVelocity or hrp.Velocity
+        if hum and hrp then
             local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
-            -- Prediction nhẹ: dist/60, clamp 0.3-2.0 (giảm mạnh so với trước)
-            local predFactor = CFG.AimPredAmount * math.clamp(dist / 60, 0.3, 2.0)
-            aimPos = aimPos + velocity * predFactor
+            local predFactor = CFG.AimPredAmount * math.clamp(dist / 50, 0.2, 1.5)
+
+            -- MoveDirection (chuẩn hơn velocity cho nhân vật đi bộ)
+            local moveOffset = hum.MoveDirection * hum.WalkSpeed * predFactor
+
+            -- Velocity cho trường hợp nhảy/rơi
+            local vel = hrp.AssemblyLinearVelocity or Vector3.zero
+            local velOffset = Vector3.new(0, vel.Y * predFactor * 0.3, 0)
+
+            aimPos = aimPos + moveOffset + velOffset
         end
     end
 
@@ -610,15 +620,14 @@ local function aimAt(target)
     local camPos = Camera.CFrame.Position
     local goalCFrame = CFrame.new(camPos, aimPos)
 
-    -- Smooth = 1 → instant lock (dính nhất)
+    -- Smooth: dùng TweenService mượt hơn Lerp
     local smooth = CFG.AimSmooth
     if smooth <= 1 then
         Camera.CFrame = goalCFrame
-    elseif smooth <= 2 then
-        -- Smooth 1-2: rất gần instant
-        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.85)
     else
-        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 1 / smooth)
+        -- Dùng Lerp với delta time để mượt hơn
+        local alpha = math.clamp(1 / smooth * 2, 0.1, 0.95)
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, alpha)
     end
 end
 
@@ -741,6 +750,7 @@ ScreenGui.Parent = PlayerGui
 fovFrame = Instance.new("Frame")
 fovFrame.Name = "FOVCircle"
 fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+-- Position sẽ được cập nhật mỗi frame theo MouseLocation
 fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
 fovFrame.BackgroundTransparency = 1  -- HOÀN TOÀN trong suốt, không fill
@@ -1634,6 +1644,9 @@ RunService.RenderStepped:Connect(function()
                 local fovDiameter = CFG.AimFOV * 2
                 fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
                 fovFrame.Visible = CFG.AimShowFOV
+                -- FOV circle theo chuột/touch
+                local mousePos = UserInputService:GetMouseLocation()
+                fovFrame.Position = UDim2.new(0, mousePos.X, 0, mousePos.Y)
             end
         end)
 
