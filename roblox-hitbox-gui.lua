@@ -643,8 +643,7 @@ fovFrame.Name = "FOVCircle"
 fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
-fovFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-fovFrame.BackgroundTransparency = 0.85
+fovFrame.BackgroundTransparency = 1  -- HOÀN TOÀN trong suốt, không fill
 fovFrame.BorderSizePixel = 0
 fovFrame.Visible = false
 fovFrame.ZIndex = 999
@@ -657,7 +656,7 @@ fovCorner.Parent = fovFrame
 fovStroke = Instance.new("UIStroke")
 fovStroke.Color = Color3.fromRGB(255, 255, 255)
 fovStroke.Thickness = 1.5
-fovStroke.Transparency = 0.3
+fovStroke.Transparency = 0
 fovStroke.Parent = fovFrame
 
 -- Toggle button (HA icon)
@@ -687,9 +686,9 @@ toggleStroke.Parent = ToggleBtn
 -- GUI: MAIN FRAME
 -- ═══════════════════════════════════════════════════════════════
 local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 360, 0, 480)
-Main.Position = UDim2.new(0.5, -180, 0.1, 0)
-Main.BackgroundColor3 = Color3.fromRGB(16, 16, 24)
+Main.Size = UDim2.new(0, 380, 0, 470)
+Main.Position = UDim2.new(0.5, -190, 0.12, 0)
+Main.BackgroundColor3 = Color3.fromRGB(12, 12, 20)
 Main.BackgroundTransparency = 0.02
 Main.BorderSizePixel = 0
 Main.Active = true
@@ -710,8 +709,8 @@ mainStroke.Parent = Main
 -- GUI: TITLE BAR
 -- ═══════════════════════════════════════════════════════════════
 local Title = Instance.new("Frame")
-Title.Size = UDim2.new(1, 0, 0, 34)
-Title.BackgroundColor3 = Color3.fromRGB(0, 70, 155)
+Title.Size = UDim2.new(1, 0, 0, 38)
+Title.BackgroundColor3 = Color3.fromRGB(0, 50, 120)
 Title.BorderSizePixel = 0
 Title.Parent = Main
 
@@ -733,7 +732,7 @@ TitleText.Position = UDim2.new(0, 12, 0, 0)
 TitleText.BackgroundTransparency = 1
 TitleText.Text = "⚡ " .. CFG.HubName .. " " .. CFG.Version
 TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleText.TextSize = 14
+TitleText.TextSize = 15
 TitleText.Font = Enum.Font.GothamBold
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 TitleText.Parent = Title
@@ -757,7 +756,7 @@ closeCorner.Parent = CloseBtn
 -- Status text
 local StatusLabel = Instance.new("TextLabel")
 StatusLabel.Size = UDim2.new(1, -16, 0, 14)
-StatusLabel.Position = UDim2.new(0, 8, 0, 36)
+StatusLabel.Position = UDim2.new(0, 10, 0, 40)
 StatusLabel.BackgroundTransparency = 1
 StatusLabel.Text = "⚡ Sẵn sàng!"
 StatusLabel.TextColor3 = Color3.fromRGB(130, 130, 150)
@@ -770,8 +769,8 @@ StatusLabel.Parent = Main
 -- GUI: TAB BAR
 -- ═══════════════════════════════════════════════════════════════
 local TabBar = Instance.new("Frame")
-TabBar.Size = UDim2.new(1, -12, 0, 28)
-TabBar.Position = UDim2.new(0, 6, 0, 52)
+TabBar.Size = UDim2.new(1, -16, 0, 28)
+TabBar.Position = UDim2.new(0, 8, 0, 56)
 TabBar.BackgroundTransparency = 1
 TabBar.Parent = Main
 
@@ -788,8 +787,8 @@ local tabPages = {}
 local function createTab(name, emoji, order, width)
     -- Tab button
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, width or 65, 0, 26)
-    btn.BackgroundColor3 = Color3.fromRGB(28, 28, 42)
+    btn.Size = UDim2.new(0, width or 70, 0, 26)
+    btn.BackgroundColor3 = Color3.fromRGB(22, 22, 35)
     btn.BorderSizePixel = 0
     btn.Text = emoji .. " " .. name
     btn.TextColor3 = Color3.fromRGB(140, 140, 160)
@@ -804,8 +803,8 @@ local function createTab(name, emoji, order, width)
 
     -- Tab content page (scrolling frame)
     local page = Instance.new("ScrollingFrame")
-    page.Size = UDim2.new(1, -12, 1, -86)
-    page.Position = UDim2.new(0, 6, 0, 82)
+    page.Size = UDim2.new(1, -16, 1, -92)
+    page.Position = UDim2.new(0, 8, 0, 88)
     page.BackgroundTransparency = 1
     page.BorderSizePixel = 0
     page.ScrollBarThickness = 3
@@ -836,10 +835,10 @@ local function createTab(name, emoji, order, width)
         end
         for tabName, tabBtn in pairs(tabButtons) do
             if tabName == name then
-                tabBtn.BackgroundColor3 = Color3.fromRGB(0, 90, 190)
+                tabBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 180)
                 tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
             else
-                tabBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 42)
+                tabBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 35)
                 tabBtn.TextColor3 = Color3.fromRGB(140, 140, 160)
             end
         end
@@ -858,9 +857,9 @@ local function sectionHeader(parentPage, text, icon)
     elementOrder = elementOrder + 1
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 22)
-    frame.BackgroundColor3 = Color3.fromRGB(0, 70, 155)
-    frame.BackgroundTransparency = 0.7
+    frame.Size = UDim2.new(1, 0, 0, 24)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 60, 130)
+    frame.BackgroundTransparency = 0.4
     frame.BorderSizePixel = 0
     frame.LayoutOrder = elementOrder
     frame.Parent = parentPage
@@ -875,7 +874,7 @@ local function sectionHeader(parentPage, text, icon)
     label.BackgroundTransparency = 1
     label.Text = icon .. " " .. text
     label.TextColor3 = Color3.fromRGB(0, 200, 255)
-    label.TextSize = 11
+    label.TextSize = 12
     label.Font = Enum.Font.GothamBold
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = frame
@@ -883,33 +882,61 @@ local function sectionHeader(parentPage, text, icon)
     return frame
 end
 
--- Toggle button
+-- Toggle button (iOS-style indicator)
 local function toggleButton(parentPage, text, defaultValue, callback)
     elementOrder = elementOrder + 1
 
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 26)
-    btn.BackgroundColor3 = defaultValue and Color3.fromRGB(12, 55, 12) or Color3.fromRGB(32, 32, 46)
+    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.BackgroundColor3 = Color3.fromRGB(24, 24, 38)
     btn.BorderSizePixel = 0
-    btn.Text = (defaultValue and " ●ON  " or " ●OFF ") .. text
-    btn.TextColor3 = defaultValue and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(160, 160, 160)
-    btn.TextSize = 11
-    btn.Font = Enum.Font.GothamMedium
-    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Text = ""
     btn.LayoutOrder = elementOrder
     btn.Parent = parentPage
 
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
+    corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -56, 1, 0)
+    label.Position = UDim2.new(0, 12, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(210, 210, 220)
+    label.TextSize = 12
+    label.Font = Enum.Font.GothamMedium
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = btn
+
+    local indicator = Instance.new("Frame")
+    indicator.Size = UDim2.new(0, 36, 0, 18)
+    indicator.Position = UDim2.new(1, -48, 0.5, -9)
+    indicator.BackgroundColor3 = defaultValue and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(55, 55, 70)
+    indicator.BorderSizePixel = 0
+    indicator.Parent = btn
+
+    local indCorner = Instance.new("UICorner")
+    indCorner.CornerRadius = UDim.new(1, 0)
+    indCorner.Parent = indicator
+
+    local dot = Instance.new("Frame")
+    dot.Size = UDim2.new(0, 14, 0, 14)
+    dot.Position = defaultValue and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
+    dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    dot.BorderSizePixel = 0
+    dot.Parent = indicator
+
+    local dotCorner = Instance.new("UICorner")
+    dotCorner.CornerRadius = UDim.new(1, 0)
+    dotCorner.Parent = dot
 
     local state = defaultValue
 
     btn.MouseButton1Click:Connect(function()
         state = not state
-        btn.BackgroundColor3 = state and Color3.fromRGB(12, 55, 12) or Color3.fromRGB(32, 32, 46)
-        btn.TextColor3 = state and Color3.fromRGB(80, 255, 80) or Color3.fromRGB(160, 160, 160)
-        btn.Text = (state and " ●ON  " or " ●OFF ") .. text
+        indicator.BackgroundColor3 = state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(55, 55, 70)
+        dot.Position = state and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
         callback(state)
     end)
 
@@ -921,36 +948,48 @@ local function inputField(parentPage, label, defaultValue, callback)
     elementOrder = elementOrder + 1
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 24)
-    frame.BackgroundTransparency = 1
+    frame.Size = UDim2.new(1, 0, 0, 30)
+    frame.BackgroundColor3 = Color3.fromRGB(24, 24, 38)
+    frame.BorderSizePixel = 0
     frame.LayoutOrder = elementOrder
     frame.Parent = parentPage
 
+    local fCorner = Instance.new("UICorner")
+    fCorner.CornerRadius = UDim.new(0, 8)
+    fCorner.Parent = frame
+
     local labelObj = Instance.new("TextLabel")
-    labelObj.Size = UDim2.new(0.5, 0, 1, 0)
+    labelObj.Size = UDim2.new(0.5, -8, 1, 0)
+    labelObj.Position = UDim2.new(0, 12, 0, 0)
     labelObj.BackgroundTransparency = 1
-    labelObj.Text = " " .. label
-    labelObj.TextColor3 = Color3.fromRGB(190, 190, 190)
-    labelObj.TextSize = 10
+    labelObj.Text = label
+    labelObj.TextColor3 = Color3.fromRGB(200, 200, 210)
+    labelObj.TextSize = 12
     labelObj.Font = Enum.Font.GothamMedium
     labelObj.TextXAlignment = Enum.TextXAlignment.Left
     labelObj.Parent = frame
 
     local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0.46, 0, 1, 0)
-    textBox.Position = UDim2.new(0.52, 0, 0, 0)
-    textBox.BackgroundColor3 = Color3.fromRGB(26, 26, 38)
+    textBox.Size = UDim2.new(0, 60, 0, 22)
+    textBox.Position = UDim2.new(1, -72, 0.5, -11)
+    textBox.BackgroundColor3 = Color3.fromRGB(16, 16, 28)
     textBox.BorderSizePixel = 0
     textBox.Text = tostring(defaultValue)
     textBox.TextColor3 = Color3.fromRGB(0, 200, 255)
-    textBox.TextSize = 11
-    textBox.Font = Enum.Font.GothamMedium
+    textBox.TextSize = 12
+    textBox.Font = Enum.Font.GothamBold
     textBox.ClearTextOnFocus = false
     textBox.Parent = frame
 
     local boxCorner = Instance.new("UICorner")
-    boxCorner.CornerRadius = UDim.new(0, 5)
+    boxCorner.CornerRadius = UDim.new(0, 6)
     boxCorner.Parent = textBox
+
+    local boxStroke = Instance.new("UIStroke")
+    boxStroke.Color = Color3.fromRGB(0, 100, 200)
+    boxStroke.Thickness = 1
+    boxStroke.Transparency = 0.5
+    boxStroke.Parent = textBox
 
     textBox.FocusLost:Connect(function()
         local num = tonumber(textBox.Text)
@@ -967,7 +1006,7 @@ local function actionButton(parentPage, text, color, callback)
     elementOrder = elementOrder + 1
 
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 26)
+    btn.Size = UDim2.new(1, 0, 0, 30)
     btn.BackgroundColor3 = color
     btn.BorderSizePixel = 0
     btn.Text = text
@@ -1007,7 +1046,7 @@ local function colorPickerRow(parentPage)
 
     for i, colorData in ipairs(colors) do
         local colorBtn = Instance.new("TextButton")
-        colorBtn.Size = UDim2.new(0, 40, 0, 22)
+        colorBtn.Size = UDim2.new(0, 42, 0, 22)
         colorBtn.Position = UDim2.new(0, (i - 1) * 46, 0, 1)
         colorBtn.BackgroundColor3 = colorData[2]
         colorBtn.BorderSizePixel = 0
