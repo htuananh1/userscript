@@ -491,22 +491,27 @@ local function isPartVisible(targetPart)
     local myChar = LocalPlayer.Character
     if not myChar or not myChar:FindFirstChild("Head") then return false end
 
-    -- Dùng GetPartsObscuringTarget (chuẩn hơn Raycast thủ công)
+    -- Raycast đơn giản và ổn định hơn GetPartsObscuringTarget
     local origin = Camera.CFrame.Position
-    local direction = (targetPart.Position - origin).Magnitude
-    local ignoreList = {myChar}
+    local direction = targetPart.Position - origin
+    local distance = direction.Magnitude
 
-    local parts = Camera:GetPartsObscuringTarget({targetPart.Position}, ignoreList)
-    if #parts > 0 then
-        -- Kiểm tra xem part bị trúng có phải thuộc target character không
-        for _, part in ipairs(parts) do
-            local ancestor = part:FindFirstAncestorOfClass("Model")
-            if ancestor and ancestor:FindFirstChildOfClass("Humanoid") then
-                -- Trúng player khác → visible
-                if ancestor == targetPart:FindFirstAncestorOfClass("Model") then
-                    return true
-                end
-            end
+    local params = RaycastParams.new()
+    params.FilterType = Enum.RaycastFilterType.Exclude
+    params.FilterDescendantsInstances = {myChar}
+
+    local result = workspace:Raycast(origin, direction, params)
+    if result then
+        local hitPart = result.Instance
+        -- Trúng part thuộc target character → visible
+        local hitModel = hitPart:FindFirstAncestorOfClass("Model")
+        local targetModel = targetPart:FindFirstAncestorOfClass("Model")
+        if hitModel and targetModel and hitModel == targetModel then
+            return true
+        end
+        -- Trúng accessory/clothing của target → visible
+        if hitModel and hitModel:FindFirstChildOfClass("Humanoid") then
+            return true
         end
         return false -- bị tường/object chặn
     end
@@ -554,8 +559,18 @@ local function getTarget()
 
     local bestTarget = nil
     local bestDist = CFG.AimFOV
-    -- Dùng MouseLocation (chính xác hơn screenCenter cho cả PC và mobile)
-    local screenCenter = UserInputService:GetMouseLocation()
+    -- PC: dùng MouseLocation, Mobile: dùng giữa màn hình
+    local screenCenter
+    pcall(function()
+        if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
+            screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        else
+            screenCenter = UserInputService:GetMouseLocation()
+        end
+    end)
+    if not screenCenter then
+        screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    end
 
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
@@ -608,37 +623,42 @@ local function aimAt(target)
 
     local aimPos = target.part.Position
 
-    -- Prediction: dùng MoveDirection (chuẩn hơn velocity)
+    -- Prediction: dẫn trước theo hướng di chuyển
     if CFG.AimPrediction and target.character then
         local hum = target.character:FindFirstChildOfClass("Humanoid")
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
         if hum and hrp then
             local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
-            local predFactor = CFG.AimPredAmount * math.clamp(dist / 50, 0.2, 1.5)
+            local predFactor = CFG.AimPredAmount * math.clamp(dist / 40, 0.3, 2.0)
 
-            -- MoveDirection (chuẩn hơn velocity cho nhân vật đi bộ)
-            local moveOffset = hum.MoveDirection * hum.WalkSpeed * predFactor
+            -- MoveDirection: hướng di chuyển thực tế
+            local moveDir = hum.MoveDirection
+            if moveDir.Magnitude > 0.1 then
+                aimPos = aimPos + moveDir * hum.WalkSpeed * predFactor
+            end
 
-            -- Velocity cho trường hợp nhảy/rơi
-            local vel = hrp.AssemblyLinearVelocity or Vector3.zero
-            local velOffset = Vector3.new(0, vel.Y * predFactor * 0.3, 0)
-
-            aimPos = aimPos + moveOffset + velOffset
+            -- Bù Y cho nhảy/rơi
+            local vel = hrp.AssemblyLinearVelocity
+            if vel and math.abs(vel.Y) > 5 then
+                aimPos = aimPos + Vector3.new(0, vel.Y * predFactor * 0.4, 0)
+            end
         end
     end
 
-    -- Aim dính: dùng CFrame mới từ camera position
+    -- Aim: camera → aimPos
     local camPos = Camera.CFrame.Position
     local goalCFrame = CFrame.new(camPos, aimPos)
 
-    -- Smooth: dùng TweenService mượt hơn Lerp
+    -- Smooth: 1 = instant, 2+ = Lerp
     local smooth = CFG.AimSmooth
     if smooth <= 1 then
         Camera.CFrame = goalCFrame
+    elseif smooth <= 2 then
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.85)
+    elseif smooth <= 5 then
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.5)
     else
-        -- Dùng Lerp với delta time để mượt hơn
-        local alpha = math.clamp(1 / smooth * 2, 0.1, 0.95)
-        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, alpha)
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.3)
     end
 end
 
@@ -1662,9 +1682,19 @@ RunService.RenderStepped:Connect(function()
                 local fovDiameter = CFG.AimFOV * 2
                 fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
                 fovFrame.Visible = CFG.AimShowFOV
-                -- FOV circle theo chuột/touch
-                local mousePos = UserInputService:GetMouseLocation()
-                fovFrame.Position = UDim2.new(0, mousePos.X, 0, mousePos.Y)
+                -- FOV circle: PC theo chuột, Mobile giữa màn hình
+                local fovPos
+                pcall(function()
+                    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
+                        fovPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                    else
+                        fovPos = UserInputService:GetMouseLocation()
+                    end
+                end)
+                if not fovPos then
+                    fovPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                end
+                fovFrame.Position = UDim2.new(0, fovPos.X, 0, fovPos.Y)
             end
         end)
 
