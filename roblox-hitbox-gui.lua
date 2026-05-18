@@ -570,23 +570,32 @@ local function aimAt(target)
 end
 
 -- ═══════════════════════════════════════════════════════
--- FOV CIRCLE (hiện trên màn hình)
+-- FOV CIRCLE (dùng Frame + UICorner, tương thích MỌI executor)
 -- ═══════════════════════════════════════════════════════
--- FOV Circle: viền trắng rõ ràng, không filled
-local fovCircle = Drawing.new("Circle")
-fovCircle.Visible = false
-fovCircle.Radius = CFG.AimFOV
-fovCircle.Color = Color3.fromRGB(255, 255, 255)
-fovCircle.Thickness = 1.5
-fovCircle.Filled = false
-fovCircle.Transparency = 1
-fovCircle.NumSides = 80
+local fovFrame = Instance.new("Frame")
+fovFrame.Name = "FOVCircle"
+fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
+fovFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+fovFrame.BackgroundTransparency = 0.85
+fovFrame.BorderSizePixel = 0
+fovFrame.Visible = false
+fovFrame.ZIndex = 999
+fovFrame.Parent = ScreenGui
 
--- ═══════════════════════════════════════════════════════
--- INPUT: Theo dõi chuột (cho AimOnShoot)
--- ═══════════════════════════════════════════════════════
--- AimOnShoot: dùng IsMouseButtonPressed trong loop thay vì event
--- vì game consume MouseButton1 event → InputBegan không bao giờ fire
+local fovCorner = Instance.new("UICorner")
+fovCorner.CornerRadius = UDim.new(1, 0) -- hình tròn
+fovCorner.Parent = fovFrame
+
+local fovStroke = Instance.new("UIStroke")
+fovStroke.Color = Color3.fromRGB(255, 255, 255)
+fovStroke.Thickness = 1.5
+fovStroke.Transparency = 0.3
+fovStroke.Parent = fovFrame
+
+-- AimOnShoot: dùng IsMouseButtonPressed mỗi frame trong loop
+-- không依赖 event vì game consume MouseButton1
 
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1272,6 +1281,8 @@ actionButton(miscPage, "🔄 RESET ALL", Color3.fromRGB(170, 35, 35), function()
         hum.WalkSpeed = 16
     end
 
+    -- Ẩn FOV circle
+    fovFrame.Visible = false
     StatusLabel.Text = "🔄 Đã reset tất cả!"
 end)
 
@@ -1362,12 +1373,12 @@ RunService.RenderStepped:Connect(function()
     if CFG.AimEnabled then
         local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
-        -- Cập nhật FOV circle
-        fovCircle.Position = screenCenter
-        fovCircle.Radius = CFG.AimFOV
-        fovCircle.Visible = CFG.AimShowFOV
+        -- Cập nhật FOV circle (Frame-based)
+        local fovDiameter = CFG.AimFOV * 2
+        fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
+        fovFrame.Visible = CFG.AimShowFOV
 
-        -- AimOnShoot: check trực tiếp MouseButton1 mỗi frame
+        -- AimOnShoot: check MouseButton1 mỗi frame (poll, không event)
         isShooting = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
 
         local shouldAim = (not CFG.AimOnShoot) or isShooting
@@ -1376,15 +1387,15 @@ RunService.RenderStepped:Connect(function()
             local target = getTarget()
             if target then
                 aimAt(target)
-                fovCircle.Color = Color3.fromRGB(255, 50, 50) -- Đỏ khi lock
+                fovStroke.Color = Color3.fromRGB(255, 50, 50) -- Đỏ khi lock
             else
-                fovCircle.Color = Color3.fromRGB(255, 255, 255) -- Trắng khi idle
+                fovStroke.Color = Color3.fromRGB(255, 255, 255) -- Trắng khi idle
             end
         else
-            fovCircle.Color = Color3.fromRGB(255, 255, 255)
+            fovStroke.Color = Color3.fromRGB(255, 255, 255)
         end
     else
-        fovCircle.Visible = false
+        fovFrame.Visible = false
     end
 end)
 
