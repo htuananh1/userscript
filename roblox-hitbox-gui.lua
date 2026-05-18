@@ -829,11 +829,13 @@ SidebarFill.Size = UDim2.new(0, 10, 1, 0)
 SidebarFill.Position = UDim2.new(1, -10, 0, 0)
 SidebarFill.BackgroundColor3 = CLR_PANEL
 SidebarFill.BorderSizePixel = 0
+SidebarFill.ZIndex = 1
 SidebarFill.Parent = Sidebar
 
 local SidebarLayout = Instance.new("UIListLayout")
-SidebarLayout.Padding = UDim.new(0, 2)
+SidebarLayout.Padding = UDim.new(0, 4)
 SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+SidebarLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 SidebarLayout.Parent = Sidebar
 
 local SidebarPad = Instance.new("UIPadding")
@@ -867,7 +869,7 @@ local menuSections = {
 
 for i, sec in ipairs(menuSections) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.Size = UDim2.new(1, 0, 0, 32)
     btn.BackgroundColor3 = CLR_PANEL
     btn.BackgroundTransparency = 1
     btn.BorderSizePixel = 0
@@ -877,6 +879,7 @@ for i, sec in ipairs(menuSections) do
     btn.Font = Enum.Font.GothamMedium
     btn.TextXAlignment = Enum.TextXAlignment.Left
     btn.LayoutOrder = i
+    btn.ZIndex = 2
     btn.Parent = Sidebar
 
     local btnCorner = Instance.new("UICorner")
