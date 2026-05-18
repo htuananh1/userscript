@@ -569,30 +569,9 @@
    569|    end
    570|end
    571|
-   572|-- ═══════════════════════════════════════════════════════
-   573|-- FOV CIRCLE (dùng Frame + UICorner, tương thích MỌI executor)
-   574|-- ═══════════════════════════════════════════════════════
-   575|local fovFrame = Instance.new("Frame")
-   576|fovFrame.Name = "FOVCircle"
-   577|fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-   578|fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-   579|fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
-   580|fovFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-   581|fovFrame.BackgroundTransparency = 0.85
-   582|fovFrame.BorderSizePixel = 0
-   583|fovFrame.Visible = false
-   584|fovFrame.ZIndex = 999
-   585|fovFrame.Parent = ScreenGui
-   586|
-   587|local fovCorner = Instance.new("UICorner")
-   588|fovCorner.CornerRadius = UDim.new(1, 0) -- hình tròn
-   589|fovCorner.Parent = fovFrame
-   590|
-   591|local fovStroke = Instance.new("UIStroke")
-   592|fovStroke.Color = Color3.fromRGB(255, 255, 255)
-   593|fovStroke.Thickness = 1.5
-   594|fovStroke.Transparency = 0.3
-   595|fovStroke.Parent = fovFrame
+-- FOV Circle variables (khởi tạo sau khi ScreenGui tạo xong)
+local fovFrame = nil
+local fovStroke = nil
    596|
    597|-- AimOnShoot: dùng IsMouseButtonPressed mỗi frame trong loop
    598|-- không依赖 event vì game consume MouseButton1
@@ -666,6 +645,29 @@ ScreenGui.Name = "HoangAnhHub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
+
+-- ─── FOV CIRCLE (tạo SAU ScreenGui) ───
+fovFrame = Instance.new("Frame")
+fovFrame.Name = "FOVCircle"
+fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
+fovFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+fovFrame.BackgroundTransparency = 0.85
+fovFrame.BorderSizePixel = 0
+fovFrame.Visible = false
+fovFrame.ZIndex = 999
+fovFrame.Parent = ScreenGui
+
+local fovCorner = Instance.new("UICorner")
+fovCorner.CornerRadius = UDim.new(1, 0)
+fovCorner.Parent = fovFrame
+
+fovStroke = Instance.new("UIStroke")
+fovStroke.Color = Color3.fromRGB(255, 255, 255)
+fovStroke.Thickness = 1.5
+fovStroke.Transparency = 0.3
+fovStroke.Parent = fovFrame
 
 -- ─── KÍCH THƯỚC MENU (cố định) ───
 local MENU_WIDTH = 370
