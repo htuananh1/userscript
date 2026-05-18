@@ -659,93 +659,131 @@ fovStroke.Thickness = 1.5
 fovStroke.Transparency = 0
 fovStroke.Parent = fovFrame
 
--- Toggle button (HA icon)
+-- ═══════════════════════════════════════════════════════════════
+-- GUI v13: Speed Hub X Style — Sidebar + Content
+-- ═══════════════════════════════════════════════════════════════
+local ScreenGui2 = ScreenGui  -- reuse from FOV section
+
+-- ─── COLORS ───
+local CLR_BG        = Color3.fromRGB(17, 17, 17)       -- #111111
+local CLR_PANEL      = Color3.fromRGB(30, 30, 30)       -- #1E1E1E
+local CLR_PANEL2     = Color3.fromRGB(38, 38, 38)       -- #262626
+local CLR_ACTIVE     = Color3.fromRGB(45, 45, 45)       -- #2D2D2D
+local CLR_TEXT       = Color3.fromRGB(255, 255, 255)     -- White
+local CLR_DESC       = Color3.fromRGB(176, 176, 176)     -- #B0B0B0
+local CLR_ACCENT     = Color3.fromRGB(0, 120, 255)       -- Blue accent
+local CLR_TOGGLE_ON  = Color3.fromRGB(0, 180, 80)        -- Green
+local CLR_TOGGLE_OFF = Color3.fromRGB(70, 70, 70)        -- Gray
+local CLR_DIVIDER    = Color3.fromRGB(45, 45, 45)        -- Subtle line
+
+local MENU_W = 520
+local MENU_H = 440
+local SIDEBAR_W = 140
+
+-- ═══════════════════════════════════════════════════════════════
+-- TOGGLE BUTTON (HA icon)
+-- ═══════════════════════════════════════════════════════════════
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Size = UDim2.new(0, 44, 0, 44)
 ToggleBtn.Position = UDim2.new(0, 10, 0.5, -22)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 190)
+ToggleBtn.BackgroundColor3 = CLR_PANEL
 ToggleBtn.BorderSizePixel = 0
 ToggleBtn.Text = "HA"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextColor3 = CLR_ACCENT
 ToggleBtn.TextSize = 17
 ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.Active = true
 ToggleBtn.Draggable = true
-ToggleBtn.Parent = ScreenGui
+ToggleBtn.Parent = ScreenGui2
 
 local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 10)
 toggleCorner.Parent = ToggleBtn
 
 local toggleStroke = Instance.new("UIStroke")
-toggleStroke.Color = Color3.fromRGB(0, 200, 255)
+toggleStroke.Color = CLR_ACCENT
 toggleStroke.Thickness = 2
 toggleStroke.Parent = ToggleBtn
 
 -- ═══════════════════════════════════════════════════════════════
--- GUI: MAIN FRAME
+-- MAIN FRAME
 -- ═══════════════════════════════════════════════════════════════
 local Main = Instance.new("Frame")
-Main.Size = UDim2.new(0, 380, 0, 470)
-Main.Position = UDim2.new(0.5, -190, 0.12, 0)
-Main.BackgroundColor3 = Color3.fromRGB(12, 12, 20)
+Main.Size = UDim2.new(0, MENU_W, 0, MENU_H)
+Main.Position = UDim2.new(0.5, -MENU_W/2, 0.15, 0)
+Main.BackgroundColor3 = CLR_BG
 Main.BackgroundTransparency = 0.02
 Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
-Main.Parent = ScreenGui
+Main.Parent = ScreenGui2
 
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 8)
 mainCorner.Parent = Main
 
 local mainStroke = Instance.new("UIStroke")
-mainStroke.Color = Color3.fromRGB(0, 140, 255)
-mainStroke.Thickness = 1.5
-mainStroke.Transparency = 0.1
+mainStroke.Color = CLR_ACCENT
+mainStroke.Thickness = 1
+mainStroke.Transparency = 0.3
 mainStroke.Parent = Main
 
 -- ═══════════════════════════════════════════════════════════════
--- GUI: TITLE BAR
+-- TITLE BAR
 -- ═══════════════════════════════════════════════════════════════
 local Title = Instance.new("Frame")
-Title.Size = UDim2.new(1, 0, 0, 38)
-Title.BackgroundColor3 = Color3.fromRGB(0, 50, 120)
+Title.Size = UDim2.new(1, 0, 0, 32)
+Title.BackgroundColor3 = CLR_PANEL
 Title.BorderSizePixel = 0
 Title.Parent = Main
 
-local titleCorner = Instance.new("UICorner")
-titleCorner.CornerRadius = UDim.new(0, 8)
-titleCorner.Parent = Title
+local titleCorner2 = Instance.new("UICorner")
+titleCorner2.CornerRadius = UDim.new(0, 8)
+titleCorner2.Parent = Title
 
--- Fill bottom corners of title
 local TitleFill = Instance.new("Frame")
-TitleFill.Size = UDim2.new(1, 0, 0, 8)
-TitleFill.Position = UDim2.new(0, 0, 1, -8)
-TitleFill.BackgroundColor3 = Color3.fromRGB(0, 70, 155)
+TitleFill.Size = UDim2.new(1, 0, 0, 10)
+TitleFill.Position = UDim2.new(0, 0, 1, -10)
+TitleFill.BackgroundColor3 = CLR_PANEL
 TitleFill.BorderSizePixel = 0
 TitleFill.Parent = Title
 
 local TitleText = Instance.new("TextLabel")
-TitleText.Size = UDim2.new(1, -45, 1, 0)
+TitleText.Size = UDim2.new(1, -70, 1, 0)
 TitleText.Position = UDim2.new(0, 12, 0, 0)
 TitleText.BackgroundTransparency = 1
-TitleText.Text = "⚡ " .. CFG.HubName .. " " .. CFG.Version
-TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleText.TextSize = 15
-TitleText.Font = Enum.Font.GothamBold
+TitleText.Text = "Hoàng Anh Hub  |  v13"
+TitleText.TextColor3 = CLR_DESC
+TitleText.TextSize = 12
+TitleText.Font = Enum.Font.GothamMedium
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 TitleText.Parent = Title
+
+-- Minimize button
+local MinBtn = Instance.new("TextButton")
+MinBtn.Size = UDim2.new(0, 24, 0, 24)
+MinBtn.Position = UDim2.new(1, -56, 0, 4)
+MinBtn.BackgroundColor3 = CLR_PANEL2
+MinBtn.BorderSizePixel = 0
+MinBtn.Text = "—"
+MinBtn.TextColor3 = CLR_DESC
+MinBtn.TextSize = 14
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.Parent = Title
+
+local minCorner = Instance.new("UICorner")
+minCorner.CornerRadius = UDim.new(0, 6)
+minCorner.Parent = MinBtn
 
 -- Close button
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 24, 0, 24)
-CloseBtn.Position = UDim2.new(1, -28, 0, 5)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(190, 40, 40)
+CloseBtn.Position = UDim2.new(1, -28, 0, 4)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
 CloseBtn.BorderSizePixel = 0
-CloseBtn.Text = "✕"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.TextSize = 12
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = CLR_TEXT
+CloseBtn.TextSize = 11
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.Parent = Title
 
@@ -753,605 +791,559 @@ local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(0, 6)
 closeCorner.Parent = CloseBtn
 
--- Status text
+-- Status
 local StatusLabel = Instance.new("TextLabel")
-StatusLabel.Size = UDim2.new(1, -16, 0, 14)
-StatusLabel.Position = UDim2.new(0, 10, 0, 40)
+StatusLabel.Size = UDim2.new(1, -16, 0, 12)
+StatusLabel.Position = UDim2.new(0, 12, 1, -14)
 StatusLabel.BackgroundTransparency = 1
-StatusLabel.Text = "⚡ Sẵn sàng!"
-StatusLabel.TextColor3 = Color3.fromRGB(130, 130, 150)
+StatusLabel.Text = ""
+StatusLabel.TextColor3 = Color3.fromRGB(80, 80, 80)
 StatusLabel.TextSize = 9
 StatusLabel.Font = Enum.Font.Gotham
 StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
-StatusLabel.Parent = Main
+StatusLabel.Parent = Title
 
 -- ═══════════════════════════════════════════════════════════════
--- GUI: TAB BAR
+-- SIDEBAR
 -- ═══════════════════════════════════════════════════════════════
-local TabBar = Instance.new("Frame")
-TabBar.Size = UDim2.new(1, -16, 0, 28)
-TabBar.Position = UDim2.new(0, 8, 0, 56)
-TabBar.BackgroundTransparency = 1
-TabBar.Parent = Main
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -32)
+Sidebar.Position = UDim2.new(0, 0, 0, 32)
+Sidebar.BackgroundColor3 = CLR_PANEL
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Main
 
-local TabLayout = Instance.new("UIListLayout")
-TabLayout.FillDirection = Enum.FillDirection.Horizontal
-TabLayout.Padding = UDim.new(0, 3)
-TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-TabLayout.Parent = TabBar
+local sidebarCorner = Instance.new("UICorner")
+sidebarCorner.CornerRadius = UDim.new(0, 8)
+sidebarCorner.Parent = Sidebar
 
-local tabButtons = {}
-local tabPages = {}
+local SidebarFill = Instance.new("Frame")
+SidebarFill.Size = UDim2.new(0, 10, 1, 0)
+SidebarFill.Position = UDim2.new(1, -10, 0, 0)
+SidebarFill.BackgroundColor3 = CLR_PANEL
+SidebarFill.BorderSizePixel = 0
+SidebarFill.Parent = Sidebar
 
--- Tạo 1 tab mới
-local function createTab(name, emoji, order, width)
-    -- Tab button
+local SidebarLayout = Instance.new("UIListLayout")
+SidebarLayout.Padding = UDim.new(0, 2)
+SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+SidebarLayout.Parent = Sidebar
+
+local SidebarPad = Instance.new("UIPadding")
+SidebarPad.PaddingTop = UDim.new(0, 6)
+SidebarPad.PaddingLeft = UDim.new(0, 6)
+SidebarPad.PaddingRight = UDim.new(0, 6)
+SidebarPad.Parent = Sidebar
+
+-- ═══════════════════════════════════════════════════════════════
+-- CONTENT AREA
+-- ═══════════════════════════════════════════════════════════════
+local ContentArea = Instance.new("Frame")
+ContentArea.Size = UDim2.new(1, -SIDEBAR_W, 1, -32)
+ContentArea.Position = UDim2.new(0, SIDEBAR_W, 0, 32)
+ContentArea.BackgroundColor3 = CLR_BG
+ContentArea.BorderSizePixel = 0
+ContentArea.Parent = Main
+
+-- ═══════════════════════════════════════════════════════════════
+-- SIDEBAR ITEMS
+-- ═══════════════════════════════════════════════════════════════
+local sidebarButtons = {}
+local contentPages = {}
+local menuSections = {
+    {name = "Home",     icon = "🏠"},
+    {name = "Main",     icon = "🎯"},
+    {name = "Visual",   icon = "👁️"},
+    {name = "Player",   icon = "🏃"},
+    {name = "Misc",     icon = "⚙️"},
+}
+
+for i, sec in ipairs(menuSections) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, width or 70, 0, 26)
-    btn.BackgroundColor3 = Color3.fromRGB(22, 22, 35)
+    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.BackgroundColor3 = CLR_PANEL
+    btn.BackgroundTransparency = 1
     btn.BorderSizePixel = 0
-    btn.Text = emoji .. " " .. name
-    btn.TextColor3 = Color3.fromRGB(140, 140, 160)
-    btn.TextSize = 11
-    btn.Font = Enum.Font.GothamBold
-    btn.LayoutOrder = order
-    btn.Parent = TabBar
+    btn.Text = "  " .. sec.icon .. "  " .. sec.name
+    btn.TextColor3 = CLR_DESC
+    btn.TextSize = 12
+    btn.Font = Enum.Font.GothamMedium
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.LayoutOrder = i
+    btn.Parent = Sidebar
 
     local btnCorner = Instance.new("UICorner")
     btnCorner.CornerRadius = UDim.new(0, 6)
     btnCorner.Parent = btn
 
-    -- Tab content page (scrolling frame)
+    sidebarButtons[sec.name] = btn
+
+    -- Content page (ScrollingFrame)
     local page = Instance.new("ScrollingFrame")
-    page.Size = UDim2.new(1, -16, 1, -92)
-    page.Position = UDim2.new(0, 8, 0, 88)
+    page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.BorderSizePixel = 0
     page.ScrollBarThickness = 3
-    page.ScrollBarImageColor3 = Color3.fromRGB(0, 140, 255)
+    page.ScrollBarImageColor3 = CLR_ACCENT
+    page.ScrollBarImageTransparency = 0.5
     page.CanvasSize = UDim2.new(0, 0, 0, 0)
     page.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    page.ScrollingDirection = Enum.ScrollingDirection.Y
+    page.ElasticBehavior = Enum.ElasticBehavior.Always
     page.Visible = false
-    page.Parent = Main
+    page.Parent = ContentArea
 
     local pageLayout = Instance.new("UIListLayout")
-    pageLayout.Padding = UDim.new(0, 3)
+    pageLayout.Padding = UDim.new(0, 0)
     pageLayout.SortOrder = Enum.SortOrder.LayoutOrder
     pageLayout.Parent = page
 
-    local pagePadding = Instance.new("UIPadding")
-    pagePadding.PaddingLeft = UDim.new(0, 2)
-    pagePadding.PaddingRight = UDim.new(0, 2)
-    pagePadding.PaddingTop = UDim.new(0, 1)
-    pagePadding.Parent = page
+    local pagePad = Instance.new("UIPadding")
+    pagePad.PaddingLeft = UDim.new(0, 14)
+    pagePad.PaddingRight = UDim.new(0, 14)
+    pagePad.PaddingTop = UDim.new(0, 10)
+    pagePad.PaddingBottom = UDim.new(0, 16)
+    pagePad.Parent = page
 
-    tabButtons[name] = btn
-    tabPages[name] = page
+    contentPages[sec.name] = page
 
-    -- Switch tab on click
     btn.MouseButton1Click:Connect(function()
-        for tabName, tabPage in pairs(tabPages) do
-            tabPage.Visible = (tabName == name)
-        end
-        for tabName, tabBtn in pairs(tabButtons) do
-            if tabName == name then
-                tabBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 180)
-                tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        for name, p in pairs(contentPages) do p.Visible = (name == sec.name) end
+        for name, b in pairs(sidebarButtons) do
+            if name == sec.name then
+                b.BackgroundColor3 = CLR_ACTIVE
+                b.BackgroundTransparency = 0
+                b.TextColor3 = CLR_TEXT
             else
-                tabBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 35)
-                tabBtn.TextColor3 = Color3.fromRGB(140, 140, 160)
+                b.BackgroundColor3 = CLR_PANEL
+                b.BackgroundTransparency = 1
+                b.TextColor3 = CLR_DESC
             end
         end
     end)
-
-    return page
 end
 
 -- ═══════════════════════════════════════════════════════════════
--- GUI: UI BUILDER FUNCTIONS (viết đầy đủ, không rút gọn)
+-- UI COMPONENTS (per-page counter)
 -- ═══════════════════════════════════════════════════════════════
-local elementOrder = 0
+local pageCounters = {}
 
--- Section header
-local function sectionHeader(parentPage, text, icon)
-    elementOrder = elementOrder + 1
+local function nextOrder(page)
+    if not pageCounters[page] then pageCounters[page] = 0 end
+    pageCounters[page] = pageCounters[page] + 1
+    return pageCounters[page]
+end
 
+-- Page title
+local function pageTitle(page, text)
+    local order = nextOrder(page)
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 0, 28)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = CLR_TEXT
+    lbl.TextSize = 18
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.LayoutOrder = order
+    lbl.Parent = page
+    return lbl
+end
+
+-- Section header: - [ Name ] -
+local function sectionHeader(page, text)
+    local order = nextOrder(page)
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 24)
-    frame.BackgroundColor3 = Color3.fromRGB(0, 60, 130)
-    frame.BackgroundTransparency = 0.4
-    frame.BorderSizePixel = 0
-    frame.LayoutOrder = elementOrder
-    frame.Parent = parentPage
+    frame.Size = UDim2.new(1, 0, 0, 28)
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = order
+    frame.Parent = page
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = frame
-
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -8, 1, 0)
-    label.Position = UDim2.new(0, 8, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = icon .. " " .. text
-    label.TextColor3 = Color3.fromRGB(0, 200, 255)
-    label.TextSize = 12
-    label.Font = Enum.Font.GothamBold
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = "- [ " .. text .. " ] -"
+    lbl.TextColor3 = CLR_DESC
+    lbl.TextSize = 11
+    lbl.Font = Enum.Font.GothamMedium
+    lbl.Parent = frame
 
     return frame
 end
 
--- Toggle button (iOS-style indicator)
-local function toggleButton(parentPage, text, defaultValue, callback)
-    elementOrder = elementOrder + 1
+-- Divider line
+local function divider(page)
+    local order = nextOrder(page)
+    local line = Instance.new("Frame")
+    line.Size = UDim2.new(1, 0, 0, 1)
+    line.BackgroundColor3 = CLR_DIVIDER
+    line.BackgroundTransparency = 0.3
+    line.BorderSizePixel = 0
+    line.LayoutOrder = order
+    line.Parent = page
+    return line
+end
 
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 30)
-    btn.BackgroundColor3 = Color3.fromRGB(24, 24, 38)
-    btn.BorderSizePixel = 0
-    btn.Text = ""
-    btn.LayoutOrder = elementOrder
-    btn.Parent = parentPage
+-- Toggle item (label left + description + toggle right)
+local function toggleItem(page, text, desc, default, callback)
+    local order = nextOrder(page)
+    local height = desc and 48 or 32
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = btn
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, height)
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = order
+    frame.Parent = page
 
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -56, 1, 0)
-    label.Position = UDim2.new(0, 12, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(210, 210, 220)
-    label.TextSize = 12
-    label.Font = Enum.Font.GothamMedium
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = btn
+    -- Label
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, -56, 0, 18)
+    lbl.Position = UDim2.new(0, 0, 0, 2)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = CLR_TEXT
+    lbl.TextSize = 13
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = frame
 
-    local indicator = Instance.new("Frame")
-    indicator.Size = UDim2.new(0, 36, 0, 18)
-    indicator.Position = UDim2.new(1, -48, 0.5, -9)
-    indicator.BackgroundColor3 = defaultValue and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(55, 55, 70)
-    indicator.BorderSizePixel = 0
-    indicator.Parent = btn
+    -- Description
+    if desc then
+        local descLbl = Instance.new("TextLabel")
+        descLbl.Size = UDim2.new(1, -56, 0, 24)
+        descLbl.Position = UDim2.new(0, 0, 0, 20)
+        descLbl.BackgroundTransparency = 1
+        descLbl.Text = desc
+        descLbl.TextColor3 = CLR_DESC
+        descLbl.TextSize = 10
+        descLbl.Font = Enum.Font.Gotham
+        descLbl.TextXAlignment = Enum.TextXAlignment.Left
+        descLbl.TextWrapped = true
+        descLbl.Parent = frame
+    end
 
-    local indCorner = Instance.new("UICorner")
-    indCorner.CornerRadius = UDim.new(1, 0)
-    indCorner.Parent = indicator
+    -- Toggle (pill style)
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(0, 38, 0, 20)
+    toggle.Position = UDim2.new(1, -42, 0, 2)
+    toggle.BackgroundColor3 = default and CLR_TOGGLE_ON or CLR_TOGGLE_OFF
+    toggle.BorderSizePixel = 0
+    toggle.Text = ""
+    toggle.Parent = frame
+
+    local togCorner = Instance.new("UICorner")
+    togCorner.CornerRadius = UDim.new(1, 0)
+    togCorner.Parent = toggle
 
     local dot = Instance.new("Frame")
-    dot.Size = UDim2.new(0, 14, 0, 14)
-    dot.Position = defaultValue and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
-    dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    dot.Size = UDim2.new(0, 16, 0, 16)
+    dot.Position = default and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
+    dot.BackgroundColor3 = CLR_TEXT
     dot.BorderSizePixel = 0
-    dot.Parent = indicator
+    dot.Parent = toggle
 
     local dotCorner = Instance.new("UICorner")
     dotCorner.CornerRadius = UDim.new(1, 0)
     dotCorner.Parent = dot
 
-    local state = defaultValue
-
-    btn.MouseButton1Click:Connect(function()
+    local state = default
+    toggle.MouseButton1Click:Connect(function()
         state = not state
-        indicator.BackgroundColor3 = state and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(55, 55, 70)
-        dot.Position = state and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
+        toggle.BackgroundColor3 = state and CLR_TOGGLE_ON or CLR_TOGGLE_OFF
+        dot.Position = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)
         callback(state)
-    end)
-
-    return btn
-end
-
--- Input field (label + textbox)
-local function inputField(parentPage, label, defaultValue, callback)
-    elementOrder = elementOrder + 1
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 30)
-    frame.BackgroundColor3 = Color3.fromRGB(24, 24, 38)
-    frame.BorderSizePixel = 0
-    frame.LayoutOrder = elementOrder
-    frame.Parent = parentPage
-
-    local fCorner = Instance.new("UICorner")
-    fCorner.CornerRadius = UDim.new(0, 8)
-    fCorner.Parent = frame
-
-    local labelObj = Instance.new("TextLabel")
-    labelObj.Size = UDim2.new(0.5, -8, 1, 0)
-    labelObj.Position = UDim2.new(0, 12, 0, 0)
-    labelObj.BackgroundTransparency = 1
-    labelObj.Text = label
-    labelObj.TextColor3 = Color3.fromRGB(200, 200, 210)
-    labelObj.TextSize = 12
-    labelObj.Font = Enum.Font.GothamMedium
-    labelObj.TextXAlignment = Enum.TextXAlignment.Left
-    labelObj.Parent = frame
-
-    local textBox = Instance.new("TextBox")
-    textBox.Size = UDim2.new(0, 60, 0, 22)
-    textBox.Position = UDim2.new(1, -72, 0.5, -11)
-    textBox.BackgroundColor3 = Color3.fromRGB(16, 16, 28)
-    textBox.BorderSizePixel = 0
-    textBox.Text = tostring(defaultValue)
-    textBox.TextColor3 = Color3.fromRGB(0, 200, 255)
-    textBox.TextSize = 12
-    textBox.Font = Enum.Font.GothamBold
-    textBox.ClearTextOnFocus = false
-    textBox.Parent = frame
-
-    local boxCorner = Instance.new("UICorner")
-    boxCorner.CornerRadius = UDim.new(0, 6)
-    boxCorner.Parent = textBox
-
-    local boxStroke = Instance.new("UIStroke")
-    boxStroke.Color = Color3.fromRGB(0, 100, 200)
-    boxStroke.Thickness = 1
-    boxStroke.Transparency = 0.5
-    boxStroke.Parent = textBox
-
-    textBox.FocusLost:Connect(function()
-        local num = tonumber(textBox.Text)
-        if num then
-            callback(num)
-        end
     end)
 
     return frame
 end
 
--- Action button
-local function actionButton(parentPage, text, color, callback)
-    elementOrder = elementOrder + 1
+-- Input item (label left + textbox right)
+local function inputItem(page, text, default, callback)
+    local order = nextOrder(page)
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 32)
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = order
+    frame.Parent = page
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.5, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = CLR_TEXT
+    lbl.TextSize = 13
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = frame
+
+    local box = Instance.new("TextBox")
+    box.Size = UDim2.new(0, 64, 0, 24)
+    box.Position = UDim2.new(1, -68, 0.5, -12)
+    box.BackgroundColor3 = CLR_PANEL2
+    box.BorderSizePixel = 0
+    box.Text = tostring(default)
+    box.TextColor3 = CLR_ACCENT
+    box.TextSize = 12
+    box.Font = Enum.Font.GothamBold
+    box.ClearTextOnFocus = false
+    box.Parent = frame
+
+    local boxCorner = Instance.new("UICorner")
+    boxCorner.CornerRadius = UDim.new(0, 6)
+    boxCorner.Parent = box
+
+    box.FocusLost:Connect(function()
+        local num = tonumber(box.Text)
+        if num then callback(num) end
+    end)
+
+    return frame
+end
+
+-- Selector item (label left + option buttons right)
+local function selectorItem(page, text, options, default, callback)
+    local order = nextOrder(page)
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 32)
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = order
+    frame.Parent = page
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.35, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = CLR_TEXT
+    lbl.TextSize = 13
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = frame
+
+    local optBtns = {}
+    for i, opt in ipairs(options) do
+        local ob = Instance.new("TextButton")
+        ob.Size = UDim2.new(0, 56, 0, 24)
+        ob.Position = UDim2.new(0.38 + (i-1) * 0.22, 0, 0.5, -12)
+        ob.BackgroundColor3 = (opt == default) and CLR_ACCENT or CLR_PANEL2
+        ob.BorderSizePixel = 0
+        ob.Text = opt
+        ob.TextColor3 = (opt == default) and CLR_TEXT or CLR_DESC
+        ob.TextSize = 11
+        ob.Font = Enum.Font.GothamBold
+        ob.Parent = frame
+        local oc = Instance.new("UICorner")
+        oc.CornerRadius = UDim.new(0, 6)
+        oc.Parent = ob
+        optBtns[opt] = ob
+        ob.MouseButton1Click:Connect(function()
+            for name, b in pairs(optBtns) do
+                b.BackgroundColor3 = (name == opt) and CLR_ACCENT or CLR_PANEL2
+                b.TextColor3 = (name == opt) and CLR_TEXT or CLR_DESC
+            end
+            callback(opt)
+        end)
+    end
+
+    return frame
+end
+
+-- Dropdown item (label + dropdown button)
+local function dropdownItem(page, text, options, default, callback)
+    local order = nextOrder(page)
+    local selected = default
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 32)
+    frame.BackgroundTransparency = 1
+    frame.LayoutOrder = order
+    frame.Parent = page
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(0.5, 0, 1, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = CLR_TEXT
+    lbl.TextSize = 13
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Parent = frame
 
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.Size = UDim2.new(0, 100, 0, 24)
+    btn.Position = UDim2.new(1, -104, 0.5, -12)
+    btn.BackgroundColor3 = CLR_PANEL2
+    btn.BorderSizePixel = 0
+    btn.Text = selected .. " ▾"
+    btn.TextColor3 = CLR_TEXT
+    btn.TextSize = 11
+    btn.Font = Enum.Font.GothamMedium
+    btn.Parent = frame
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = btn
+
+    local idx = 1
+    for i, o in ipairs(options) do if o == default then idx = i end end
+
+    btn.MouseButton1Click:Connect(function()
+        idx = idx % #options + 1
+        selected = options[idx]
+        btn.Text = selected .. " ▾"
+        callback(selected)
+    end)
+
+    return frame
+end
+
+-- Action button (full width)
+local function actionItem(page, text, color, callback)
+    local order = nextOrder(page)
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 32)
     btn.BackgroundColor3 = color
     btn.BorderSizePixel = 0
     btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 11
+    btn.TextColor3 = CLR_TEXT
+    btn.TextSize = 13
     btn.Font = Enum.Font.GothamBold
-    btn.LayoutOrder = elementOrder
-    btn.Parent = parentPage
+    btn.LayoutOrder = order
+    btn.Parent = page
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
     corner.Parent = btn
 
     btn.MouseButton1Click:Connect(callback)
-
     return btn
 end
 
--- Color picker row (6 nút màu)
-local function colorPickerRow(parentPage)
-    elementOrder = elementOrder + 1
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 24)
-    frame.BackgroundTransparency = 1
-    frame.LayoutOrder = elementOrder
-    frame.Parent = parentPage
-
-    local colors = {
-        {"R", Color3.fromRGB(255, 50, 50)},
-        {"G", Color3.fromRGB(50, 255, 80)},
-        {"Y", Color3.fromRGB(255, 255, 50)},
-        {"P", Color3.fromRGB(180, 50, 255)},
-        {"Pk", Color3.fromRGB(255, 100, 200)},
-        {"W", Color3.fromRGB(255, 255, 255)},
-    }
-
-    for i, colorData in ipairs(colors) do
-        local colorBtn = Instance.new("TextButton")
-        colorBtn.Size = UDim2.new(0, 42, 0, 22)
-        colorBtn.Position = UDim2.new(0, (i - 1) * 46, 0, 1)
-        colorBtn.BackgroundColor3 = colorData[2]
-        colorBtn.BorderSizePixel = 0
-        colorBtn.Text = colorData[1]
-        colorBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
-        colorBtn.TextSize = 9
-        colorBtn.Font = Enum.Font.GothamBold
-        colorBtn.Parent = frame
-
-        local colorCorner = Instance.new("UICorner")
-        colorCorner.CornerRadius = UDim.new(0, 5)
-        colorCorner.Parent = colorBtn
-
-        colorBtn.MouseButton1Click:Connect(function()
-            CFG.EspColor = colorData[2]
-        end)
-    end
-
-    return frame
-end
-
--- Selector (multiple choice buttons)
-local function selectorRow(parentPage, label, options, default, callback)
-    elementOrder = elementOrder + 1
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(1, 0, 0, 24)
-    frame.BackgroundTransparency = 1
-    frame.LayoutOrder = elementOrder
-    frame.Parent = parentPage
-
-    local labelObj = Instance.new("TextLabel")
-    labelObj.Size = UDim2.new(0.3, 0, 1, 0)
-    labelObj.BackgroundTransparency = 1
-    labelObj.Text = " " .. label
-    labelObj.TextColor3 = Color3.fromRGB(190, 190, 190)
-    labelObj.TextSize = 10
-    labelObj.Font = Enum.Font.GothamMedium
-    labelObj.TextXAlignment = Enum.TextXAlignment.Left
-    labelObj.Parent = frame
-
-    local optionButtons = {}
-
-    for i, option in ipairs(options) do
-        local optionBtn = Instance.new("TextButton")
-        optionBtn.Size = UDim2.new(0.22, 0, 1, 0)
-        optionBtn.Position = UDim2.new(0.3 + (i - 1) * 0.24, 0, 0, 0)
-        optionBtn.BackgroundColor3 = (option == default) and Color3.fromRGB(0, 90, 190) or Color3.fromRGB(32, 32, 46)
-        optionBtn.BorderSizePixel = 0
-        optionBtn.Text = option
-        optionBtn.TextColor3 = (option == default) and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(140, 140, 160)
-        optionBtn.TextSize = 10
-        optionBtn.Font = Enum.Font.GothamBold
-        optionBtn.Parent = frame
-
-        local optionCorner = Instance.new("UICorner")
-        optionCorner.CornerRadius = UDim.new(0, 5)
-        optionCorner.Parent = optionBtn
-
-        optionButtons[option] = optionBtn
-
-        optionBtn.MouseButton1Click:Connect(function()
-            for name, btn in pairs(optionButtons) do
-                if name == option then
-                    btn.BackgroundColor3 = Color3.fromRGB(0, 90, 190)
-                    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-                else
-                    btn.BackgroundColor3 = Color3.fromRGB(32, 32, 46)
-                    btn.TextColor3 = Color3.fromRGB(140, 140, 160)
-                end
-            end
-            callback(option)
-        end)
-    end
-
-    return frame
-end
-
 -- ═══════════════════════════════════════════════════════════════
--- GUI: BUILD TABS
+-- BUILD PAGES
 -- ═══════════════════════════════════════════════════════════════
 
--- ─── ESP TAB ───
-local espPage = createTab("ESP", "👁️", 1, 55)
+-- ─── HOME ───
+local homePage = contentPages["Home"]
+pageTitle(homePage, "Hoàng Anh Hub")
+divider(homePage)
+sectionHeader(homePage, "Info")
+toggleItem(homePage, "Welcome!", "Nhấn nút HA hoặc RightShift để mở/tắt menu.", false, function() end)
 
-sectionHeader(espPage, "HIỂN THỊ", "👤")
+-- ─── MAIN (Aimbot) ───
+local mainPage = contentPages["Main"]
+pageTitle(mainPage, "Main")
+divider(mainPage)
 
-toggleButton(espPage, "Bật ESP", false, function(state)
-    CFG.EspEnabled = state
-    if not state then hideAllEsp() end
+sectionHeader(mainPage, "Config")
+toggleItem(mainPage, "Aimbot", "Bật/tắt aimbot tự động ngắm player gần nhất.", false, function(s) CFG.AimEnabled = s end)
+toggleItem(mainPage, "Wall Check", "Không aim xuyên tường.", true, function(s) CFG.AimWallCheck = s end)
+toggleItem(mainPage, "Aim on Shoot", "Chỉ aim khi đang giữ chuột bắn.", false, function(s) CFG.AimOnShoot = s end)
+toggleItem(mainPage, "Show FOV", "Hiển thị vòng FOV trên màn hình.", true, function(s) CFG.AimShowFOV = s end)
+toggleItem(mainPage, "Prediction", "Dự đoán vị trí player dựa trên tốc độ.", true, function(s) CFG.AimPrediction = s end)
+
+divider(mainPage)
+sectionHeader(mainPage, "Aim Part")
+selectorItem(mainPage, "Target:", {"Head", "Torso", "Root"}, "Head", function(opt)
+    if opt == "Head" then CFG.AimPart = "Head"
+    elseif opt == "Torso" then CFG.AimPart = "Torso"
+    else CFG.AimPart = "HumanoidRootPart" end
 end)
 
-toggleButton(espPage, "Box 2D (4 Line)", true, function(state)
-    CFG.EspBox = state
-end)
+divider(mainPage)
+sectionHeader(mainPage, "Settings")
+inputItem(mainPage, "FOV Size:", 200, function(v) if v > 0 then CFG.AimFOV = v end end)
+inputItem(mainPage, "Smooth:", 1, function(v) if v >= 1 then CFG.AimSmooth = v end end)
+inputItem(mainPage, "Prediction:", 15, function(v) if v > 0 then CFG.AimPredAmount = v / 100 end end)
 
-toggleButton(espPage, "Tên Player", true, function(state)
-    CFG.EspName = state
-end)
+-- ─── VISUAL (ESP) ───
+local visualPage = contentPages["Visual"]
+pageTitle(visualPage, "Visual")
+divider(visualPage)
 
-toggleButton(espPage, "Thanh Máu (HP Bar)", true, function(state)
-    CFG.EspHP = state
-end)
+sectionHeader(visualPage, "Config")
+toggleItem(visualPage, "ESP", "Bật/tắt toàn bộ ESP.", false, function(s) CFG.EspEnabled = s; if not s then hideAllEsp() end end)
+toggleItem(visualPage, "Box 2D", "Vẽ hộp quanh player.", true, function(s) CFG.EspBox = s end)
+toggleItem(visualPage, "Name", "Hiển thị tên player.", true, function(s) CFG.EspName = s end)
+toggleItem(visualPage, "Health Bar", "Thanh máu bên trái box.", true, function(s) CFG.EspHP = s end)
+toggleItem(visualPage, "Health Text", "Hiển thị số máu (75/100).", true, function(s) CFG.EspHPText = s end)
+toggleItem(visualPage, "Skeleton", "Hiển thị khung xương.", false, function(s) CFG.EspSkeleton = s end)
+toggleItem(visualPage, "Distance", "Hiển thị khoảng cách (m).", true, function(s) CFG.EspMeters = s end)
+toggleItem(visualPage, "Tracer", "Dây từ trên màn hình xuống player.", false, function(s) CFG.EspTracer = s end)
 
-toggleButton(espPage, "Số Máu (HP Text: 75/100)", true, function(state)
-    CFG.EspHPText = state
-end)
+-- ─── PLAYER ───
+local playerPage = contentPages["Player"]
+pageTitle(playerPage, "Player")
+divider(playerPage)
 
-toggleButton(espPage, "💀 Skeleton (Khung Xương)", false, function(state)
-    CFG.EspSkeleton = state
-end)
+sectionHeader(playerPage, "Movement")
+toggleItem(playerPage, "Infinity Jump", "Nhảy liên tục không giới hạn.", false, function(s) CFG.InfJump = s end)
 
-toggleButton(espPage, "Khoảng Cách (Meters)", true, function(state)
-    CFG.EspMeters = state
-end)
-
-toggleButton(espPage, "Tracer (Dây)", false, function(state)
-    CFG.EspTracer = state
-end)
-
-sectionHeader(espPage, "MÀU SẮC", "🎨")
-colorPickerRow(espPage)
-
--- Skeleton color picker
-elementOrder = elementOrder + 1
-local skelColorFrame = Instance.new("Frame")
-skelColorFrame.Size = UDim2.new(1, 0, 0, 24)
-skelColorFrame.BackgroundTransparency = 1
-skelColorFrame.LayoutOrder = elementOrder
-skelColorFrame.Parent = espPage
-
-local skelColors = {
-    {"Y", Color3.fromRGB(255, 255, 50)},
-    {"W", Color3.fromRGB(255, 255, 255)},
-    {"C", Color3.fromRGB(0, 255, 255)},
-    {"O", Color3.fromRGB(255, 150, 0)},
-    {"P", Color3.fromRGB(180, 50, 255)},
-    {"R", Color3.fromRGB(255, 50, 50)},
-}
-for i, c in ipairs(skelColors) do
-    local cb = Instance.new("TextButton")
-    cb.Size = UDim2.new(0, 40, 0, 22)
-    cb.Position = UDim2.new(0, (i - 1) * 46, 0, 1)
-    cb.BackgroundColor3 = c[2]
-    cb.BorderSizePixel = 0
-    cb.Text = c[1]
-    cb.TextColor3 = Color3.fromRGB(0, 0, 0)
-    cb.TextSize = 9
-    cb.Font = Enum.Font.GothamBold
-    cb.Parent = skelColorFrame
-    local cc = Instance.new("UICorner")
-    cc.CornerRadius = UDim.new(0, 5)
-    cc.Parent = cb
-    cb.MouseButton1Click:Connect(function()
-        CFG.EspSkeletonColor = c[2]
-    end)
-end
-
-sectionHeader(espPage, "ESP MÀU SKELETON ☝️", "💀")
-
--- ─── AIM TAB ───
-local aimPage = createTab("AIM", "🎯", 2, 50)
-
-sectionHeader(aimPage, "AIMBOT", "🎯")
-
-toggleButton(aimPage, "Bật Aimbot", false, function(state)
-    CFG.AimEnabled = state
-end)
-
-toggleButton(aimPage, "Check Tường (Wall Check)", true, function(state)
-    CFG.AimWallCheck = state
-end)
-
-toggleButton(aimPage, "Chỉ Aim khi Bắn", false, function(state)
-    CFG.AimOnShoot = state
-end)
-
-toggleButton(aimPage, "Hiện FOV Circle", true, function(state)
-    CFG.AimShowFOV = state
-end)
-
-toggleButton(aimPage, "Prediction (Dự đoán)", true, function(state)
-    CFG.AimPrediction = state
-end)
-
-sectionHeader(aimPage, "BỘ PHẬN AIM", "🦴")
-selectorRow(aimPage, "Aim:", {"Đầu", "Cổ", "Thân"}, "Đầu", function(opt)
-    if opt == "Đầu" then
-        CFG.AimPart = "Head"
-    elseif opt == "Cổ" then
-        CFG.AimPart = "Torso"
-    else
-        CFG.AimPart = "HumanoidRootPart"
-    end
-end)
-
-sectionHeader(aimPage, "CÀI ĐẶT", "⚙️")
-inputField(aimPage, "FOV:", 200, function(val)
-    if val > 0 then CFG.AimFOV = val end
-end)
-inputField(aimPage, "Smooth:", 2, function(val)
-    if val >= 1 then CFG.AimSmooth = val end
-end)
-inputField(aimPage, "Prediction:", 12, function(val)
-    if val > 0 then CFG.AimPredAmount = val / 100 end
-end)
-
--- ─── PLAYER TAB ───
-local playerPage = createTab("PLAYER", "🏃", 3, 58)
-
-sectionHeader(playerPage, "MOVEMENT", "🏃")
-
-toggleButton(playerPage, "Infinity Jump", false, function(state)
-    CFG.InfJump = state
-end)
-
-sectionHeader(playerPage, "SPEED", "⚡")
-toggleButton(playerPage, "Bật Speed", false, function(state)
-    CFG.SpeedEnabled = state
+divider(playerPage)
+sectionHeader(playerPage, "Speed")
+toggleItem(playerPage, "Speed Hack", "Thay đổi tốc độ di chuyển.", false, function(s)
+    CFG.SpeedEnabled = s
     local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    if hum then
-        hum.WalkSpeed = state and CFG.Speed or 16
-    end
+    if hum then hum.WalkSpeed = s and CFG.Speed or 16 end
 end)
-inputField(playerPage, "Tốc độ:", 32, function(val)
-    if val > 0 and val <= 200 then
-        CFG.Speed = val
+inputItem(playerPage, "WalkSpeed:", 32, function(v)
+    if v > 0 and v <= 200 then
+        CFG.Speed = v
         if CFG.SpeedEnabled then
             local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum.WalkSpeed = val
-            end
+            if hum then hum.WalkSpeed = v end
         end
     end
 end)
 
--- ─── MISC TAB ───
-local miscPage = createTab("MISC", "⚙️", 4, 45)
+-- ─── MISC ───
+local miscPage = contentPages["Misc"]
+pageTitle(miscPage, "Misc")
+divider(miscPage)
 
-sectionHeader(miscPage, "HITBOX", "📐")
-inputField(miscPage, "Size:", 2, function(val)
-    if val > 0 and val <= 100 then
-        CFG.HitboxSize = val
-    end
-end)
+sectionHeader(miscPage, "Hitbox")
+inputItem(miscPage, "Hitbox Size:", 2, function(v) if v > 0 and v <= 100 then CFG.HitboxSize = v end end)
 
-sectionHeader(miscPage, "RESET", "🔄")
-actionButton(miscPage, "🔄 RESET ALL", Color3.fromRGB(170, 35, 35), function()
-    -- Reset config
-    CFG.EspEnabled = false
-    CFG.AimEnabled = false
-    CFG.InfJump = false
-    CFG.SpeedEnabled = false
-    CFG.HitboxSize = 2
-
-    -- Hide all ESP
-    hideAllEsp()
-
-    -- Reset hitboxes
-    resetAllHitboxes()
-
-    -- Reset speed
+divider(miscPage)
+sectionHeader(miscPage, "Reset")
+actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
+    CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false
+    CFG.SpeedEnabled = false; CFG.HitboxSize = 2
+    hideAllEsp(); resetAllHitboxes()
+    if fovFrame then fovFrame.Visible = false end
     local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    if hum then
-        hum.WalkSpeed = 16
-    end
-
-    -- Ẩn FOV circle
-    fovFrame.Visible = false
-    StatusLabel.Text = "🔄 Đã reset tất cả!"
+    if hum then hum.WalkSpeed = 16 end
+    StatusLabel.Text = "Reset done!"
 end)
 
--- Credit
-elementOrder = elementOrder + 1
-local creditLabel = Instance.new("TextLabel")
-creditLabel.Size = UDim2.new(1, 0, 0, 16)
-creditLabel.BackgroundTransparency = 1
-creditLabel.Text = "by " .. CFG.HubName .. " " .. CFG.Version
-creditLabel.TextColor3 = Color3.fromRGB(45, 45, 60)
-creditLabel.TextSize = 8
-creditLabel.Font = Enum.Font.Gotham
-creditLabel.LayoutOrder = elementOrder
-creditLabel.Parent = miscPage
+divider(miscPage)
+local creditOrder = nextOrder(miscPage)
+local credit = Instance.new("TextLabel")
+credit.Size = UDim2.new(1, 0, 0, 20)
+credit.BackgroundTransparency = 1
+credit.Text = "Hoàng Anh Hub v13"
+credit.TextColor3 = Color3.fromRGB(50, 50, 50)
+credit.TextSize = 9
+credit.Font = Enum.Font.Gotham
+credit.LayoutOrder = creditOrder
+credit.Parent = miscPage
 
 -- ═══════════════════════════════════════════════════════════════
--- GUI: SET DEFAULT TAB
+-- DEFAULT STATE + TOGGLE
 -- ═══════════════════════════════════════════════════════════════
-tabButtons["ESP"].BackgroundColor3 = Color3.fromRGB(0, 90, 190)
-tabButtons["ESP"].TextColor3 = Color3.fromRGB(255, 255, 255)
-tabPages["ESP"].Visible = true
+sidebarButtons["Main"].BackgroundColor3 = CLR_ACTIVE
+sidebarButtons["Main"].BackgroundTransparency = 0
+sidebarButtons["Main"].TextColor3 = CLR_TEXT
+contentPages["Main"].Visible = true
 
--- ═══════════════════════════════════════════════════════════════
--- GUI: MENU TOGGLE
--- ═══════════════════════════════════════════════════════════════
-ToggleBtn.MouseButton1Click:Connect(function()
-    menuVisible = not menuVisible
-    Main.Visible = menuVisible
-end)
+local menuVisible = true
 
-CloseBtn.MouseButton1Click:Connect(function()
-    menuVisible = false
-    Main.Visible = false
-end)
+ToggleBtn.MouseButton1Click:Connect(function() menuVisible = not menuVisible; Main.Visible = menuVisible end)
+MinBtn.MouseButton1Click:Connect(function() menuVisible = false; Main.Visible = false end)
+CloseBtn.MouseButton1Click:Connect(function() menuVisible = false; Main.Visible = false end)
 
--- Toggle bằng RightShift
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
@@ -1359,6 +1351,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         Main.Visible = menuVisible
     end
 end)
+
 
 -- ═══════════════════════════════════════════════════════════════
 -- INIT: Tạo ESP cho tất cả players hiện có
