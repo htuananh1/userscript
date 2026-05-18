@@ -61,6 +61,7 @@ local CFG = {
 
     -- MISC
     HitboxSize = 2,
+    HitboxHead = false,
 }
 
 -- ═══════════════════════════════════════════════════════
@@ -648,13 +649,25 @@ end)
 -- HITBOX: Áp dụng hitbox expand
 -- ═══════════════════════════════════════════════════════
 local function applyHitbox(char, size)
+    -- HumanoidRootPart hitbox
     local hrp = char:WaitForChild("HumanoidRootPart", 5)
     if hrp then
         hrp.Size = Vector3.new(size, size, size)
-        hrp.Transparency = 0.7
+        hrp.Transparency = 0.6
         hrp.BrickColor = BrickColor.new("Really red")
         hrp.Material = Enum.Material.Neon
         hrp.CanCollide = false
+    end
+    -- Head hitbox (auto headshot)
+    if CFG.HitboxHead then
+        local head = char:FindFirstChild("Head")
+        if head then
+            head.Size = Vector3.new(size, size, size)
+            head.Transparency = 0.5
+            head.BrickColor = BrickColor.new("New Yeller")
+            head.Material = Enum.Material.Neon
+            head.CanCollide = false
+        end
     end
 end
 
@@ -667,6 +680,13 @@ local function resetAllHitboxes()
                 hrp.Transparency = 1
                 hrp.Material = Enum.Material.Plastic
                 hrp.CanCollide = false
+            end
+            local head = player.Character:FindFirstChild("Head")
+            if head then
+                head.Size = Vector3.new(1.2, 1, 1)
+                head.Transparency = 0
+                head.Material = Enum.Material.Plastic
+                head.CanCollide = false
             end
         end
     end
@@ -1372,12 +1392,13 @@ divider(miscPage)
 
 sectionHeader(miscPage, "Hitbox")
 inputItem(miscPage, "Hitbox Size:", 2, function(v) if v > 0 and v <= 100 then CFG.HitboxSize = v end end)
+toggleItem(miscPage, "Head Hitbox", "Phóng đại head → bắn auto headshot.", false, function(s) CFG.HitboxHead = s end)
 
 divider(miscPage)
 sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
-    CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.JumpPower = 100
+    CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
     local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
@@ -1459,6 +1480,12 @@ RunService.RenderStepped:Connect(function()
                 if hrp and hrp.Size.X ~= CFG.HitboxSize then
                     applyHitbox(player.Character, CFG.HitboxSize)
                 end
+                if CFG.HitboxHead then
+                    local head = player.Character:FindFirstChild("Head")
+                    if head and head.Size.X ~= CFG.HitboxSize then
+                        applyHitbox(player.Character, CFG.HitboxSize)
+                    end
+                end
             end
         end
     end
@@ -1521,5 +1548,5 @@ print("  📌 Nút HA hoặc RightShift: mở menu")
 print("  📌 ESP: Box + Name + HP + Skeleton + Tracer")
 print("  📌 AIM: Aimbot + FOV + Prediction + WallCheck")
 print("  📌 PLAYER: InfJump + Noclip + HighJump + Speed")
-print("  📌 MISC: Hitbox + Reset")
+print("  📌 MISC: Hitbox + Head Hitbox + Reset")
 print("═══════════════════════════════════════")
