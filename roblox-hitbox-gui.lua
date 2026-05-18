@@ -50,6 +50,11 @@ local CFG = {
     AimPart = "Head",
     AimPrediction = false,     -- NEW: Dự đoán vị trí
     AimPredAmount = 0.2,     -- Tăng prediction
+    -- NEW: Aimbot nâng cấp
+    AimLockTarget = false,     -- Khóa 1 target, không nhảy sang khác
+    AimKeybind = "Q",          -- Phím toggle aimbot (Q/E/R/T/F)
+    AimHitchance = 100,        -- % chính xác (100 = luôn trúng)
+    AimAutoFire = false,       -- Tự động bắn khi có target trong FOV
 
     -- PLAYER
     InfJump = false,
@@ -70,6 +75,8 @@ local CFG = {
 local espData = {}           -- [Player] = { drawing objects }
 local isShooting = false
 local menuVisible = true
+local lockedTarget = nil     -- NEW: Target đang khóa (Player object)
+local aimbotActive = true    -- NEW: Aimbot có đang hoạt động không (keybind toggle)
 
 -- ═══════════════════════════════════════════════════════
 -- UTILITY: World → Screen
@@ -513,6 +520,28 @@ end
 -- AIMBOT: Tìm player gần nhất trong FOV
 -- ═══════════════════════════════════════════════════════
 local function getTarget()
+    -- Nếu đang khóa target → kiểm tra target còn valid không
+    if CFG.AimLockTarget and lockedTarget then
+        local char = lockedTarget.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            local part = getAimPart(char)
+            if part and hum and hum.Health > 0 then
+                local vec = Camera:WorldToViewportPoint(part.Position)
+                if vec.Z > 0 then
+                    return {
+                        part = part,
+                        player = lockedTarget,
+                        character = char,
+                        locked = true,
+                    }
+                end
+            end
+        end
+        -- Target chết hoặc mất → clear lock
+        lockedTarget = nil
+    end
+
     local bestTarget = nil
     local bestDist = CFG.AimFOV
     local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
@@ -544,6 +573,11 @@ local function getTarget()
                 screenDist = dist,
             }
         end
+    end
+
+    -- Nếu tìm thấy target và lock bật → lưu target
+    if bestTarget and CFG.AimLockTarget then
+        lockedTarget = bestTarget.player
     end
 
     return bestTarget
@@ -1317,6 +1351,11 @@ toggleItem(mainPage, "Wall Check", "Không aim xuyên tường.", false, functio
 toggleItem(mainPage, "Aim on Shoot", "Chỉ aim khi đang giữ chuột bắn.", false, function(s) CFG.AimOnShoot = s end)
 toggleItem(mainPage, "Show FOV", "Hiển thị vòng FOV trên màn hình.", false, function(s) CFG.AimShowFOV = s end)
 toggleItem(mainPage, "Prediction", "Dự đoán vị trí player dựa trên tốc độ.", false, function(s) CFG.AimPrediction = s end)
+toggleItem(mainPage, "Lock Target", "Khóa 1 target, không nhảy sang khác.", false, function(s)
+    CFG.AimLockTarget = s
+    if not s then lockedTarget = nil end
+end)
+toggleItem(mainPage, "Auto Fire", "Tự bắn khi có target trong FOV.", false, function(s) CFG.AimAutoFire = s end)
 
 divider(mainPage)
 sectionHeader(mainPage, "Aim Part")
@@ -1331,6 +1370,13 @@ sectionHeader(mainPage, "Settings")
 inputItem(mainPage, "FOV Size:", 200, function(v) if v > 0 then CFG.AimFOV = v end end)
 inputItem(mainPage, "Smooth:", 1, function(v) if v >= 1 then CFG.AimSmooth = v end end)
 inputItem(mainPage, "Prediction:", 15, function(v) if v > 0 then CFG.AimPredAmount = v / 100 end end)
+inputItem(mainPage, "HitChance%:", 100, function(v) if v >= 0 and v <= 100 then CFG.AimHitchance = v end end)
+
+divider(mainPage)
+sectionHeader(mainPage, "Keybind")
+selectorItem(mainPage, "Toggle Key:", {"Q", "E", "R", "T", "F"}, "Q", function(opt)
+    CFG.AimKeybind = opt
+end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
@@ -1401,6 +1447,8 @@ sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
+    CFG.AimLockTarget = false; CFG.AimAutoFire = false; CFG.AimHitchance = 100; CFG.AimOnShoot = false
+    lockedTarget = nil; aimbotActive = true
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
     local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
@@ -1440,9 +1488,28 @@ CloseBtn.MouseButton1Click:Connect(function() menuVisible = false; Main.Visible 
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
+    -- Menu toggle
     if input.KeyCode == Enum.KeyCode.RightShift then
         menuVisible = not menuVisible
         Main.Visible = menuVisible
+    end
+    -- Aimbot keybind toggle (Q/E/R/T/F)
+    if CFG.AimEnabled then
+        local aimKey = Enum.KeyCode[CFG.AimKeybind]
+        if aimKey and input.KeyCode == aimKey then
+            aimbotActive = not aimbotActive
+            lockedTarget = nil -- clear lock khi toggle
+            pcall(function()
+                StatusLabel.Text = aimbotActive and "🎯 Aimbot ON" or "⏸️ Aimbot OFF"
+            end)
+        end
+        -- Manual unlock: nhấn X để bỏ khóa target
+        if input.KeyCode == Enum.KeyCode.X and CFG.AimLockTarget then
+            lockedTarget = nil
+            pcall(function()
+                StatusLabel.Text = "🔓 Target unlocked"
+            end)
+        end
     end
 end)
 
@@ -1496,7 +1563,7 @@ RunService.RenderStepped:Connect(function()
     updateEsp()
 
     -- ─── AIMBOT ───
-    if CFG.AimEnabled then
+    if CFG.AimEnabled and aimbotActive then
         -- Cập nhật FOV circle
         pcall(function()
             if fovFrame then
@@ -1513,14 +1580,35 @@ RunService.RenderStepped:Connect(function()
         if shouldAim then
             local ok, target = pcall(getTarget)
             if ok and target then
-                -- AimOnShoot: override smooth = 1 (instant, chính xác cao)
-                local savedSmooth = CFG.AimSmooth
-                if CFG.AimOnShoot and isShooting then
-                    CFG.AimSmooth = 1
+                -- Hitchance: random % cơ hội aim (100 = luôn aim)
+                local doAim = math.random(1, 100) <= CFG.AimHitchance
+                if doAim then
+                    -- AimOnShoot: override smooth = 1 (instant, chính xác cao)
+                    local savedSmooth = CFG.AimSmooth
+                    if CFG.AimOnShoot and isShooting then
+                        CFG.AimSmooth = 1
+                    end
+                    pcall(aimAt, target)
+                    CFG.AimSmooth = savedSmooth
                 end
-                pcall(aimAt, target)
-                CFG.AimSmooth = savedSmooth
-                pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 50, 50) end end)
+
+                -- AutoFire: tự click chuột khi có target
+                if CFG.AimAutoFire then
+                    pcall(function()
+                        mouse1press()
+                        task.wait(0.05)
+                        mouse1release()
+                    end)
+                end
+
+                -- FOV stroke: đỏ khi aim, vàng khi locked
+                pcall(function()
+                    if fovStroke then
+                        fovStroke.Color = target.locked
+                            and Color3.fromRGB(255, 200, 0)  -- vàng = locked
+                            or Color3.fromRGB(255, 50, 50)    -- đỏ = aiming
+                    end
+                end)
             else
                 pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 255, 255) end end)
             end
