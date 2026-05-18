@@ -29,12 +29,12 @@ local CFG = {
 
     -- ESP
     EspEnabled = false,
-    EspBox = true,
-    EspName = true,
-    EspHP = true,
-    EspHPText = true,        -- Hiển thị số máu "75/100"
-    EspSkeleton = true,       -- NEW: Khung xương
-    EspMeters = true,
+    EspBox = false,
+    EspName = false,
+    EspHP = false,
+    EspHPText = false,        -- Hiển thị số máu "75/100"
+    EspSkeleton = false,       -- NEW: Khung xương
+    EspMeters = false,
     EspTracer = false,
     EspColor = Color3.fromRGB(255, 50, 50),
     EspSkeletonColor = Color3.fromRGB(255, 255, 0),
@@ -46,9 +46,9 @@ local CFG = {
     AimSmooth = 1,           -- 1 = instant lock
     AimWallCheck = false,  -- Tắt mặc định (nhiều game raycast fail)
     AimOnShoot = false,
-    AimShowFOV = true,
+    AimShowFOV = false,
     AimPart = "Head",
-    AimPrediction = true,     -- NEW: Dự đoán vị trí
+    AimPrediction = false,     -- NEW: Dự đoán vị trí
     AimPredAmount = 0.15,     -- Tăng prediction
 
     -- PLAYER
@@ -1254,10 +1254,10 @@ divider(mainPage)
 
 sectionHeader(mainPage, "Config")
 toggleItem(mainPage, "Aimbot", "Bật/tắt aimbot tự động ngắm player gần nhất.", false, function(s) CFG.AimEnabled = s end)
-toggleItem(mainPage, "Wall Check", "Không aim xuyên tường.", true, function(s) CFG.AimWallCheck = s end)
+toggleItem(mainPage, "Wall Check", "Không aim xuyên tường.", false, function(s) CFG.AimWallCheck = s end)
 toggleItem(mainPage, "Aim on Shoot", "Chỉ aim khi đang giữ chuột bắn.", false, function(s) CFG.AimOnShoot = s end)
-toggleItem(mainPage, "Show FOV", "Hiển thị vòng FOV trên màn hình.", true, function(s) CFG.AimShowFOV = s end)
-toggleItem(mainPage, "Prediction", "Dự đoán vị trí player dựa trên tốc độ.", true, function(s) CFG.AimPrediction = s end)
+toggleItem(mainPage, "Show FOV", "Hiển thị vòng FOV trên màn hình.", false, function(s) CFG.AimShowFOV = s end)
+toggleItem(mainPage, "Prediction", "Dự đoán vị trí player dựa trên tốc độ.", false, function(s) CFG.AimPrediction = s end)
 
 divider(mainPage)
 sectionHeader(mainPage, "Aim Part")
@@ -1280,12 +1280,12 @@ divider(visualPage)
 
 sectionHeader(visualPage, "Config")
 toggleItem(visualPage, "ESP", "Bật/tắt toàn bộ ESP.", false, function(s) CFG.EspEnabled = s; if not s then hideAllEsp() end end)
-toggleItem(visualPage, "Box 2D", "Vẽ hộp quanh player.", true, function(s) CFG.EspBox = s end)
-toggleItem(visualPage, "Name", "Hiển thị tên player.", true, function(s) CFG.EspName = s end)
-toggleItem(visualPage, "Health Bar", "Thanh máu bên trái box.", true, function(s) CFG.EspHP = s end)
-toggleItem(visualPage, "Health Text", "Hiển thị số máu (75/100).", true, function(s) CFG.EspHPText = s end)
+toggleItem(visualPage, "Box 2D", "Vẽ hộp quanh player.", false, function(s) CFG.EspBox = s end)
+toggleItem(visualPage, "Name", "Hiển thị tên player.", false, function(s) CFG.EspName = s end)
+toggleItem(visualPage, "Health Bar", "Thanh máu bên trái box.", false, function(s) CFG.EspHP = s end)
+toggleItem(visualPage, "Health Text", "Hiển thị số máu (75/100).", false, function(s) CFG.EspHPText = s end)
 toggleItem(visualPage, "Skeleton", "Hiển thị khung xương.", false, function(s) CFG.EspSkeleton = s end)
-toggleItem(visualPage, "Distance", "Hiển thị khoảng cách (m).", true, function(s) CFG.EspMeters = s end)
+toggleItem(visualPage, "Distance", "Hiển thị khoảng cách (m).", false, function(s) CFG.EspMeters = s end)
 toggleItem(visualPage, "Tracer", "Dây từ trên màn hình xuống player.", false, function(s) CFG.EspTracer = s end)
 
 -- ─── PLAYER ───
