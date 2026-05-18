@@ -58,7 +58,7 @@ local CFG = {
     -- Kill Aura / Kill All
     KillAura = false,           -- Vòng đánh quanh nhân vật
     KillAuraRange = 15,         -- Phạm vi đánh (studs)
-    KillAll = false,            -- Giết tất cả mọi người trên map
+    AimKill = false,            -- Aim Kill: địch trong FOV → tự sát thương
 
     -- PLAYER
     InfJump = false,
@@ -770,11 +770,13 @@ local function doKillAura()
     end
 end
 
--- Kill All: gửi packet tấn công TẤT CẢ trên map
-local function doKillAll()
+-- Aim Kill: địch trong FOV → tự sát thương (cầm súng)
+local function doAimKill()
     local now = tick()
     if now - lastKillAuraTick < KILL_AURA_COOLDOWN then return end
     lastKillAuraTick = now
+
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
@@ -782,7 +784,19 @@ local function doKillAll()
         if not player.Character then continue end
 
         local hum = player.Character:FindFirstChildOfClass("Humanoid")
-        if hum and hum.Health > 0 then
+        local part = player.Character:FindFirstChild("Head") or player.Character:FindFirstChild("HumanoidRootPart")
+        if not hum or hum.Health <= 0 or not part then continue end
+
+        -- Kiểm tra địch có trong FOV không
+        local vec = Camera:WorldToViewportPoint(part.Position)
+        if vec.Z <= 0 then continue end
+
+        local screenPoint = Vector2.new(vec.X, vec.Y)
+        local dist = (screenPoint - screenCenter).Magnitude
+
+        if dist <= CFG.AimFOV then
+            -- Aim vào target trước
+            pcall(aimAt, {part = part, character = player.Character})
             -- Gửi packet tấn công
             pcall(sendAttack, player)
             -- Backup: set health
@@ -1489,7 +1503,7 @@ toggleItem(mainPage, "Kill Aura", "360° quanh nhân vật, spam packet đánh s
     if s then createKillAuraCircle() else destroyKillAuraCircle() end
 end)
 inputItem(mainPage, "Kill Aura Range:", 15, function(v) if v > 0 and v <= 100 then CFG.KillAuraRange = v end end)
-toggleItem(mainPage, "Kill All", "Gửi packet tấn công TẤT CẢ trên map.", false, function(s) CFG.KillAll = s end)
+toggleItem(mainPage, "Aim Kill", "Cầm súng, địch trong FOV → tự nhận sát thương.", false, function(s) CFG.AimKill = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
@@ -1561,7 +1575,7 @@ sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
-    CFG.KillAura = false; CFG.KillAll = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
+    CFG.KillAura = false; CFG.AimKill = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
     destroyKillAuraCircle()
     aimbotActive = true
     hideAllEsp(); resetAllHitboxes()
@@ -1720,9 +1734,9 @@ RunService.RenderStepped:Connect(function()
         pcall(updateKillAuraCircle)
     end
 
-    -- ─── KILL ALL ───
-    if CFG.KillAll then
-        pcall(doKillAll)
+    -- ─── AIM KILL ───
+    if CFG.AimKill then
+        pcall(doAimKill)
     end
 
     -- ─── AIMBOT ───
