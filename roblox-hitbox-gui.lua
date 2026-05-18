@@ -43,7 +43,7 @@ local CFG = {
     -- AIMBOT
     AimEnabled = false,
     AimFOV = 200,
-    AimSmooth = 2,           -- Giảm smooth để aim bám hơn
+    AimSmooth = 1,           -- 1 = instant lock
     AimWallCheck = true,
     AimOnShoot = false,
     AimShowFOV = true,
@@ -543,7 +543,7 @@ local function aimAt(target)
     if not target or not target.part then return end
 
     local myChar = LocalPlayer.Character
-    if not myChar or not myChar:FindFirstChild("Head") then return end
+    if not myChar then return end
 
     local aimPos = target.part.Position
 
@@ -552,14 +552,15 @@ local function aimAt(target)
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
         if hrp then
             local velocity = hrp.Velocity
-            aimPos = aimPos + velocity * CFG.AimPredAmount
+            local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
+            aimPos = aimPos + velocity * CFG.AimPredAmount * (dist / 100)
         end
     end
 
-    -- Tạo CFrame nhìn vào target
-    local goalCFrame = CFrame.new(myChar.Head.Position, aimPos)
+    -- Aim bằng Camera.CFrame.Position (chính xác hơn Head.Position)
+    local camPos = Camera.CFrame.Position
+    local goalCFrame = CFrame.new(camPos, aimPos)
 
-    -- Smooth aim: smooth=1 → instant lock, smooth cao → mượt hơn
     local smooth = CFG.AimSmooth
     if smooth <= 1 then
         Camera.CFrame = goalCFrame
@@ -571,23 +572,36 @@ end
 -- ═══════════════════════════════════════════════════════
 -- FOV CIRCLE (hiện trên màn hình)
 -- ═══════════════════════════════════════════════════════
+-- FOV Circle: filled semi-transparent + border riêng
 local fovCircle = Drawing.new("Circle")
 fovCircle.Visible = false
 fovCircle.Radius = CFG.AimFOV
-fovCircle.Color = Color3.fromRGB(255, 255, 255)
-fovCircle.Thickness = 1.5
-fovCircle.Filled = false
-fovCircle.Transparency = 0.35
+fovCircle.Color = Color3.fromRGB(30, 30, 50)
+fovCircle.Thickness = 1
+fovCircle.Filled = true
+fovCircle.Transparency = 0.85
 fovCircle.NumSides = 80
+
+local fovBorder = Drawing.new("Circle")
+fovBorder.Visible = false
+fovBorder.Radius = CFG.AimFOV
+fovBorder.Color = Color3.fromRGB(255, 255, 255)
+fovBorder.Thickness = 1.5
+fovBorder.Filled = false
+fovBorder.Transparency = 0.6
+fovBorder.NumSides = 80
 
 -- ═══════════════════════════════════════════════════════
 -- INPUT: Theo dõi chuột (cho AimOnShoot)
 -- ═══════════════════════════════════════════════════════
+-- AimOnShoot: KHÔNG check gameProcessed cho MouseButton1
+-- vì game consume click → isShooting永远không set true
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         isShooting = true
+        return
     end
+    if gameProcessed then return end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
@@ -1368,23 +1382,26 @@ RunService.RenderStepped:Connect(function()
         fovCircle.Position = screenCenter
         fovCircle.Radius = CFG.AimFOV
         fovCircle.Visible = CFG.AimShowFOV
+        fovBorder.Position = screenCenter
+        fovBorder.Radius = CFG.AimFOV
+        fovBorder.Visible = CFG.AimShowFOV
 
-        -- Kiểm tra có nên aim không
         local shouldAim = (not CFG.AimOnShoot) or isShooting
 
         if shouldAim then
             local target = getTarget()
             if target then
                 aimAt(target)
-                fovCircle.Color = Color3.fromRGB(255, 50, 50) -- Đỏ khi lock target
+                fovBorder.Color = Color3.fromRGB(255, 50, 50)
             else
-                fovCircle.Color = Color3.fromRGB(255, 255, 255) -- Trắng khi không có target
+                fovBorder.Color = Color3.fromRGB(255, 255, 255)
             end
         else
-            fovCircle.Color = Color3.fromRGB(255, 255, 255)
+            fovBorder.Color = Color3.fromRGB(255, 255, 255)
         end
     else
         fovCircle.Visible = false
+        fovBorder.Visible = false
     end
 end)
 
