@@ -45,7 +45,7 @@ local CFG = {
     AimFOV = 200,
     AimSmooth = 1,           -- 1 = instant lock
     AimWallCheck = false,  -- Tắt mặc định (nhiều game raycast fail)
-    AimOnShoot = false,
+    AimOnShoot = false,         -- false = aimbot hoạt động ngay khi bật
     AimShowFOV = false,
     AimPart = "Head",
     AimPrediction = false,     -- NEW: Dự đoán vị trí
@@ -526,10 +526,13 @@ local function getTarget()
 
         if not part or not hum or hum.Health <= 0 then continue end
 
-        local screenPos, onScreen = Camera:WorldToViewportPoint(part.Position)
-        if not onScreen then continue end
+        -- Dùng WorldToViewportPoint để lấy tọa độ màn hình
+        local vec, onScreen = Camera:WorldToViewportPoint(part.Position)
 
-        local screenPoint = Vector2.new(screenPos.X, screenPos.Y)
+        -- Chỉ check onScreen nếu part ở phía trước camera (Z > 0)
+        if vec.Z <= 0 then continue end
+
+        local screenPoint = Vector2.new(vec.X, vec.Y)
         local dist = (screenPoint - screenCenter).Magnitude
 
         if dist < bestDist and isPartVisible(part) then
@@ -538,6 +541,7 @@ local function getTarget()
                 part = part,
                 player = player,
                 character = player.Character,
+                screenDist = dist,
             }
         end
     end
@@ -556,17 +560,15 @@ local function aimAt(target)
 
     local aimPos = target.part.Position
 
-    -- Prediction: đoán hướng di chuyển + khoảng cách
+    -- Prediction: chỉ dùng velocity, KHÔNG thêm lookDir (tránh lệch)
     if CFG.AimPrediction and target.character then
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
         if hrp then
             local velocity = hrp.AssemblyLinearVelocity or hrp.Velocity
             local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
-            -- Prediction tăng theo khoảng cách (xa hơn = đoán nhiều hơn)
-            local predFactor = CFG.AimPredAmount * math.clamp(dist / 30, 0.8, 5)
-            -- Thêm offset dựa trên hướng nhìn nhân vật
-            local lookDir = hrp.CFrame.LookVector
-            aimPos = aimPos + velocity * predFactor + lookDir * (predFactor * 2)
+            -- Prediction nhẹ: dist/60, clamp 0.3-2.0 (giảm mạnh so với trước)
+            local predFactor = CFG.AimPredAmount * math.clamp(dist / 60, 0.3, 2.0)
+            aimPos = aimPos + velocity * predFactor
         end
     end
 
@@ -574,13 +576,13 @@ local function aimAt(target)
     local camPos = Camera.CFrame.Position
     local goalCFrame = CFrame.new(camPos, aimPos)
 
-    -- Smooth = 1 → instant lock (dính nhất), >1 → lerp mượt
+    -- Smooth = 1 → instant lock (dính nhất)
     local smooth = CFG.AimSmooth
     if smooth <= 1 then
         Camera.CFrame = goalCFrame
     elseif smooth <= 2 then
-        -- Smooth 1-2: gần instant nhưng vẫn mượt
-        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.8)
+        -- Smooth 1-2: rất gần instant
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.85)
     else
         Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 1 / smooth)
     end
