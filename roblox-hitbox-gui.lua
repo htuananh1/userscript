@@ -1348,10 +1348,10 @@ credit.Parent = miscPage
 -- ═══════════════════════════════════════════════════════════════
 -- DEFAULT STATE + TOGGLE
 -- ═══════════════════════════════════════════════════════════════
-sidebarButtons["Main"].BackgroundColor3 = CLR_ACTIVE
-sidebarButtons["Main"].BackgroundTransparency = 0
-sidebarButtons["Main"].TextColor3 = CLR_TEXT
-contentPages["Main"].Visible = true
+pcall(function() sidebarButtons["Main"].BackgroundColor3 = CLR_ACTIVE end)
+pcall(function() sidebarButtons["Main"].BackgroundTransparency = 0 end)
+pcall(function() sidebarButtons["Main"].TextColor3 = CLR_TEXT end)
+switchTo("Main")
 
 local menuVisible = true
 
