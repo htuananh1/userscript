@@ -669,9 +669,12 @@ LocalPlayer.CharacterAdded:Connect(function(char)
 end)
 
 -- ═══════════════════════════════════════════════════════
--- KILL AURA: Vòng đánh quanh nhân vật
+-- KILL AURA: Gửi packet tấn công server
+-- 360 độ, đa mục tiêu, không cần nhìn
 -- ═══════════════════════════════════════════════════════
 local killAuraCircle = nil
+local lastKillAuraTick = 0
+local KILL_AURA_COOLDOWN = 0.1  -- 100ms giữa mỗi đợt tấn công
 
 local function createKillAuraCircle()
     if killAuraCircle then killAuraCircle:Destroy() end
@@ -710,8 +713,34 @@ local function destroyKillAuraCircle()
     end
 end
 
--- Kill Aura: tấn công player trong phạm vi
+-- Tìm tool/weapon đang cầm
+local function getHoldingTool()
+    local char = LocalPlayer.Character
+    if not char then return nil end
+    return char:FindFirstChildOfClass("Tool")
+end
+
+-- Gửi lệnh tấn công lên server (qua tool activation)
+local function sendAttack(targetPlayer)
+    local tool = getHoldingTool()
+    if tool then
+        -- Kích hoạt tool (giống click chuột)
+        pcall(function() tool:Activate() end)
+    end
+    -- Backup: dùng VirtualUser để simulate click
+    pcall(function()
+        local vu = game:GetService("VirtualUser")
+        vu:CaptureController()
+        vu:ClickButton1(Vector2.new(0, 0))
+    end)
+end
+
+-- Kill Aura: 360 độ, đa mục tiêu, spam packet
 local function doKillAura()
+    local now = tick()
+    if now - lastKillAuraTick < KILL_AURA_COOLDOWN then return end
+    lastKillAuraTick = now
+
     local char = LocalPlayer.Character
     if not char then return end
     local hrp = char:FindFirstChild("HumanoidRootPart")
@@ -728,14 +757,25 @@ local function doKillAura()
 
         local dist = (hrp.Position - targetHRP.Position).Magnitude
         if dist <= CFG.KillAuraRange then
-            -- Set health = 0
-            pcall(function() targetHum.Health = 0 end)
+            -- Gửi packet tấn công (spam liên tục)
+            pcall(sendAttack, player)
+            -- Backup: set health nếu server không xử lý
+            pcall(function()
+                task.wait(0.05)
+                if targetHum.Health > 0 then
+                    targetHum.Health = 0
+                end
+            end)
         end
     end
 end
 
--- Kill All: giết tất cả trên map
+-- Kill All: gửi packet tấn công TẤT CẢ trên map
 local function doKillAll()
+    local now = tick()
+    if now - lastKillAuraTick < KILL_AURA_COOLDOWN then return end
+    lastKillAuraTick = now
+
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
         if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
@@ -743,7 +783,15 @@ local function doKillAll()
 
         local hum = player.Character:FindFirstChildOfClass("Humanoid")
         if hum and hum.Health > 0 then
-            pcall(function() hum.Health = 0 end)
+            -- Gửi packet tấn công
+            pcall(sendAttack, player)
+            -- Backup: set health
+            pcall(function()
+                task.wait(0.05)
+                if hum.Health > 0 then
+                    hum.Health = 0
+                end
+            end)
         end
     end
 end
@@ -1436,12 +1484,12 @@ toggleItem(mainPage, "Xuyên Tường Off", "Không aim khi bị tường che.",
 
 divider(mainPage)
 sectionHeader(mainPage, "Kill")
-toggleItem(mainPage, "Kill Aura", "Vòng đỏ quanh nhân vật, ai vào tầm → chết.", false, function(s)
+toggleItem(mainPage, "Kill Aura", "360° quanh nhân vật, spam packet đánh server.", false, function(s)
     CFG.KillAura = s
     if s then createKillAuraCircle() else destroyKillAuraCircle() end
 end)
 inputItem(mainPage, "Kill Aura Range:", 15, function(v) if v > 0 and v <= 100 then CFG.KillAuraRange = v end end)
-toggleItem(mainPage, "Kill All", "Giết TẤT CẢ mọi người trên map.", false, function(s) CFG.KillAll = s end)
+toggleItem(mainPage, "Kill All", "Gửi packet tấn công TẤT CẢ trên map.", false, function(s) CFG.KillAll = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
