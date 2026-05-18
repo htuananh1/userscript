@@ -846,14 +846,15 @@ local function createSidebarBtn(name, yPos)
     btn.Name = "Nav_" .. name
     btn.Size = UDim2.new(1, -12, 0, 32)
     btn.Position = UDim2.new(0, 6, 0, yPos)
-    btn.BackgroundColor3 = CLR_PANEL
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
     btn.BackgroundTransparency = 0
     btn.BorderSizePixel = 0
     btn.Text = "  " .. name
-    btn.TextColor3 = CLR_DESC
-    btn.TextSize = 13
-    btn.Font = Enum.Font.GothamMedium
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 14
+    btn.Font = Enum.Font.Gotham
     btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.TextTransparency = 0
     btn.AutoButtonColor = false
     btn.Parent = Sidebar
 
@@ -907,6 +908,12 @@ createSidebarBtn("Main",   BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 1)
 createSidebarBtn("Visual", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 2)
 createSidebarBtn("Player", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 3)
 createSidebarBtn("Misc",   BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 4)
+
+-- Debug: print sidebar state
+print("[HA Hub] Sidebar children: " .. #Sidebar:GetChildren())
+for _, child in pairs(Sidebar:GetChildren()) do
+    print("[HA Hub] - " .. child.Name .. " | Visible: " .. tostring(child.Visible) .. " | Text: " .. (child:IsA("TextLabel") and child.Text or child:IsA("TextButton") and child.Text or "N/A"))
+end
 
 createContentPage("Home")
 createContentPage("Main")
