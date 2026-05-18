@@ -53,6 +53,7 @@ local CFG = {
 
     -- PLAYER
     InfJump = false,
+    Noclip = false,
     Speed = 32,
     SpeedEnabled = false,
 
@@ -597,6 +598,22 @@ UserInputService.JumpRequest:Connect(function()
             local hum = char:FindFirstChildOfClass("Humanoid")
             if hum then
                 hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════
+-- NOCLIP: CanCollide = false mỗi frame
+-- ═══════════════════════════════════════════════════════
+RunService.Stepped:Connect(function()
+    if CFG.Noclip then
+        local char = LocalPlayer.Character
+        if char then
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
             end
         end
     end
@@ -1301,6 +1318,7 @@ divider(playerPage)
 
 sectionHeader(playerPage, "Movement")
 toggleItem(playerPage, "Infinity Jump", "Nhảy liên tục không giới hạn.", false, function(s) CFG.InfJump = s end)
+toggleItem(playerPage, "Noclip", "Đi xuyên tường/vật cản.", false, function(s) CFG.Noclip = s end)
 
 divider(playerPage)
 sectionHeader(playerPage, "Speed")
@@ -1330,7 +1348,7 @@ inputItem(miscPage, "Hitbox Size:", 2, function(v) if v > 0 and v <= 100 then CF
 divider(miscPage)
 sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
-    CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false
+    CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
@@ -1470,6 +1488,6 @@ print("  ⚡ Hoàng Anh Hub " .. CFG.Version .. " loaded!")
 print("  📌 Nút HA hoặc RightShift: mở menu")
 print("  📌 ESP: Box + Name + HP + Skeleton + Tracer")
 print("  📌 AIM: Aimbot + FOV + Prediction + WallCheck")
-print("  📌 PLAYER: InfJump + Speed")
+print("  📌 PLAYER: InfJump + Noclip + Speed")
 print("  📌 MISC: Hitbox + Reset")
 print("═══════════════════════════════════════")
