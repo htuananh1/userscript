@@ -1366,39 +1366,33 @@ local mainPage = contentPages["Main"]
 pageTitle(mainPage, "Main")
 divider(mainPage)
 
-sectionHeader(mainPage, "Config")
-toggleItem(mainPage, "Aimbot", "Bật/tắt aimbot tự động ngắm player gần nhất.", false, function(s) CFG.AimEnabled = s end)
-toggleItem(mainPage, "Wall Check", "Không aim xuyên tường.", false, function(s) CFG.AimWallCheck = s end)
-toggleItem(mainPage, "Aim on Shoot", "Chỉ aim khi đang giữ chuột bắn.", false, function(s) CFG.AimOnShoot = s end)
-toggleItem(mainPage, "Show FOV", "Hiển thị vòng FOV trên màn hình.", false, function(s) CFG.AimShowFOV = s end)
-toggleItem(mainPage, "Prediction", "Dự đoán vị trí player dựa trên tốc độ.", false, function(s) CFG.AimPrediction = s end)
-toggleItem(mainPage, "Lock Target", "Khóa 1 target, không nhảy sang khác.", false, function(s)
-    CFG.AimLockTarget = s
-    if not s then lockedTarget = nil end
-end)
-toggleItem(mainPage, "Auto Fire", "Tự bắn khi có target trong FOV.", false, function(s) CFG.AimAutoFire = s end)
-toggleItem(mainPage, "Team Check", "Không aim đồng đội.", false, function(s) CFG.AimTeamCheck = s end)
-
-divider(mainPage)
-sectionHeader(mainPage, "Aim Part")
-selectorItem(mainPage, "Target:", {"Head", "Torso", "Root"}, "Head", function(opt)
+sectionHeader(mainPage, "Aimbot")
+toggleItem(mainPage, "Bật Aimbot", "Tự động ngắm player gần nhất.", false, function(s) CFG.AimEnabled = s end)
+selectorItem(mainPage, "Vị trí:", {"Head", "Torso", "Root"}, "Head", function(opt)
     if opt == "Head" then CFG.AimPart = "Head"
     elseif opt == "Torso" then CFG.AimPart = "Torso"
     else CFG.AimPart = "HumanoidRootPart" end
 end)
+toggleItem(mainPage, "Chỉ Aim Khi Bắn", "Giữ chuột/touch mới aim.", false, function(s) CFG.AimOnShoot = s end)
+toggleItem(mainPage, "Không Aim Đồng Đội", "Bỏ qua player cùng team.", false, function(s) CFG.AimTeamCheck = s end)
 
 divider(mainPage)
-sectionHeader(mainPage, "Settings")
-inputItem(mainPage, "FOV Size:", 200, function(v) if v > 0 then CFG.AimFOV = v end end)
-inputItem(mainPage, "Smooth:", 1, function(v) if v >= 1 then CFG.AimSmooth = v end end)
-inputItem(mainPage, "Prediction:", 15, function(v) if v > 0 then CFG.AimPredAmount = v / 100 end end)
-inputItem(mainPage, "HitChance%:", 100, function(v) if v >= 0 and v <= 100 then CFG.AimHitchance = v end end)
+sectionHeader(mainPage, "FOV & Mượt")
+inputItem(mainPage, "FOV:", 200, function(v) if v > 0 and v <= 1000 then CFG.AimFOV = v end end)
+toggleItem(mainPage, "Hiện Vòng FOV", "Vòng tròn trên màn hình.", false, function(s) CFG.AimShowFOV = s end)
+inputItem(mainPage, "Mượt:", 1, function(v) if v >= 1 and v <= 20 then CFG.AimSmooth = v end end)
+inputItem(mainPage, "Chính Xác %:", 100, function(v) if v >= 0 and v <= 100 then CFG.AimHitchance = v end end)
 
 divider(mainPage)
-sectionHeader(mainPage, "Keybind")
-selectorItem(mainPage, "Toggle Key:", {"Q", "E", "R", "T", "F"}, "Q", function(opt)
-    CFG.AimKeybind = opt
+sectionHeader(mainPage, "Nâng Cao")
+toggleItem(mainPage, "Khóa Target", "Giữ 1 người, không nhảy sang.", false, function(s)
+    CFG.AimLockTarget = s
+    if not s then lockedTarget = nil end
 end)
+toggleItem(mainPage, "Dự Đoán", "Dẫn trước theo hướng di chuyển.", false, function(s) CFG.AimPrediction = s end)
+inputItem(mainPage, "Dự Đoán Mức:", 15, function(v) if v > 0 and v <= 100 then CFG.AimPredAmount = v / 100 end end)
+toggleItem(mainPage, "Xuyên Tường Off", "Không aim xuyên tường.", false, function(s) CFG.AimWallCheck = s end)
+toggleItem(mainPage, "Tự Bắn", "Tự click khi có target.", false, function(s) CFG.AimAutoFire = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
