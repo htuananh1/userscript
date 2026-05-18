@@ -535,18 +535,8 @@ end
 local function getTarget()
     local bestTarget = nil
     local bestDist = CFG.AimFOV
-    -- PC: dùng MouseLocation, Mobile: dùng giữa màn hình
-    local screenCenter
-    pcall(function()
-        if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-            screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-        else
-            screenCenter = UserInputService:GetMouseLocation()
-        end
-    end)
-    if not screenCenter then
-        screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-    end
+    -- Luôn dùng giữa màn hình (FOV cố định)
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
@@ -732,8 +722,7 @@ ScreenGui.Parent = PlayerGui
 fovFrame = Instance.new("Frame")
 fovFrame.Name = "FOVCircle"
 fovFrame.AnchorPoint = Vector2.new(0.5, 0.5)
--- Position sẽ được cập nhật mỗi frame theo MouseLocation
-fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+fovFrame.Position = UDim2.new(0.5, 0, 0.5, 0)  -- Luôn giữa màn hình
 fovFrame.Size = UDim2.new(0, CFG.AimFOV * 2, 0, CFG.AimFOV * 2)
 fovFrame.BackgroundTransparency = 1  -- HOÀN TOÀN trong suốt, không fill
 fovFrame.BorderSizePixel = 0
@@ -1359,7 +1348,7 @@ toggleItem(mainPage, "Xuyên Tường Off", "Không aim khi bị tường che.",
 
 divider(mainPage)
 sectionHeader(mainPage, "Auto Kill")
-toggleItem(mainPage, "Bật Auto Kill", "Tự aim + bắn liên tục khi có target.", false, function(s) CFG.AimAutoKill = s end)
+toggleItem(mainPage, "Bật Auto Kill", "Trong FOV → tự chết, không cần bắn.", false, function(s) CFG.AimAutoKill = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
@@ -1591,19 +1580,6 @@ RunService.RenderStepped:Connect(function()
                 local fovDiameter = CFG.AimFOV * 2
                 fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
                 fovFrame.Visible = CFG.AimShowFOV
-                -- FOV circle: PC theo chuột, Mobile giữa màn hình
-                local fovPos
-                pcall(function()
-                    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-                        fovPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-                    else
-                        fovPos = UserInputService:GetMouseLocation()
-                    end
-                end)
-                if not fovPos then
-                    fovPos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-                end
-                fovFrame.Position = UDim2.new(0, fovPos.X, 0, fovPos.Y)
             end
         end)
 
@@ -1617,20 +1593,13 @@ RunService.RenderStepped:Connect(function()
                 -- Aim
                 pcall(aimAt, target)
 
-                -- AutoKill: tự bắn khi có target
+                -- AutoKill: set target health = 0 (không cần bắn)
                 if CFG.AimAutoKill then
                     pcall(function()
-                        if not isTouching then
-                            mouse1press()
-                            task.wait(0.03)
-                            mouse1release()
+                        local hum = target.character and target.character:FindFirstChildOfClass("Humanoid")
+                        if hum then
+                            hum.Health = 0
                         end
-                        pcall(function()
-                            local vu = game:GetService("VirtualUser")
-                            vu:Button1Down(Vector2.new(0, 0))
-                            task.wait(0.03)
-                            vu:Button1Up(Vector2.new(0, 0))
-                        end)
                     end)
                 end
 
