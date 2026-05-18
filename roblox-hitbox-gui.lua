@@ -572,37 +572,21 @@ end
 -- ═══════════════════════════════════════════════════════
 -- FOV CIRCLE (hiện trên màn hình)
 -- ═══════════════════════════════════════════════════════
--- FOV Circle: filled semi-transparent + border riêng
+-- FOV Circle: viền trắng rõ ràng, không filled
 local fovCircle = Drawing.new("Circle")
 fovCircle.Visible = false
 fovCircle.Radius = CFG.AimFOV
-fovCircle.Color = Color3.fromRGB(30, 30, 50)
-fovCircle.Thickness = 1
-fovCircle.Filled = true
-fovCircle.Transparency = 0.85
+fovCircle.Color = Color3.fromRGB(255, 255, 255)
+fovCircle.Thickness = 1.5
+fovCircle.Filled = false
+fovCircle.Transparency = 1
 fovCircle.NumSides = 80
-
-local fovBorder = Drawing.new("Circle")
-fovBorder.Visible = false
-fovBorder.Radius = CFG.AimFOV
-fovBorder.Color = Color3.fromRGB(255, 255, 255)
-fovBorder.Thickness = 1.5
-fovBorder.Filled = false
-fovBorder.Transparency = 0.6
-fovBorder.NumSides = 80
 
 -- ═══════════════════════════════════════════════════════
 -- INPUT: Theo dõi chuột (cho AimOnShoot)
 -- ═══════════════════════════════════════════════════════
--- AimOnShoot: KHÔNG check gameProcessed cho MouseButton1
--- vì game consume click → isShooting永远không set true
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        isShooting = true
-        return
-    end
-    if gameProcessed then return end
-end)
+-- AimOnShoot: dùng IsMouseButtonPressed trong loop thay vì event
+-- vì game consume MouseButton1 event → InputBegan không bao giờ fire
 
 UserInputService.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -1382,9 +1366,9 @@ RunService.RenderStepped:Connect(function()
         fovCircle.Position = screenCenter
         fovCircle.Radius = CFG.AimFOV
         fovCircle.Visible = CFG.AimShowFOV
-        fovBorder.Position = screenCenter
-        fovBorder.Radius = CFG.AimFOV
-        fovBorder.Visible = CFG.AimShowFOV
+
+        -- AimOnShoot: check trực tiếp MouseButton1 mỗi frame
+        isShooting = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
 
         local shouldAim = (not CFG.AimOnShoot) or isShooting
 
@@ -1392,16 +1376,15 @@ RunService.RenderStepped:Connect(function()
             local target = getTarget()
             if target then
                 aimAt(target)
-                fovBorder.Color = Color3.fromRGB(255, 50, 50)
+                fovCircle.Color = Color3.fromRGB(255, 50, 50) -- Đỏ khi lock
             else
-                fovBorder.Color = Color3.fromRGB(255, 255, 255)
+                fovCircle.Color = Color3.fromRGB(255, 255, 255) -- Trắng khi idle
             end
         else
-            fovBorder.Color = Color3.fromRGB(255, 255, 255)
+            fovCircle.Color = Color3.fromRGB(255, 255, 255)
         end
     else
         fovCircle.Visible = false
-        fovBorder.Visible = false
     end
 end)
 
