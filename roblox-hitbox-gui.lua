@@ -670,11 +670,11 @@ end)
 
 -- ═══════════════════════════════════════════════════════
 -- KILL AURA: Gửi packet tấn công server
--- 360 độ, đa mục tiêu, không cần nhìn
+-- 360°, đa mục tiêu, quay mặt → đánh → rate limit
 -- ═══════════════════════════════════════════════════════
 local killAuraCircle = nil
 local lastKillAuraTick = 0
-local KILL_AURA_COOLDOWN = 0.1  -- 100ms giữa mỗi đợt tấn công
+local KILL_AURA_COOLDOWN = 0.12  -- 120ms (randomized)
 
 local function createKillAuraCircle()
     if killAuraCircle then killAuraCircle:Destroy() end
@@ -682,7 +682,6 @@ local function createKillAuraCircle()
     if not char then return end
     local hrp = char:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
-
     killAuraCircle = Instance.new("Part")
     killAuraCircle.Name = "KillAuraCircle"
     killAuraCircle.Anchored = true
@@ -707,10 +706,7 @@ local function updateKillAuraCircle()
 end
 
 local function destroyKillAuraCircle()
-    if killAuraCircle then
-        killAuraCircle:Destroy()
-        killAuraCircle = nil
-    end
+    if killAuraCircle then killAuraCircle:Destroy(); killAuraCircle = nil end
 end
 
 -- Tìm tool/weapon đang cầm
@@ -720,14 +716,12 @@ local function getHoldingTool()
     return char:FindFirstChildOfClass("Tool")
 end
 
--- Gửi lệnh tấn công lên server (qua tool activation)
-local function sendAttack(targetPlayer)
+-- Gửi lệnh tấn công: tool:Activate + VirtualUser
+local function sendAttack()
     local tool = getHoldingTool()
     if tool then
-        -- Kích hoạt tool (giống click chuột)
         pcall(function() tool:Activate() end)
     end
-    -- Backup: dùng VirtualUser để simulate click
     pcall(function()
         local vu = game:GetService("VirtualUser")
         vu:CaptureController()
@@ -735,10 +729,21 @@ local function sendAttack(targetPlayer)
     end)
 end
 
--- Kill Aura: 360 độ, đa mục tiêu, spam packet
+-- Quay mặt nhân vật về target (quan trọng cho melee)
+local function faceTarget(myHRP, targetPos)
+    local lookCF = CFrame.lookAt(
+        myHRP.Position,
+        Vector3.new(targetPos.X, myHRP.Position.Y, targetPos.Z)
+    )
+    myHRP.CFrame = lookCF
+end
+
+-- Kill Aura: 360°, đa mục tiêu, quay mặt → đánh
 local function doKillAura()
     local now = tick()
-    if now - lastKillAuraTick < KILL_AURA_COOLDOWN then return end
+    -- Random delay để tránh anti-cheat detect pattern
+    local delay = KILL_AURA_COOLDOWN + math.random(-20, 20) / 1000
+    if now - lastKillAuraTick < delay then return end
     lastKillAuraTick = now
 
     local char = LocalPlayer.Character
@@ -757,23 +762,20 @@ local function doKillAura()
 
         local dist = (hrp.Position - targetHRP.Position).Magnitude
         if dist <= CFG.KillAuraRange then
-            -- Gửi packet tấn công (spam liên tục)
-            pcall(sendAttack, player)
-            -- Backup: set health nếu server không xử lý
-            pcall(function()
-                task.wait(0.05)
-                if targetHum.Health > 0 then
-                    targetHum.Health = 0
-                end
-            end)
+            -- Quay mặt về target (game melee cần)
+            pcall(faceTarget, hrp, targetHRP.Position)
+            -- Gửi packet tấn công
+            pcall(sendAttack)
         end
     end
 end
 
 -- Aim Kill: địch trong FOV → tự sát thương (cầm súng)
+-- Gửi packet tấn công qua tool:Activate + VirtualUser
 local function doAimKill()
     local now = tick()
-    if now - lastKillAuraTick < KILL_AURA_COOLDOWN then return end
+    local delay = KILL_AURA_COOLDOWN + math.random(-20, 20) / 1000
+    if now - lastKillAuraTick < delay then return end
     lastKillAuraTick = now
 
     local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
@@ -795,17 +797,10 @@ local function doAimKill()
         local dist = (screenPoint - screenCenter).Magnitude
 
         if dist <= CFG.AimFOV then
-            -- Aim vào target trước
+            -- Aim vào target (camera bẻ tâm)
             pcall(aimAt, {part = part, character = player.Character})
             -- Gửi packet tấn công
-            pcall(sendAttack, player)
-            -- Backup: set health
-            pcall(function()
-                task.wait(0.05)
-                if hum.Health > 0 then
-                    hum.Health = 0
-                end
-            end)
+            pcall(sendAttack)
         end
     end
 end
