@@ -55,10 +55,8 @@ local CFG = {
     AimKeybind = "Q",
     AimHitchance = 100,
     AimTeamCheck = false,
-    -- Kill Aura / Kill All
-    KillAura = false,           -- Vòng đánh quanh nhân vật
-    KillAuraRange = 15,         -- Phạm vi đánh (studs)
-    AimKill = false,            -- Aim Kill: địch trong FOV → tự sát thương
+    -- Wallbang
+    Wallbang = false,           -- Bắn xuyên vật thể
 
     -- PLAYER
     InfJump = false,
@@ -661,148 +659,83 @@ LocalPlayer.CharacterAdded:Connect(function(char)
         hum.WalkSpeed = CFG.SpeedEnabled and CFG.Speed or 16
     end
     applyJumpPower(char)
-    -- Khôi phục Kill Aura circle khi respawn
-    if CFG.KillAura then
-        task.wait(0.5)
-        createKillAuraCircle()
-    end
 end)
 
 -- ═══════════════════════════════════════════════════════
--- KILL AURA: Gửi packet tấn công server
--- 360°, đa mục tiêu, quay mặt → đánh → rate limit
+-- WALLBANG: Bắn xuyên vật thể
+-- Hook Raycast + FindPartOnRay để đạn xuyên tường
 -- ═══════════════════════════════════════════════════════
-local killAuraCircle = nil
-local lastKillAuraTick = 0
-local KILL_AURA_COOLDOWN = 0.12  -- 120ms (randomized)
+local wallbangEnabled = false
+local originalRaycast = nil
 
-local function createKillAuraCircle()
-    if killAuraCircle then killAuraCircle:Destroy() end
-    local char = LocalPlayer.Character
-    if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    killAuraCircle = Instance.new("Part")
-    killAuraCircle.Name = "KillAuraCircle"
-    killAuraCircle.Anchored = true
-    killAuraCircle.CanCollide = false
-    killAuraCircle.Shape = Enum.PartType.Cylinder
-    killAuraCircle.Size = Vector3.new(0.2, CFG.KillAuraRange * 2, CFG.KillAuraRange * 2)
-    killAuraCircle.CFrame = hrp.CFrame * CFrame.Angles(0, 0, math.rad(90))
-    killAuraCircle.Transparency = 0.7
-    killAuraCircle.Material = Enum.Material.Neon
-    killAuraCircle.BrickColor = BrickColor.new("Really red")
-    killAuraCircle.Parent = workspace
-end
+local function enableWallbang()
+    if wallbangEnabled then return end
+    wallbangEnabled = true
 
-local function updateKillAuraCircle()
-    if not killAuraCircle then return end
-    local char = LocalPlayer.Character
-    if not char then killAuraCircle:Destroy(); killAuraCircle = nil; return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-    killAuraCircle.Size = Vector3.new(0.2, CFG.KillAuraRange * 2, CFG.KillAuraRange * 2)
-    killAuraCircle.CFrame = hrp.CFrame * CFrame.Angles(0, 0, math.rad(90))
-end
-
-local function destroyKillAuraCircle()
-    if killAuraCircle then killAuraCircle:Destroy(); killAuraCircle = nil end
-end
-
--- Tìm tool/weapon đang cầm
-local function getHoldingTool()
-    local char = LocalPlayer.Character
-    if not char then return nil end
-    return char:FindFirstChildOfClass("Tool")
-end
-
--- Gửi lệnh tấn công: tool:Activate + VirtualUser
-local function sendAttack()
-    local tool = getHoldingTool()
-    if tool then
-        pcall(function() tool:Activate() end)
-    end
+    -- Hook workspace:Raycast — bỏ qua tường, chỉ trúng player
     pcall(function()
-        local vu = game:GetService("VirtualUser")
-        vu:CaptureController()
-        vu:ClickButton1(Vector2.new(0, 0))
+        originalRaycast = originalRaycast or workspace.Raycast
+        local oldRaycast = originalRaycast
+
+        workspace.Raycast = newcclosure(function(self, origin, direction, params)
+            if CFG.Wallbang then
+                -- Gọi raycast gốc
+                local result = oldRaycast(self, origin, direction, params)
+                if result then
+                    -- Nếu trúng tường/vật thể → bỏ qua, tiếp tục raycast
+                    local hitModel = result.Instance:FindFirstAncestorOfClass("Model")
+                    if hitModel and hitModel:FindFirstChildOfClass("Humanoid") then
+                        return result  -- Trúng player → giữ lại
+                    end
+                    -- Trúng tường → raycast tiếp (ignore wall)
+                    local newOrigin = result.Position + direction.Unit * 0.1
+                    local remaining = direction - (result.Position - origin)
+                    if remaining.Magnitude > 0.1 then
+                        return oldRaycast(self, newOrigin, remaining, params)
+                    end
+                end
+                return result
+            end
+            return oldRaycast(self, origin, direction, params)
+        end)
+    end)
+
+    -- Hook FindPartOnRayWithIgnoreList (game cũ)
+    pcall(function()
+        local oldFind = workspace.FindPartOnRayWithIgnoreList
+        if oldFind then
+            workspace.FindPartOnRayWithIgnoreList = newcclosure(function(self, ray, ignoreList, ...)
+                if CFG.Wallbang then
+                    local result = oldFind(self, ray, ignoreList, ...)
+                    if result then
+                        local hitModel = result:FindFirstAncestorOfClass("Model")
+                        if hitModel and hitModel:FindFirstChildOfClass("Humanoid") then
+                            return result
+                        end
+                        -- Bỏ qua tường, raycast tiếp
+                        local newOrigin = ray.Origin + ray.Direction.Unit * 0.1
+                        local newRay = Ray.new(newOrigin, ray.Direction * 0.99)
+                        local newIgnore = ignoreList or {}
+                        table.insert(newIgnore, result)
+                        return oldFind(self, newRay, newIgnore, ...)
+                    end
+                    return result
+                end
+                return oldFind(self, ray, ignoreList, ...)
+            end)
+        end
     end)
 end
 
--- Quay mặt nhân vật về target (quan trọng cho melee)
-local function faceTarget(myHRP, targetPos)
-    local lookCF = CFrame.lookAt(
-        myHRP.Position,
-        Vector3.new(targetPos.X, myHRP.Position.Y, targetPos.Z)
-    )
-    myHRP.CFrame = lookCF
-end
-
--- Kill Aura: 360°, đa mục tiêu, quay mặt → đánh
-local function doKillAura()
-    local now = tick()
-    -- Random delay để tránh anti-cheat detect pattern
-    local delay = KILL_AURA_COOLDOWN + math.random(-20, 20) / 1000
-    if now - lastKillAuraTick < delay then return end
-    lastKillAuraTick = now
-
-    local char = LocalPlayer.Character
-    if not char then return end
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player == LocalPlayer then continue end
-        if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
-        if not player.Character then continue end
-
-        local targetHRP = player.Character:FindFirstChild("HumanoidRootPart")
-        local targetHum = player.Character:FindFirstChildOfClass("Humanoid")
-        if not targetHRP or not targetHum or targetHum.Health <= 0 then continue end
-
-        local dist = (hrp.Position - targetHRP.Position).Magnitude
-        if dist <= CFG.KillAuraRange then
-            -- Quay mặt về target (game melee cần)
-            pcall(faceTarget, hrp, targetHRP.Position)
-            -- Gửi packet tấn công
-            pcall(sendAttack)
+local function disableWallbang()
+    if not wallbangEnabled then return end
+    wallbangEnabled = false
+    -- Khôi phục raycast gốc
+    pcall(function()
+        if originalRaycast then
+            workspace.Raycast = originalRaycast
         end
-    end
-end
-
--- Aim Kill: địch trong FOV → tự sát thương (cầm súng)
--- Gửi packet tấn công qua tool:Activate + VirtualUser
-local function doAimKill()
-    local now = tick()
-    local delay = KILL_AURA_COOLDOWN + math.random(-20, 20) / 1000
-    if now - lastKillAuraTick < delay then return end
-    lastKillAuraTick = now
-
-    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player == LocalPlayer then continue end
-        if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
-        if not player.Character then continue end
-
-        local hum = player.Character:FindFirstChildOfClass("Humanoid")
-        local part = player.Character:FindFirstChild("Head") or player.Character:FindFirstChild("HumanoidRootPart")
-        if not hum or hum.Health <= 0 or not part then continue end
-
-        -- Kiểm tra địch có trong FOV không
-        local vec = Camera:WorldToViewportPoint(part.Position)
-        if vec.Z <= 0 then continue end
-
-        local screenPoint = Vector2.new(vec.X, vec.Y)
-        local dist = (screenPoint - screenCenter).Magnitude
-
-        if dist <= CFG.AimFOV then
-            -- Aim vào target (camera bẻ tâm)
-            pcall(aimAt, {part = part, character = player.Character})
-            -- Gửi packet tấn công
-            pcall(sendAttack)
-        end
-    end
+    end)
 end
 
 -- ═══════════════════════════════════════════════════════
@@ -1492,13 +1425,11 @@ inputItem(mainPage, "Mượt:", 1, function(v) if v >= 1 and v <= 20 then CFG.Ai
 toggleItem(mainPage, "Xuyên Tường Off", "Không aim khi bị tường che.", false, function(s) CFG.AimWallCheck = s end)
 
 divider(mainPage)
-sectionHeader(mainPage, "Kill")
-toggleItem(mainPage, "Kill Aura", "360° quanh nhân vật, spam packet đánh server.", false, function(s)
-    CFG.KillAura = s
-    if s then createKillAuraCircle() else destroyKillAuraCircle() end
+sectionHeader(mainPage, "Wallbang")
+toggleItem(mainPage, "Bắn Xuyên Tường", "Đạn xuyên vật thể, chỉ trúng player.", false, function(s)
+    CFG.Wallbang = s
+    if s then enableWallbang() else disableWallbang() end
 end)
-inputItem(mainPage, "Kill Aura Range:", 15, function(v) if v > 0 and v <= 100 then CFG.KillAuraRange = v end end)
-toggleItem(mainPage, "Aim Kill", "Cầm súng, địch trong FOV → tự nhận sát thương.", false, function(s) CFG.AimKill = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
@@ -1570,8 +1501,8 @@ sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
-    CFG.KillAura = false; CFG.AimKill = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
-    destroyKillAuraCircle()
+    CFG.Wallbang = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
+    disableWallbang()
     aimbotActive = true
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
@@ -1722,17 +1653,6 @@ RunService.RenderStepped:Connect(function()
 
     -- ─── ESP ───
     updateEsp()
-
-    -- ─── KILL AURA ───
-    if CFG.KillAura then
-        pcall(doKillAura)
-        pcall(updateKillAuraCircle)
-    end
-
-    -- ─── AIM KILL ───
-    if CFG.AimKill then
-        pcall(doAimKill)
-    end
 
     -- ─── AIMBOT ───
     if CFG.AimEnabled and aimbotActive then
