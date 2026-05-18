@@ -818,8 +818,6 @@ Sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -32)
 Sidebar.Position = UDim2.new(0, 0, 0, 32)
 Sidebar.BackgroundColor3 = CLR_PANEL
 Sidebar.BorderSizePixel = 0
-Sidebar.ClipsDescendants = true
-Sidebar.ZIndex = 10
 Sidebar.Parent = Main
 
 local sidebarCorner = Instance.new("UICorner")
@@ -834,7 +832,6 @@ ContentArea.Size = UDim2.new(1, -SIDEBAR_W, 1, -32)
 ContentArea.Position = UDim2.new(0, SIDEBAR_W, 0, 32)
 ContentArea.BackgroundColor3 = CLR_BG
 ContentArea.BorderSizePixel = 0
-ContentArea.ZIndex = 1
 ContentArea.Parent = Main
 
 -- ═══════════════════════════════════════════════════════════════
@@ -846,9 +843,8 @@ local contentPages = {}
 local function createSidebarBtn(name, yPos)
     local btn = Instance.new("TextButton")
     btn.Name = "Nav_" .. name
-    btn.Size = UDim2.new(1, -12, 0, 32)
+    btn.Size = UDim2.new(0, SIDEBAR_W - 12, 0, 32)
     btn.Position = UDim2.new(0, 6, 0, yPos)
-    btn.AnchorPoint = Vector2.new(0, 0)
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
     btn.BackgroundTransparency = 0
     btn.BorderSizePixel = 0
@@ -859,8 +855,7 @@ local function createSidebarBtn(name, yPos)
     btn.TextXAlignment = Enum.TextXAlignment.Left
     btn.TextTransparency = 0
     btn.AutoButtonColor = false
-    btn.ZIndex = 11
-    btn.Parent = Sidebar
+    btn.Parent = Main
 
     local c = Instance.new("UICorner")
     c.CornerRadius = UDim.new(0, 6)
@@ -903,7 +898,7 @@ local function createContentPage(name)
 end
 
 -- Tạo 5 sidebar buttons + 5 content pages
-local BTN_START_Y = 8
+local BTN_START_Y = 40  -- 32 (title) + 8 (padding)
 local BTN_HEIGHT = 34
 local BTN_GAP = 4
 
@@ -913,11 +908,7 @@ createSidebarBtn("Visual", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 2)
 createSidebarBtn("Player", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 3)
 createSidebarBtn("Misc",   BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 4)
 
--- Debug: print sidebar state
-print("[HA Hub] Sidebar children: " .. #Sidebar:GetChildren())
-for _, child in pairs(Sidebar:GetChildren()) do
-    print("[HA Hub] - " .. child.Name .. " | Visible: " .. tostring(child.Visible) .. " | Text: " .. (child:IsA("TextLabel") and child.Text or child:IsA("TextButton") and child.Text or "N/A"))
-end
+-- Sidebar buttons created above as children of Main
 
 createContentPage("Home")
 createContentPage("Main")
