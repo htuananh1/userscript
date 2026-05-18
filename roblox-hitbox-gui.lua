@@ -44,7 +44,7 @@ local CFG = {
     AimEnabled = false,
     AimFOV = 200,
     AimSmooth = 1,           -- 1 = instant lock
-    AimWallCheck = true,
+    AimWallCheck = false,  -- Tắt mặc định (nhiều game raycast fail)
     AimOnShoot = false,
     AimShowFOV = true,
     AimPart = "Head",
@@ -472,8 +472,9 @@ local function isPartVisible(targetPart)
     local myChar = LocalPlayer.Character
     if not myChar or not myChar:FindFirstChild("Head") then return false end
 
-    local origin = myChar.Head.Position
-    local direction = (targetPart.Position - origin)
+    local origin = Camera.CFrame.Position
+    local direction = targetPart.Position - origin
+    local distance = direction.Magnitude
 
     local params = RaycastParams.new()
     params.FilterType = Enum.RaycastFilterType.Exclude
@@ -481,10 +482,14 @@ local function isPartVisible(targetPart)
 
     local result = workspace:Raycast(origin, direction, params)
     if result then
-        -- Nếu raycast trúng 1 phần thuộc character của target → OK
-        return result.Instance:IsDescendantOf(targetPart.Parent)
+        -- Nếu trúng 1 part thuộc character target → visible
+        local hitChar = result.Instance:FindFirstAncestorOfClass("Model")
+        if hitChar and hitChar:FindFirstChildOfClass("Humanoid") then
+            return true  -- trúng player khác → visible
+        end
+        return false  -- trúng tường/object → bị block
     end
-    return true  -- Không bị chặn
+    return true  -- không bị chặn
 end
 
 -- ═══════════════════════════════════════════════════════
@@ -547,17 +552,19 @@ local function aimAt(target)
 
     local aimPos = target.part.Position
 
-    -- Prediction: dự đoán vị trí dựa trên velocity
+    -- Prediction: dự đoán vị trí dựa trên velocity + deltaTime
     if CFG.AimPrediction and target.character then
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
         if hrp then
-            local velocity = hrp.Velocity
+            local velocity = hrp.AssemblyLinearVelocity or hrp.Velocity
             local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
-            aimPos = aimPos + velocity * CFG.AimPredAmount * (dist / 100)
+            -- Prediction amount tăng theo khoảng cách
+            local predFactor = CFG.AimPredAmount * math.clamp(dist / 50, 0.5, 3)
+            aimPos = aimPos + velocity * predFactor
         end
     end
 
-    -- Aim bằng Camera.CFrame.Position (chính xác hơn Head.Position)
+    -- Aim: tạo CFrame nhìn từ camera vào target
     local camPos = Camera.CFrame.Position
     local goalCFrame = CFrame.new(camPos, aimPos)
 
@@ -1397,31 +1404,32 @@ RunService.RenderStepped:Connect(function()
 
     -- ─── AIMBOT ───
     if CFG.AimEnabled then
-        local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        -- Cập nhật FOV circle
+        pcall(function()
+            if fovFrame then
+                local fovDiameter = CFG.AimFOV * 2
+                fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
+                fovFrame.Visible = CFG.AimShowFOV
+            end
+        end)
 
-        -- Cập nhật FOV circle (Frame-based)
-        local fovDiameter = CFG.AimFOV * 2
-        fovFrame.Size = UDim2.new(0, fovDiameter, 0, fovDiameter)
-        fovFrame.Visible = CFG.AimShowFOV
-
-        -- AimOnShoot: check MouseButton1 mỗi frame (poll, không event)
+        -- AimOnShoot: poll MouseButton1 mỗi frame
         isShooting = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
-
         local shouldAim = (not CFG.AimOnShoot) or isShooting
 
         if shouldAim then
-            local target = getTarget()
-            if target then
-                aimAt(target)
-                fovStroke.Color = Color3.fromRGB(255, 50, 50) -- Đỏ khi lock
+            local ok, target = pcall(getTarget)
+            if ok and target then
+                pcall(aimAt, target)
+                pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 50, 50) end end)
             else
-                fovStroke.Color = Color3.fromRGB(255, 255, 255) -- Trắng khi idle
+                pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 255, 255) end end)
             end
         else
-            fovStroke.Color = Color3.fromRGB(255, 255, 255)
+            pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 255, 255) end end)
         end
     else
-        fovFrame.Visible = false
+        pcall(function() if fovFrame then fovFrame.Visible = false end end)
     end
 end)
 
