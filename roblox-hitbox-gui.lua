@@ -55,7 +55,10 @@ local CFG = {
     AimKeybind = "Q",
     AimHitchance = 100,
     AimTeamCheck = false,
-    AimAutoKill = false,        -- NEW: Tự aim + bắn liên tục
+    -- Kill Aura / Kill All
+    KillAura = false,           -- Vòng đánh quanh nhân vật
+    KillAuraRange = 15,         -- Phạm vi đánh (studs)
+    KillAll = false,            -- Giết tất cả mọi người trên map
 
     -- PLAYER
     InfJump = false,
@@ -658,7 +661,92 @@ LocalPlayer.CharacterAdded:Connect(function(char)
         hum.WalkSpeed = CFG.SpeedEnabled and CFG.Speed or 16
     end
     applyJumpPower(char)
+    -- Khôi phục Kill Aura circle khi respawn
+    if CFG.KillAura then
+        task.wait(0.5)
+        createKillAuraCircle()
+    end
 end)
+
+-- ═══════════════════════════════════════════════════════
+-- KILL AURA: Vòng đánh quanh nhân vật
+-- ═══════════════════════════════════════════════════════
+local killAuraCircle = nil
+
+local function createKillAuraCircle()
+    if killAuraCircle then killAuraCircle:Destroy() end
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    killAuraCircle = Instance.new("Part")
+    killAuraCircle.Name = "KillAuraCircle"
+    killAuraCircle.Anchored = true
+    killAuraCircle.CanCollide = false
+    killAuraCircle.Shape = Enum.PartType.Cylinder
+    killAuraCircle.Size = Vector3.new(0.2, CFG.KillAuraRange * 2, CFG.KillAuraRange * 2)
+    killAuraCircle.CFrame = hrp.CFrame * CFrame.Angles(0, 0, math.rad(90))
+    killAuraCircle.Transparency = 0.7
+    killAuraCircle.Material = Enum.Material.Neon
+    killAuraCircle.BrickColor = BrickColor.new("Really red")
+    killAuraCircle.Parent = workspace
+end
+
+local function updateKillAuraCircle()
+    if not killAuraCircle then return end
+    local char = LocalPlayer.Character
+    if not char then killAuraCircle:Destroy(); killAuraCircle = nil; return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    killAuraCircle.Size = Vector3.new(0.2, CFG.KillAuraRange * 2, CFG.KillAuraRange * 2)
+    killAuraCircle.CFrame = hrp.CFrame * CFrame.Angles(0, 0, math.rad(90))
+end
+
+local function destroyKillAuraCircle()
+    if killAuraCircle then
+        killAuraCircle:Destroy()
+        killAuraCircle = nil
+    end
+end
+
+-- Kill Aura: tấn công player trong phạm vi
+local function doKillAura()
+    local char = LocalPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
+        if not player.Character then continue end
+
+        local targetHRP = player.Character:FindFirstChild("HumanoidRootPart")
+        local targetHum = player.Character:FindFirstChildOfClass("Humanoid")
+        if not targetHRP or not targetHum or targetHum.Health <= 0 then continue end
+
+        local dist = (hrp.Position - targetHRP.Position).Magnitude
+        if dist <= CFG.KillAuraRange then
+            -- Set health = 0
+            pcall(function() targetHum.Health = 0 end)
+        end
+    end
+end
+
+-- Kill All: giết tất cả trên map
+local function doKillAll()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
+        if not player.Character then continue end
+
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum and hum.Health > 0 then
+            pcall(function() hum.Health = 0 end)
+        end
+    end
+end
 
 -- ═══════════════════════════════════════════════════════
 -- HITBOX: Áp dụng hitbox expand
@@ -1347,8 +1435,13 @@ inputItem(mainPage, "Mượt:", 1, function(v) if v >= 1 and v <= 20 then CFG.Ai
 toggleItem(mainPage, "Xuyên Tường Off", "Không aim khi bị tường che.", false, function(s) CFG.AimWallCheck = s end)
 
 divider(mainPage)
-sectionHeader(mainPage, "Auto Kill")
-toggleItem(mainPage, "Bật Auto Kill", "Trong FOV → tự chết, không cần bắn.", false, function(s) CFG.AimAutoKill = s end)
+sectionHeader(mainPage, "Kill")
+toggleItem(mainPage, "Kill Aura", "Vòng đỏ quanh nhân vật, ai vào tầm → chết.", false, function(s)
+    CFG.KillAura = s
+    if s then createKillAuraCircle() else destroyKillAuraCircle() end
+end)
+inputItem(mainPage, "Kill Aura Range:", 15, function(v) if v > 0 and v <= 100 then CFG.KillAuraRange = v end end)
+toggleItem(mainPage, "Kill All", "Giết TẤT CẢ mọi người trên map.", false, function(s) CFG.KillAll = s end)
 
 -- ─── VISUAL (ESP) ───
 local visualPage = contentPages["Visual"]
@@ -1420,7 +1513,8 @@ sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
-    CFG.AimAutoKill = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
+    CFG.KillAura = false; CFG.KillAll = false; CFG.AimTeamCheck = false; CFG.AimOnShoot = false
+    destroyKillAuraCircle()
     aimbotActive = true
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
@@ -1572,6 +1666,17 @@ RunService.RenderStepped:Connect(function()
     -- ─── ESP ───
     updateEsp()
 
+    -- ─── KILL AURA ───
+    if CFG.KillAura then
+        pcall(doKillAura)
+        pcall(updateKillAuraCircle)
+    end
+
+    -- ─── KILL ALL ───
+    if CFG.KillAll then
+        pcall(doKillAll)
+    end
+
     -- ─── AIMBOT ───
     if CFG.AimEnabled and aimbotActive then
         -- Cập nhật FOV circle
@@ -1585,25 +1690,12 @@ RunService.RenderStepped:Connect(function()
 
         -- AimOnShoot: poll touch hoặc MouseButton1
         isShooting = isTouching or UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
-        local shouldAim = (not CFG.AimOnShoot) or isShooting or CFG.AimAutoKill
+        local shouldAim = (not CFG.AimOnShoot) or isShooting
 
         if shouldAim then
             local ok, target = pcall(getTarget)
             if ok and target then
-                -- Aim
                 pcall(aimAt, target)
-
-                -- AutoKill: set target health = 0 (không cần bắn)
-                if CFG.AimAutoKill then
-                    pcall(function()
-                        local hum = target.character and target.character:FindFirstChildOfClass("Humanoid")
-                        if hum then
-                            hum.Health = 0
-                        end
-                    end)
-                end
-
-                -- FOV stroke: đỏ khi aim
                 pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 50, 50) end end)
             else
                 pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 255, 255) end end)
