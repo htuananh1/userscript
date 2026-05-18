@@ -54,6 +54,8 @@ local CFG = {
     -- PLAYER
     InfJump = false,
     Noclip = false,
+    HighJump = false,
+    JumpPower = 100,
     Speed = 32,
     SpeedEnabled = false,
 
@@ -620,6 +622,17 @@ RunService.Stepped:Connect(function()
 end)
 
 -- ═══════════════════════════════════════════════════════
+-- HIGH JUMP: JumpPower override
+-- ═══════════════════════════════════════════════════════
+local function applyJumpPower(char)
+    local hum = char and char:WaitForChild("Humanoid", 5)
+    if hum then
+        hum.UseJumpPower = true
+        hum.JumpPower = CFG.HighJump and CFG.JumpPower or 50
+    end
+end
+
+-- ═══════════════════════════════════════════════════════
 -- SPEED: Áp dụng khi respawn
 -- ═══════════════════════════════════════════════════════
 LocalPlayer.CharacterAdded:Connect(function(char)
@@ -628,6 +641,7 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     if hum then
         hum.WalkSpeed = CFG.SpeedEnabled and CFG.Speed or 16
     end
+    applyJumpPower(char)
 end)
 
 -- ═══════════════════════════════════════════════════════
@@ -1319,6 +1333,20 @@ divider(playerPage)
 sectionHeader(playerPage, "Movement")
 toggleItem(playerPage, "Infinity Jump", "Nhảy liên tục không giới hạn.", false, function(s) CFG.InfJump = s end)
 toggleItem(playerPage, "Noclip", "Đi xuyên tường/vật cản.", false, function(s) CFG.Noclip = s end)
+toggleItem(playerPage, "Nhảy Cao", "Tăng sức nhảy.", false, function(s)
+    CFG.HighJump = s
+    local char = LocalPlayer.Character
+    if char then applyJumpPower(char) end
+end)
+inputItem(playerPage, "JumpPower:", 100, function(v)
+    if v > 0 and v <= 500 then
+        CFG.JumpPower = v
+        if CFG.HighJump then
+            local char = LocalPlayer.Character
+            if char then applyJumpPower(char) end
+        end
+    end
+end)
 
 divider(playerPage)
 sectionHeader(playerPage, "Speed")
@@ -1348,12 +1376,16 @@ inputItem(miscPage, "Hitbox Size:", 2, function(v) if v > 0 and v <= 100 then CF
 divider(miscPage)
 sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
-    CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false
-    CFG.SpeedEnabled = false; CFG.HitboxSize = 2
+    CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
+    CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.JumpPower = 100
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
     local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    if hum then hum.WalkSpeed = 16 end
+    if hum then
+        hum.WalkSpeed = 16
+        hum.UseJumpPower = true
+        hum.JumpPower = 50
+    end
     StatusLabel.Text = "Reset done!"
 end)
 
@@ -1488,6 +1520,6 @@ print("  ⚡ Hoàng Anh Hub " .. CFG.Version .. " loaded!")
 print("  📌 Nút HA hoặc RightShift: mở menu")
 print("  📌 ESP: Box + Name + HP + Skeleton + Tracer")
 print("  📌 AIM: Aimbot + FOV + Prediction + WallCheck")
-print("  📌 PLAYER: InfJump + Noclip + Speed")
+print("  📌 PLAYER: InfJump + Noclip + HighJump + Speed")
 print("  📌 MISC: Hitbox + Reset")
 print("═══════════════════════════════════════")
