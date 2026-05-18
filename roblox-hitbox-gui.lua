@@ -1338,7 +1338,7 @@ local homePage = contentPages["Home"]
 pageTitle(homePage, "Hoàng Anh Hub")
 divider(homePage)
 sectionHeader(homePage, "Info")
-toggleItem(homePage, "Welcome!", "Nhấn nút HA hoặc RightShift để mở/tắt menu.", false, function() end)
+toggleItem(homePage, "Welcome!", "Nhấn nút HA góc trái trên để mở/tắt menu.", false, function() end)
 
 -- ─── MAIN (Aimbot) ───
 local mainPage = contentPages["Main"]
@@ -1486,19 +1486,83 @@ ToggleBtn.MouseButton1Click:Connect(function() menuVisible = not menuVisible; Ma
 MinBtn.MouseButton1Click:Connect(function() menuVisible = false; Main.Visible = false end)
 CloseBtn.MouseButton1Click:Connect(function() menuVisible = false; Main.Visible = false end)
 
+-- ═══════════════════════════════════════════════════════════════
+-- MOBILE: Nút Aimbot Toggle trên màn hình
+-- ═══════════════════════════════════════════════════════════════
+local AimToggleBtn = Instance.new("TextButton")
+AimToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+AimToggleBtn.Position = UDim2.new(1, -60, 0, 10)
+AimToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+AimToggleBtn.Text = "🎯"
+AimToggleBtn.TextSize = 24
+AimToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AimToggleBtn.Font = Enum.Font.GothamBold
+AimToggleBtn.Parent = ScreenGui
+AimToggleBtn.ZIndex = 999
+AimToggleBtn.Active = true
+AimToggleBtn.Draggable = true
+Instance.new("UICorner", AimToggleBtn).CornerRadius = UDim.new(0, 25)
+local aimStroke = Instance.new("UIStroke", AimToggleBtn)
+aimStroke.Color = Color3.fromRGB(255, 50, 50)
+aimStroke.Thickness = 2
+
+AimToggleBtn.MouseButton1Click:Connect(function()
+    aimbotActive = not aimbotActive
+    lockedTarget = nil
+    AimToggleBtn.Text = aimbotActive and "🎯" or "⏸️"
+    aimStroke.Color = aimbotActive and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(80, 80, 80)
+    pcall(function()
+        StatusLabel.Text = aimbotActive and "🎯 Aimbot ON" or "⏸️ Aimbot OFF"
+    end)
+end)
+
+-- Nút Unlock target (hiện khi Lock Target bật)
+local UnlockBtn = Instance.new("TextButton")
+UnlockBtn.Size = UDim2.new(0, 50, 0, 50)
+UnlockBtn.Position = UDim2.new(1, -60, 0, 70)
+UnlockBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+UnlockBtn.Text = "🔓"
+UnlockBtn.TextSize = 22
+UnlockBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+UnlockBtn.Font = Enum.Font.GothamBold
+UnlockBtn.Parent = ScreenGui
+UnlockBtn.ZIndex = 999
+UnlockBtn.Active = true
+UnlockBtn.Draggable = true
+UnlockBtn.Visible = false
+Instance.new("UICorner", UnlockBtn).CornerRadius = UDim.new(0, 25)
+Instance.new("UIStroke", UnlockBtn).Color = Color3.fromRGB(255, 200, 0)
+
+UnlockBtn.MouseButton1Click:Connect(function()
+    lockedTarget = nil
+    pcall(function()
+        StatusLabel.Text = "🔓 Target unlocked"
+    end)
+end)
+
+-- Mobile: dùng touch thay chuột cho AimOnShoot
+-- ═══════════════════════════════════════════════════════════════
+-- MOBILE TOUCH DETECTION
+-- ═══════════════════════════════════════════════════════════════
+local isTouching = false
+UserInputService.TouchStarted:Connect(function(touch, gameProcessed)
+    isTouching = true
+end)
+UserInputService.TouchEnded:Connect(function(touch, gameProcessed)
+    isTouching = false
+end)
+
+-- Keyboard fallback (vẫn giữ cho PC executor)
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
-    -- Menu toggle
-    if input.KeyCode == Enum.KeyCode.RightShift then
-        menuVisible = not menuVisible
-        Main.Visible = menuVisible
-    end
     -- Aimbot keybind toggle (Q/E/R/T/F)
     if CFG.AimEnabled then
         local aimKey = Enum.KeyCode[CFG.AimKeybind]
         if aimKey and input.KeyCode == aimKey then
             aimbotActive = not aimbotActive
-            lockedTarget = nil -- clear lock khi toggle
+            lockedTarget = nil
+            AimToggleBtn.Text = aimbotActive and "🎯" or "⏸️"
+            aimStroke.Color = aimbotActive and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(80, 80, 80)
             pcall(function()
                 StatusLabel.Text = aimbotActive and "🎯 Aimbot ON" or "⏸️ Aimbot OFF"
             end)
@@ -1573,8 +1637,11 @@ RunService.RenderStepped:Connect(function()
             end
         end)
 
-        -- AimOnShoot: poll MouseButton1 mỗi frame
-        isShooting = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+        -- Hiện/ẩn nút Unlock
+        pcall(function() UnlockBtn.Visible = CFG.AimLockTarget end)
+
+        -- AimOnShoot: poll touch hoặc MouseButton1
+        isShooting = isTouching or UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
         local shouldAim = (not CFG.AimOnShoot) or isShooting
 
         if shouldAim then
@@ -1592,12 +1659,22 @@ RunService.RenderStepped:Connect(function()
                     CFG.AimSmooth = savedSmooth
                 end
 
-                -- AutoFire: tự click chuột khi có target
+                -- AutoFire: tự bắn khi có target (PC + Mobile)
                 if CFG.AimAutoFire then
                     pcall(function()
-                        mouse1press()
-                        task.wait(0.05)
-                        mouse1release()
+                        -- PC
+                        if not isTouching then
+                            mouse1press()
+                            task.wait(0.05)
+                            mouse1release()
+                        end
+                        -- Mobile: dùng VirtualUser nếu có
+                        pcall(function()
+                            local vu = game:GetService("VirtualUser")
+                            vu:Button1Down(Vector2.new(0, 0))
+                            task.wait(0.05)
+                            vu:Button1Up(Vector2.new(0, 0))
+                        end)
                     end)
                 end
 
@@ -1637,10 +1714,10 @@ end)
 -- ═══════════════════════════════════════════════════════════════
 -- READY!
 -- ═══════════════════════════════════════════════════════════════
-StatusLabel.Text = "⚡ " .. CFG.HubName .. " " .. CFG.Version .. " sẵn sàng! | RightShift để mở"
+StatusLabel.Text = "⚡ " .. CFG.HubName .. " " .. CFG.Version .. " sẵn sàng!"
 print("═══════════════════════════════════════")
 print("  ⚡ Hoàng Anh Hub " .. CFG.Version .. " loaded!")
-print("  📌 Nút HA hoặc RightShift: mở menu")
+print("  📌 Nút HA: mở menu | 🎯 nút góc phải: aimbot toggle")
 print("  📌 ESP: Box + Name + HP + Skeleton + Tracer")
 print("  📌 AIM: Aimbot + FOV + Prediction + WallCheck")
 print("  📌 PLAYER: InfJump + Noclip + HighJump + Speed")
