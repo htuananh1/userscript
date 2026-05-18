@@ -818,32 +818,12 @@ Sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -32)
 Sidebar.Position = UDim2.new(0, 0, 0, 32)
 Sidebar.BackgroundColor3 = CLR_PANEL
 Sidebar.BorderSizePixel = 0
-Sidebar.ZIndex = 5
+Sidebar.ClipsDescendants = false
 Sidebar.Parent = Main
 
 local sidebarCorner = Instance.new("UICorner")
 sidebarCorner.CornerRadius = UDim.new(0, 8)
 sidebarCorner.Parent = Sidebar
-
-local SidebarFill = Instance.new("Frame")
-SidebarFill.Size = UDim2.new(0, 10, 1, 0)
-SidebarFill.Position = UDim2.new(1, -10, 0, 0)
-SidebarFill.BackgroundColor3 = CLR_PANEL
-SidebarFill.BorderSizePixel = 0
-SidebarFill.ZIndex = 5
-SidebarFill.Parent = Sidebar
-
-local SidebarLayout = Instance.new("UIListLayout")
-SidebarLayout.Padding = UDim.new(0, 4)
-SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-SidebarLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-SidebarLayout.Parent = Sidebar
-
-local SidebarPad = Instance.new("UIPadding")
-SidebarPad.PaddingTop = UDim.new(0, 6)
-SidebarPad.PaddingLeft = UDim.new(0, 6)
-SidebarPad.PaddingRight = UDim.new(0, 6)
-SidebarPad.Parent = Sidebar
 
 -- ═══════════════════════════════════════════════════════════════
 -- CONTENT AREA
@@ -856,41 +836,38 @@ ContentArea.BorderSizePixel = 0
 ContentArea.Parent = Main
 
 -- ═══════════════════════════════════════════════════════════════
--- SIDEBAR ITEMS
+-- SIDEBAR ITEMS (tạo explicit, không dùng loop)
 -- ═══════════════════════════════════════════════════════════════
 local sidebarButtons = {}
 local contentPages = {}
-local menuSections = {
-    {name = "Home",     icon = "🏠"},
-    {name = "Main",     icon = "🎯"},
-    {name = "Visual",   icon = "👁️"},
-    {name = "Player",   icon = "🏃"},
-    {name = "Misc",     icon = "⚙️"},
-}
 
-for i, sec in ipairs(menuSections) do
+local function createSidebarBtn(name, yPos)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 32)
+    btn.Name = "Nav_" .. name
+    btn.Size = UDim2.new(1, -12, 0, 32)
+    btn.Position = UDim2.new(0, 6, 0, yPos)
     btn.BackgroundColor3 = CLR_PANEL
     btn.BackgroundTransparency = 0
     btn.BorderSizePixel = 0
-    btn.Text = sec.name
+    btn.Text = "  " .. name
     btn.TextColor3 = CLR_DESC
-    btn.TextSize = 14
+    btn.TextSize = 13
     btn.Font = Enum.Font.GothamMedium
     btn.TextXAlignment = Enum.TextXAlignment.Left
-    btn.LayoutOrder = i
-    btn.ZIndex = 10
+    btn.AutoButtonColor = false
     btn.Parent = Sidebar
 
-    local btnCorner = Instance.new("UICorner")
-    btnCorner.CornerRadius = UDim.new(0, 6)
-    btnCorner.Parent = btn
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 6)
+    c.Parent = btn
 
-    sidebarButtons[sec.name] = btn
+    sidebarButtons[name] = btn
+    return btn
+end
 
-    -- Content page (ScrollingFrame)
+local function createContentPage(name)
     local page = Instance.new("ScrollingFrame")
+    page.Name = "Page_" .. name
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.BorderSizePixel = 0
@@ -904,34 +881,60 @@ for i, sec in ipairs(menuSections) do
     page.Visible = false
     page.Parent = ContentArea
 
-    local pageLayout = Instance.new("UIListLayout")
-    pageLayout.Padding = UDim.new(0, 0)
-    pageLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    pageLayout.Parent = page
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 0)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Parent = page
 
-    local pagePad = Instance.new("UIPadding")
-    pagePad.PaddingLeft = UDim.new(0, 14)
-    pagePad.PaddingRight = UDim.new(0, 14)
-    pagePad.PaddingTop = UDim.new(0, 10)
-    pagePad.PaddingBottom = UDim.new(0, 16)
-    pagePad.Parent = page
+    local pad = Instance.new("UIPadding")
+    pad.PaddingLeft = UDim.new(0, 14)
+    pad.PaddingRight = UDim.new(0, 14)
+    pad.PaddingTop = UDim.new(0, 10)
+    pad.PaddingBottom = UDim.new(0, 16)
+    pad.Parent = page
 
-    contentPages[sec.name] = page
+    contentPages[name] = page
+    return page
+end
 
-    btn.MouseButton1Click:Connect(function()
-        for name, p in pairs(contentPages) do p.Visible = (name == sec.name) end
-        for name, b in pairs(sidebarButtons) do
-            if name == sec.name then
-                b.BackgroundColor3 = CLR_ACTIVE
-                b.BackgroundTransparency = 0
-                b.TextColor3 = CLR_TEXT
-            else
-                b.BackgroundColor3 = CLR_PANEL
-                b.BackgroundTransparency = 1
-                b.TextColor3 = CLR_DESC
-            end
+-- Tạo 5 sidebar buttons + 5 content pages
+local BTN_START_Y = 8
+local BTN_HEIGHT = 34
+local BTN_GAP = 4
+
+createSidebarBtn("Home",   BTN_START_Y)
+createSidebarBtn("Main",   BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 1)
+createSidebarBtn("Visual", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 2)
+createSidebarBtn("Player", BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 3)
+createSidebarBtn("Misc",   BTN_START_Y + (BTN_HEIGHT + BTN_GAP) * 4)
+
+createContentPage("Home")
+createContentPage("Main")
+createContentPage("Visual")
+createContentPage("Player")
+createContentPage("Misc")
+
+-- Switch function
+local function switchTo(name)
+    for n, p in pairs(contentPages) do p.Visible = (n == name) end
+    for n, b in pairs(sidebarButtons) do
+        if n == name then
+            b.BackgroundColor3 = CLR_ACTIVE
+            b.BackgroundTransparency = 0
+            b.TextColor3 = CLR_TEXT
+        else
+            b.BackgroundColor3 = CLR_PANEL
+            b.BackgroundTransparency = 0
+            b.TextColor3 = CLR_DESC
         end
+    end
+end
+
+for name, btn in pairs(sidebarButtons) do
+    btn.MouseButton1Click:Connect(function()
+        switchTo(name)
     end)
+end
 end
 
 -- ═══════════════════════════════════════════════════════════════
