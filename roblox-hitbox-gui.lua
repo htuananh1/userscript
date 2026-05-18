@@ -36,6 +36,7 @@ local CFG = {
     EspSkeleton = false,       -- NEW: Khung xương
     EspMeters = false,
     EspTracer = false,
+    EspTeamCheck = false,      -- NEW: Ẩn ESP đồng đội
     EspColor = Color3.fromRGB(255, 50, 50),
     EspSkeletonColor = Color3.fromRGB(0, 255, 200),
     EspTracerColor = Color3.fromRGB(0, 255, 100),
@@ -55,6 +56,7 @@ local CFG = {
     AimKeybind = "Q",          -- Phím toggle aimbot (Q/E/R/T/F)
     AimHitchance = 100,        -- % chính xác (100 = luôn trúng)
     AimAutoFire = false,       -- Tự động bắn khi có target trong FOV
+    AimTeamCheck = false,      -- NEW: Không aim đồng đội
 
     -- PLAYER
     InfJump = false,
@@ -276,6 +278,12 @@ local function updateEsp()
     for player, d in pairs(espData) do
         -- Nếu ESP tắt, ẩn hết
         if not CFG.EspEnabled then
+            hidePlayerEsp(d)
+            continue
+        end
+
+        -- Team check: ẩn ESP đồng đội
+        if CFG.EspTeamCheck and player.Team and player.Team == LocalPlayer.Team then
             hidePlayerEsp(d)
             continue
         end
@@ -552,6 +560,9 @@ local function getTarget()
     for _, player in pairs(Players:GetPlayers()) do
         if player == LocalPlayer then continue end
         if not player.Character then continue end
+
+        -- Team check: bỏ qua đồng đội
+        if CFG.AimTeamCheck and player.Team and player.Team == LocalPlayer.Team then continue end
 
         local hum = player.Character:FindFirstChildOfClass("Humanoid")
         local part = getAimPart(player.Character)
@@ -1366,6 +1377,7 @@ toggleItem(mainPage, "Lock Target", "Khóa 1 target, không nhảy sang khác.",
     if not s then lockedTarget = nil end
 end)
 toggleItem(mainPage, "Auto Fire", "Tự bắn khi có target trong FOV.", false, function(s) CFG.AimAutoFire = s end)
+toggleItem(mainPage, "Team Check", "Không aim đồng đội.", false, function(s) CFG.AimTeamCheck = s end)
 
 divider(mainPage)
 sectionHeader(mainPage, "Aim Part")
@@ -1402,6 +1414,7 @@ toggleItem(visualPage, "Health Text", "Hiển thị số máu (75/100).", false,
 toggleItem(visualPage, "Skeleton", "Hiển thị khung xương.", false, function(s) CFG.EspSkeleton = s end)
 toggleItem(visualPage, "Distance", "Hiển thị khoảng cách (m).", false, function(s) CFG.EspMeters = s end)
 toggleItem(visualPage, "Tracer", "Dây từ trên màn hình xuống player.", false, function(s) CFG.EspTracer = s end)
+toggleItem(visualPage, "Team Check", "Ẩn ESP đồng đội.", false, function(s) CFG.EspTeamCheck = s end)
 
 -- ─── PLAYER ───
 local playerPage = contentPages["Player"]
@@ -1457,7 +1470,8 @@ sectionHeader(miscPage, "Reset")
 actionItem(miscPage, "🔄  RESET ALL", Color3.fromRGB(160, 30, 30), function()
     CFG.EspEnabled = false; CFG.AimEnabled = false; CFG.InfJump = false; CFG.Noclip = false; CFG.HighJump = false
     CFG.SpeedEnabled = false; CFG.HitboxSize = 2; CFG.HitboxHead = false; CFG.JumpPower = 100
-    CFG.AimLockTarget = false; CFG.AimAutoFire = false; CFG.AimHitchance = 100; CFG.AimOnShoot = false
+    CFG.AimLockTarget = false; CFG.AimAutoFire = false; CFG.AimHitchance = 100; CFG.AimOnShoot = false; CFG.AimTeamCheck = false
+    CFG.EspTeamCheck = false
     lockedTarget = nil; aimbotActive = true
     hideAllEsp(); resetAllHitboxes()
     if fovFrame then fovFrame.Visible = false end
