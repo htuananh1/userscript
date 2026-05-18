@@ -37,7 +37,7 @@ local CFG = {
     EspMeters = false,
     EspTracer = false,
     EspColor = Color3.fromRGB(255, 50, 50),
-    EspSkeletonColor = Color3.fromRGB(255, 255, 0),
+    EspSkeletonColor = Color3.fromRGB(0, 255, 200),
     EspTracerColor = Color3.fromRGB(0, 255, 100),
 
     -- AIMBOT
@@ -49,7 +49,7 @@ local CFG = {
     AimShowFOV = false,
     AimPart = "Head",
     AimPrediction = false,     -- NEW: Dự đoán vị trí
-    AimPredAmount = 0.15,     -- Tăng prediction
+    AimPredAmount = 0.2,     -- Tăng prediction
 
     -- PLAYER
     InfJump = false,
@@ -120,7 +120,7 @@ local function createPlayerEsp(player)
     for _, line in pairs({d.boxTop, d.boxBottom, d.boxLeft, d.boxRight}) do
         line.Visible = false
         line.Color = CFG.EspColor
-        line.Thickness = 1.5
+        line.Thickness = 2.0
         line.Transparency = 1
         line.ZIndex = 10
     end
@@ -188,7 +188,7 @@ local function createPlayerEsp(player)
         local line = Drawing.new("Line")
         line.Visible = false
         line.Color = CFG.EspSkeletonColor
-        line.Thickness = 1.5
+        line.Thickness = 2.0
         line.Transparency = 0.9
         line.ZIndex = 8
         d.skeletonLines[i] = {
@@ -552,25 +552,31 @@ local function aimAt(target)
 
     local aimPos = target.part.Position
 
-    -- Prediction: dự đoán vị trí dựa trên velocity + deltaTime
+    -- Prediction: đoán hướng di chuyển + khoảng cách
     if CFG.AimPrediction and target.character then
         local hrp = target.character:FindFirstChild("HumanoidRootPart")
         if hrp then
             local velocity = hrp.AssemblyLinearVelocity or hrp.Velocity
             local dist = (hrp.Position - Camera.CFrame.Position).Magnitude
-            -- Prediction amount tăng theo khoảng cách
-            local predFactor = CFG.AimPredAmount * math.clamp(dist / 50, 0.5, 3)
-            aimPos = aimPos + velocity * predFactor
+            -- Prediction tăng theo khoảng cách (xa hơn = đoán nhiều hơn)
+            local predFactor = CFG.AimPredAmount * math.clamp(dist / 30, 0.8, 5)
+            -- Thêm offset dựa trên hướng nhìn nhân vật
+            local lookDir = hrp.CFrame.LookVector
+            aimPos = aimPos + velocity * predFactor + lookDir * (predFactor * 2)
         end
     end
 
-    -- Aim: tạo CFrame nhìn từ camera vào target
+    -- Aim dính: dùng CFrame mới từ camera position
     local camPos = Camera.CFrame.Position
     local goalCFrame = CFrame.new(camPos, aimPos)
 
+    -- Smooth = 1 → instant lock (dính nhất), >1 → lerp mượt
     local smooth = CFG.AimSmooth
     if smooth <= 1 then
         Camera.CFrame = goalCFrame
+    elseif smooth <= 2 then
+        -- Smooth 1-2: gần instant nhưng vẫn mượt
+        Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 0.8)
     else
         Camera.CFrame = Camera.CFrame:Lerp(goalCFrame, 1 / smooth)
     end
@@ -683,9 +689,9 @@ local CLR_TOGGLE_ON  = Color3.fromRGB(0, 180, 80)        -- Green
 local CLR_TOGGLE_OFF = Color3.fromRGB(70, 70, 70)        -- Gray
 local CLR_DIVIDER    = Color3.fromRGB(45, 45, 45)        -- Subtle line
 
-local MENU_W = 520
-local MENU_H = 440
-local SIDEBAR_W = 140
+local MENU_W = 442
+local MENU_H = 374
+local SIDEBAR_W = 119
 
 -- ═══════════════════════════════════════════════════════════════
 -- TOGGLE BUTTON (HA icon)
