@@ -818,7 +818,8 @@ Sidebar.Size = UDim2.new(0, SIDEBAR_W, 1, -32)
 Sidebar.Position = UDim2.new(0, 0, 0, 32)
 Sidebar.BackgroundColor3 = CLR_PANEL
 Sidebar.BorderSizePixel = 0
-Sidebar.ClipsDescendants = false
+Sidebar.ClipsDescendants = true
+Sidebar.ZIndex = 10
 Sidebar.Parent = Main
 
 local sidebarCorner = Instance.new("UICorner")
@@ -833,6 +834,7 @@ ContentArea.Size = UDim2.new(1, -SIDEBAR_W, 1, -32)
 ContentArea.Position = UDim2.new(0, SIDEBAR_W, 0, 32)
 ContentArea.BackgroundColor3 = CLR_BG
 ContentArea.BorderSizePixel = 0
+ContentArea.ZIndex = 1
 ContentArea.Parent = Main
 
 -- ═══════════════════════════════════════════════════════════════
@@ -846,6 +848,7 @@ local function createSidebarBtn(name, yPos)
     btn.Name = "Nav_" .. name
     btn.Size = UDim2.new(1, -12, 0, 32)
     btn.Position = UDim2.new(0, 6, 0, yPos)
+    btn.AnchorPoint = Vector2.new(0, 0)
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
     btn.BackgroundTransparency = 0
     btn.BorderSizePixel = 0
@@ -856,6 +859,7 @@ local function createSidebarBtn(name, yPos)
     btn.TextXAlignment = Enum.TextXAlignment.Left
     btn.TextTransparency = 0
     btn.AutoButtonColor = false
+    btn.ZIndex = 11
     btn.Parent = Sidebar
 
     local c = Instance.new("UICorner")
