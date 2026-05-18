@@ -1513,7 +1513,13 @@ RunService.RenderStepped:Connect(function()
         if shouldAim then
             local ok, target = pcall(getTarget)
             if ok and target then
+                -- AimOnShoot: override smooth = 1 (instant, chính xác cao)
+                local savedSmooth = CFG.AimSmooth
+                if CFG.AimOnShoot and isShooting then
+                    CFG.AimSmooth = 1
+                end
                 pcall(aimAt, target)
+                CFG.AimSmooth = savedSmooth
                 pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 50, 50) end end)
             else
                 pcall(function() if fovStroke then fovStroke.Color = Color3.fromRGB(255, 255, 255) end end)
