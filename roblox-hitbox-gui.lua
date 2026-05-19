@@ -1,6 +1,7 @@
--- Hoàng Anh Hub v20.1
+-- Hoàng Anh Hub v21.0
 -- Features: ESP (Box/Name/HP/Tracer/Skeleton), Aimbot (Gần nhất/Máu thấp nhất),
--- Wallbang (Xuyên vật thể), Hitbox, Player Mods, Speed, Jump, Noclip
+-- Silent Aim, TriggerBot, Chams, Wallbang (Xuyên vật thể), Hitbox, Player Mods,
+-- Speed, Jump, Noclip, Infinite Jump, Anti-AFK, Keybind System
 -- Mobile UI, Topmost, Sidebar Navigation
 -- ⚠️ Sử dụng có thể bị phạt trong game. Dùng có trách nhiệm.
 
@@ -68,6 +69,47 @@ local Config = {
     JumpEnabled = false,
     JumpValue = 50,
     NoclipEnabled = false,
+
+    -- Silent Aim
+    SilentAimEnabled = false,
+    SilentAimTarget = "Head",
+    SilentAimFOV = 200,
+    SilentAimShowFOV = false,
+    SilentAimTeamCheck = false,
+    SilentAimPrediction = true,
+
+    -- TriggerBot
+    TriggerBotEnabled = false,
+    TriggerBotTeamCheck = false,
+    TriggerBotDelay = 0,
+    TriggerBotTarget = "Head",
+
+    -- Chams
+    ChamsEnabled = false,
+    ChamsFillColor = Color3.fromRGB(255, 0, 100),
+    ChamsOutlineColor = Color3.fromRGB(255, 255, 255),
+    ChamsFillTransparency = 0.5,
+    ChamsOutlineTransparency = 0,
+    ChamsTeamCheck = false,
+
+    -- Infinite Jump
+    InfiniteJumpEnabled = false,
+
+    -- Anti-AFK
+    AntiAFKEnabled = false,
+
+    -- Keybinds
+    Keybinds = {
+        ToggleMenu = Enum.KeyCode.Insert,
+        ToggleESP = Enum.KeyCode.F1,
+        ToggleAimbot = Enum.KeyCode.F2,
+        ToggleSilentAim = Enum.KeyCode.F3,
+        ToggleTriggerBot = Enum.KeyCode.F4,
+        ToggleWallbang = Enum.KeyCode.F5,
+        ToggleChams = Enum.KeyCode.F6,
+        ToggleNoclip = Enum.KeyCode.F7,
+        ToggleInfiniteJump = Enum.KeyCode.F8,
+    },
 }
 
 -- ============================================================
@@ -79,7 +121,12 @@ local SkeletonObjects = {}
 local WallbangHook = nil
 local NoclipConnection = nil
 local FOVCircle = nil
+local SilentAimFOVCircle = nil
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+local ChamsObjects = {}
+local TriggerBotConnection = nil
+local AntiAFKConnection = nil
+local LastTriggerTime = 0
 
 -- ============================================================
 -- UTILITY
@@ -244,6 +291,234 @@ end
 
 local function disableWallbang()
     WallbangHook = nil
+end
+
+-- ============================================================
+-- SILENT AIM SYSTEM
+-- ============================================================
+local SilentAimHook = nil
+local originalFireServer = nil
+
+local function getSilentAimTarget()
+    local bestTarget = nil
+    local bestValue = math.huge
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player == LocalPlayer then
+            -- skip
+        elseif not isAlive(player) then
+            -- skip
+        elseif Config.SilentAimTeamCheck and LocalPlayer.Team and player.Team and LocalPlayer.Team == player.Team then
+            -- skip
+        else
+            local char = getCharacter(player)
+            local targetPart = nil
+
+            if Config.SilentAimTarget == "Head" then
+                targetPart = char and char:FindFirstChild("Head")
+            elseif Config.SilentAimTarget == "HumanoidRootPart" then
+                targetPart = char and char:FindFirstChild("HumanoidRootPart")
+            elseif Config.SilentAimTarget == "UpperTorso" then
+                targetPart = char and (char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso"))
+            end
+
+            if targetPart then
+                local screenPos, onScreen = getScreenPos(targetPart.Position)
+                local fovDist = (screenPos - screenCenter).Magnitude
+
+                if fovDist <= Config.SilentAimFOV then
+                    local hum = getHumanoid(player)
+                    local value = 0
+                    local localRoot = getRootPart(LocalPlayer)
+                    if localRoot then
+                        value = (targetPart.Position - localRoot.Position).Magnitude
+                    end
+
+                    if value < bestValue then
+                        bestValue = value
+                        bestTarget = targetPart
+                    end
+                end
+            end
+        end
+    end
+
+    return bestTarget
+end
+
+local function getPredictedPosition(targetPart)
+    if not Config.SilentAimPrediction then
+        return targetPart.Position
+    end
+
+    local velocity = Vector3.new(0, 0, 0)
+    pcall(function()
+        local root = targetPart.Parent and targetPart.Parent:FindFirstChild("HumanoidRootPart")
+        if root then
+            velocity = root.AssemblyLinearVelocity or root.Velocity or Vector3.zero
+        end
+    end)
+
+    local dist = (targetPart.Position - Camera.CFrame.Position).Magnitude
+    local travelTime = dist / 500
+    return targetPart.Position + velocity * travelTime * 0.3
+end
+
+local function enableSilentAim()
+    if SilentAimHook then return end
+
+    pcall(function()
+        local oldNamecall = nil
+        oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+            local method = getnamecallmethod()
+            local args = {...}
+
+            if Config.SilentAimEnabled and method == "FireServer" then
+                local target = getSilentAimTarget()
+                if target then
+                    local predictedPos = getPredictedPosition(target)
+                    -- Modify bullet/aim arguments to point at target
+                    for i, arg in ipairs(args) do
+                        if typeof(arg) == "Vector3" then
+                            local dist = (arg - Camera.CFrame.Position).Magnitude
+                            if dist > 10 then
+                                args[i] = predictedPos
+                                break
+                            end
+                        end
+                    end
+                    return oldNamecall(self, unpack(args))
+                end
+            end
+
+            return oldNamecall(self, ...)
+        end))
+        SilentAimHook = true
+    end)
+end
+
+local function disableSilentAim()
+    SilentAimHook = nil
+end
+
+-- ============================================================
+-- TRIGGERBOT SYSTEM
+-- ============================================================
+local function doTriggerBot()
+    if not Config.TriggerBotEnabled then return end
+
+    local now = tick()
+    if now - LastTriggerTime < Config.TriggerBotDelay then return end
+
+    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    local filterList = {}
+    if LocalPlayer.Character then table.insert(filterList, LocalPlayer.Character) end
+    rayParams.FilterDescendantsInstances = filterList
+
+    local result = workspace:Raycast(Camera.CFrame.Position, Camera.CFrame.LookVector * 1000, rayParams)
+    if result then
+        local hitPart = result.Instance
+        local hitPlayer = isPlayerFromPart(hitPart)
+        if hitPlayer and hitPlayer ~= LocalPlayer then
+            -- Team check
+            if Config.TriggerBotTeamCheck and LocalPlayer.Team and hitPlayer.Team and LocalPlayer.Team == hitPlayer.Team then
+                return
+            end
+
+            -- Verify alive
+            if not isAlive(hitPlayer) then return end
+
+            LastTriggerTime = now
+
+            -- Try to activate tool
+            pcall(function()
+                local char = LocalPlayer.Character
+                if char then
+                    local tool = char:FindFirstChildOfClass("Tool")
+                    if tool and tool:FindFirstChild("Handle") then
+                        tool:Activate()
+                    end
+                end
+            end)
+
+            -- Simulate mouse click via VirtualInputManager if available
+            pcall(function()
+                local vim = game:GetService("VirtualInputManager")
+                if vim then
+                    vim:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+                    task.wait()
+                    vim:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+                end
+            end)
+        end
+    end
+end
+
+-- ============================================================
+-- CHAMS SYSTEM
+-- ============================================================
+local function createChams(player)
+    if player == LocalPlayer then return end
+    if ChamsObjects[player] then return end
+
+    local char = getCharacter(player)
+    if not char then return end
+
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "HoangAnhChams"
+    highlight.FillColor = Config.ChamsFillColor
+    highlight.OutlineColor = Config.ChamsOutlineColor
+    highlight.FillTransparency = Config.ChamsFillTransparency
+    highlight.OutlineTransparency = Config.ChamsOutlineTransparency
+    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+    highlight.Parent = char
+
+    ChamsObjects[player] = highlight
+end
+
+local function removeChams(player)
+    local highlight = ChamsObjects[player]
+    if highlight then
+        pcall(function() highlight:Destroy() end)
+        ChamsObjects[player] = nil
+    end
+end
+
+local function updateChams(player)
+    if not Config.ChamsEnabled then
+        removeChams(player)
+        return
+    end
+
+    -- Team check
+    if Config.ChamsTeamCheck and LocalPlayer.Team and player.Team and LocalPlayer.Team == player.Team then
+        removeChams(player)
+        return
+    end
+
+    local char = getCharacter(player)
+    local hum = getHumanoid(player)
+    if not char or not hum or hum.Health <= 0 then
+        removeChams(player)
+        return
+    end
+
+    local highlight = ChamsObjects[player]
+    if not highlight then
+        createChams(player)
+        highlight = ChamsObjects[player]
+    end
+
+    if highlight then
+        highlight.FillColor = Config.ChamsFillColor
+        highlight.OutlineColor = Config.ChamsOutlineColor
+        highlight.FillTransparency = Config.ChamsFillTransparency
+        highlight.OutlineTransparency = Config.ChamsOutlineTransparency
+        highlight.Parent = char
+    end
 end
 
 -- ============================================================
@@ -803,6 +1078,82 @@ local function disableNoclip()
 end
 
 -- ============================================================
+-- INFINITE JUMP
+-- ============================================================
+local InfiniteJumpConnection = nil
+
+local function enableInfiniteJump()
+    if InfiniteJumpConnection then return end
+    InfiniteJumpConnection = UserInputService.JumpRequest:Connect(function()
+        if not Config.InfiniteJumpEnabled then return end
+        local char = LocalPlayer.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end)
+end
+
+local function disableInfiniteJump()
+    if InfiniteJumpConnection then
+        InfiniteJumpConnection:Disconnect()
+        InfiniteJumpConnection = nil
+    end
+end
+
+-- ============================================================
+-- ANTI-AFK
+-- ============================================================
+local function enableAntiAFK()
+    if AntiAFKConnection then return end
+    local VirtualUser = game:GetService("VirtualUser")
+    AntiAFKConnection = Players.LocalPlayer.Idled:Connect(function()
+        if Config.AntiAFKEnabled then
+            pcall(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+    end)
+end
+
+local function disableAntiAFK()
+    if AntiAFKConnection then
+        AntiAFKConnection:Disconnect()
+        AntiAFKConnection = nil
+    end
+end
+
+-- ============================================================
+-- SILENT AIM FOV CIRCLE
+-- ============================================================
+local function createSilentAimFOVCircle()
+    if SilentAimFOVCircle then SilentAimFOVCircle:Remove() end
+    SilentAimFOVCircle = Drawing and Drawing.new("Circle")
+    if SilentAimFOVCircle then
+        SilentAimFOVCircle.Visible = false
+        SilentAimFOVCircle.Color = Color3.fromRGB(255, 100, 100)
+        SilentAimFOVCircle.Thickness = 1.5
+        SilentAimFOVCircle.Transparency = 0.7
+        SilentAimFOVCircle.Filled = false
+        SilentAimFOVCircle.NumSides = 64
+        SilentAimFOVCircle.Radius = Config.SilentAimFOV
+    end
+end
+
+local function updateSilentAimFOVCircle()
+    if not SilentAimFOVCircle then return end
+    if Config.SilentAimShowFOV and Config.SilentAimEnabled then
+        SilentAimFOVCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        SilentAimFOVCircle.Radius = Config.SilentAimFOV
+        SilentAimFOVCircle.Visible = true
+    else
+        SilentAimFOVCircle.Visible = false
+    end
+end
+
+-- ============================================================
 -- FOV CIRCLE
 -- ============================================================
 local function createFOVCircle()
@@ -905,7 +1256,7 @@ local function createUI()
     titleLabel.Size = UDim2.new(1, -80, 1, 0)
     titleLabel.Position = UDim2.new(0, 15, 0, 0)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = "⚡ Hoàng Anh Hub v20.1"
+    titleLabel.Text = "⚡ Hoàng Anh Hub v21.0"
     titleLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
     titleLabel.TextSize = 16
     titleLabel.Font = Enum.Font.GothamBold
@@ -972,8 +1323,8 @@ local function createUI()
 
     -- Tab Content Frames
     local tabs = {}
-    local tabNames = {"ESP", "Aimbot", "Hitbox", "Player", "Misc"}
-    local tabIcons = {"👁", "🎯", "📦", "🏃", "⚙"}
+    local tabNames = {"ESP", "Aimbot", "Combat", "Hitbox", "Player", "Misc"}
+    local tabIcons = {"👁", "🎯", "🔫", "📦", "🏃", "⚙"}
     local currentTab = "ESP"
 
     for i, name in ipairs(tabNames) do
@@ -1370,6 +1721,34 @@ local function createUI()
     addLabel(aimTab, "💡 Bật 'Bắn Xuyên Vật Thể' = đạn xuyên tường, chỉ dừng ở player", 33)
 
     -- ============================================================
+    -- TAB: COMBAT (Silent Aim + TriggerBot + Chams)
+    -- ============================================================
+    local combatTab = tabs["Combat"]
+    addSectionHeader(combatTab, "🤫 SILENT AIM", 1)
+    addToggle(combatTab, "Bật Silent Aim", false, 2, function(v)
+        Config.SilentAimEnabled = v
+        if v then enableSilentAim() else disableSilentAim() end
+    end)
+    addDropdown(combatTab, "Mục Tiêu Silent Aim", {"Head", "HumanoidRootPart", "UpperTorso"}, "Head", 3, function(v) Config.SilentAimTarget = v end)
+    addSlider(combatTab, "FOV Silent Aim", 50, 800, 200, 4, function(v) Config.SilentAimFOV = v end)
+    addToggle(combatTab, "Hiện Vòng FOV Silent Aim", false, 5, function(v) Config.SilentAimShowFOV = v end)
+    addToggle(combatTab, "Dự Đoán Vận Tốc", true, 6, function(v) Config.SilentAimPrediction = v end)
+    addToggle(combatTab, "Bỏ Qua Đồng Đội (Silent)", false, 7, function(v) Config.SilentAimTeamCheck = v end)
+    addLabel(combatTab, "💡 Silent Aim: sửa trajectory đạn, không move camera", 8)
+
+    addSectionHeader(combatTab, "⚡ TRIGGERBOT", 20)
+    addToggle(combatTab, "Bật TriggerBot", false, 21, function(v) Config.TriggerBotEnabled = v end)
+    addToggle(combatTab, "Bỏ Qua Đồng Đội (Trigger)", false, 22, function(v) Config.TriggerBotTeamCheck = v end)
+    addSlider(combatTab, "Độ Trễ Bắn (giây)", 0, 100, 0, 23, function(v) Config.TriggerBotDelay = v / 100 end)
+    addLabel(combatTab, "💡 Crosshair chạm player → tự động bắn", 24)
+
+    addSectionHeader(combatTab, "🌈 CHAMS", 30)
+    addToggle(combatTab, "Bật Chams", false, 31, function(v) Config.ChamsEnabled = v end)
+    addToggle(combatTab, "Bỏ Qua Đồng Đội (Chams)", false, 32, function(v) Config.ChamsTeamCheck = v end)
+    addSlider(combatTab, "Độ Trong Suốt Fill", 0, 100, 50, 33, function(v) Config.ChamsFillTransparency = v / 100 end)
+    addLabel(combatTab, "💡 Highlight player qua tường bằng AlwaysOnTop", 34)
+
+    -- ============================================================
     -- TAB: HITBOX
     -- ============================================================
     local hitTab = tabs["Hitbox"]
@@ -1412,6 +1791,20 @@ local function createUI()
         if v then enableNoclip() else disableNoclip() end
     end)
 
+    addSectionHeader(playerTab, "🦿 NHẢY VÔ HẠN", 30)
+    addToggle(playerTab, "Bật Nhảy Vô Hạn", false, 31, function(v)
+        Config.InfiniteJumpEnabled = v
+        if v then enableInfiniteJump() else disableInfiniteJump() end
+    end)
+    addLabel(playerTab, "💡 Nhảy giữa không trung, giữ Space để bay lên", 32)
+
+    addSectionHeader(playerTab, "🛡 ANTI-AFK", 40)
+    addToggle(playerTab, "Bật Anti-AFK", false, 41, function(v)
+        Config.AntiAFKEnabled = v
+        if v then enableAntiAFK() else disableAntiAFK() end
+    end)
+    addLabel(playerTab, "💡 Chống bị kick khi AFK", 42)
+
     -- ============================================================
     -- TAB: MISC
     -- ============================================================
@@ -1432,10 +1825,17 @@ local function createUI()
     resetCorner.CornerRadius = UDim.new(0, 8)
     resetCorner.Parent = resetBtn
 
-    addLabel(miscTab, "Hoàng Anh Hub v20.1", 10)
-    addLabel(miscTab, "ESP | Aimbot | Wallbang | Hitbox | Player", 11)
-    addLabel(miscTab, "⚡ Aim: Gần nhất hoặc Máu thấp nhất", 12)
-    addLabel(miscTab, "🔫 Wallbang: Hook Raycast để xuyên vật thể", 13)
+    addSectionHeader(miscTab, "⌨ PHÍM TẮT", 3)
+    addLabel(miscTab, "Insert: Bật/Tắt Menu", 4)
+    addLabel(miscTab, "F1: ESP | F2: Aimbot | F3: Silent Aim", 5)
+    addLabel(miscTab, "F4: TriggerBot | F5: Wallbang", 6)
+    addLabel(miscTab, "F6: Chams | F7: Noclip | F8: Infinite Jump", 7)
+
+    addLabel(miscTab, "Hoàng Anh Hub v21.0", 10)
+    addLabel(miscTab, "ESP | Aimbot | Silent Aim | TriggerBot", 11)
+    addLabel(miscTab, "Chams | Wallbang | Hitbox | Player", 12)
+    addLabel(miscTab, "⚡ Aim: Gần nhất hoặc Máu thấp nhất", 13)
+    addLabel(miscTab, "🤫 Silent Aim: sửa trajectory đạn", 14)
 
     resetBtn.MouseButton1Click:Connect(function()
         Config.ESPEnabled = false
@@ -1448,10 +1848,21 @@ local function createUI()
         Config.SpeedEnabled = false
         Config.JumpEnabled = false
         Config.NoclipEnabled = false
+        Config.SilentAimEnabled = false
+        Config.TriggerBotEnabled = false
+        Config.ChamsEnabled = false
+        Config.InfiniteJumpEnabled = false
+        Config.AntiAFKEnabled = false
         applySpeed()
         applyJump()
         disableNoclip()
         disableWallbang()
+        disableSilentAim()
+        disableInfiniteJump()
+        disableAntiAFK()
+        for player, _ in pairs(ChamsObjects) do
+            removeChams(player)
+        end
     end)
 
     -- ============================================================
@@ -1555,6 +1966,48 @@ local function createUI()
 end
 
 -- ============================================================
+-- KEYBIND SYSTEM
+-- ============================================================
+local KeybindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
+
+    local key = input.KeyCode
+    local kb = Config.Keybinds
+
+    if key == kb.ToggleMenu then
+        local gui = LocalPlayer.PlayerGui:FindFirstChild("HoangAnhHub")
+        if gui then
+            local main = gui:FindFirstChild("MainFrame")
+            if main then
+                main.Visible = not main.Visible
+            end
+        end
+    elseif key == kb.ToggleESP then
+        Config.ESPEnabled = not Config.ESPEnabled
+    elseif key == kb.ToggleAimbot then
+        Config.AimbotEnabled = not Config.AimbotEnabled
+    elseif key == kb.ToggleSilentAim then
+        Config.SilentAimEnabled = not Config.SilentAimEnabled
+        if Config.SilentAimEnabled then enableSilentAim() else disableSilentAim() end
+    elseif key == kb.ToggleTriggerBot then
+        Config.TriggerBotEnabled = not Config.TriggerBotEnabled
+    elseif key == kb.ToggleWallbang then
+        Config.WallbangEnabled = not Config.WallbangEnabled
+        if Config.WallbangEnabled then enableWallbang() else disableWallbang() end
+    elseif key == kb.ToggleChams then
+        Config.ChamsEnabled = not Config.ChamsEnabled
+    elseif key == kb.ToggleNoclip then
+        Config.NoclipEnabled = not Config.NoclipEnabled
+        if Config.NoclipEnabled then enableNoclip() else disableNoclip() end
+    elseif key == kb.ToggleInfiniteJump then
+        Config.InfiniteJumpEnabled = not Config.InfiniteJumpEnabled
+        if Config.InfiniteJumpEnabled then enableInfiniteJump() else disableInfiniteJump() end
+    end
+end)
+table.insert(Connections, KeybindConnection)
+
+-- ============================================================
 -- MAIN LOOP
 -- ============================================================
 local mainConnection = RunService.RenderStepped:Connect(function()
@@ -1574,6 +2027,19 @@ local mainConnection = RunService.RenderStepped:Connect(function()
     -- Aimbot
     doAimbot()
 
+    -- Silent Aim FOV Circle
+    updateSilentAimFOVCircle()
+
+    -- TriggerBot
+    doTriggerBot()
+
+    -- Chams
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            updateChams(player)
+        end
+    end
+
     -- FOV Circle
     updateFOVCircle()
 
@@ -1589,12 +2055,14 @@ table.insert(Connections, mainConnection)
 local joinConn = Players.PlayerAdded:Connect(function(player)
     createESP(player)
     createSkeleton(player)
+    if Config.ChamsEnabled then createChams(player) end
 end)
 table.insert(Connections, joinConn)
 
 local leaveConn = Players.PlayerRemoving:Connect(function(player)
     removeESP(player)
     removeSkeleton(player)
+    removeChams(player)
     originalSizes[player] = nil
 end)
 table.insert(Connections, leaveConn)
@@ -1610,6 +2078,7 @@ table.insert(Connections, respawnConn)
 -- Create UI
 createUI()
 createFOVCircle()
+createSilentAimFOVCircle()
 
 -- ============================================================
 -- CLEANUP FUNCTION
@@ -1627,13 +2096,24 @@ _G.HOANG_ANH_HUB = {
         for player, _ in pairs(SkeletonObjects) do
             removeSkeleton(player)
         end
+        for player, _ in pairs(ChamsObjects) do
+            removeChams(player)
+        end
 
         disableNoclip()
         disableWallbang()
+        disableSilentAim()
+        disableInfiniteJump()
+        disableAntiAFK()
 
         if FOVCircle then
             FOVCircle:Remove()
             FOVCircle = nil
+        end
+
+        if SilentAimFOVCircle then
+            SilentAimFOVCircle:Remove()
+            SilentAimFOVCircle = nil
         end
 
         local gui = LocalPlayer.PlayerGui:FindFirstChild("HoangAnhHub")
@@ -1643,4 +2123,4 @@ _G.HOANG_ANH_HUB = {
     end
 }
 
-print("Hoàng Anh Hub v20.1 loaded! ESP + Aimbot + Wallbang + Hitbox + Player")
+print("Hoàng Anh Hub v21.0 loaded! ESP + Aimbot + Silent Aim + TriggerBot + Chams + Wallbang + Hitbox + Player + Infinite Jump + Anti-AFK + Keybinds")
