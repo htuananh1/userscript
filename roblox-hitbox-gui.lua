@@ -245,8 +245,6 @@ local function enableWallbang()
                         if LocalPlayer.Character then table.insert(ignoreList, LocalPlayer.Character) end
                         testParams.FilterDescendantsInstances = ignoreList
 
-                        local result = oldNamecall(workspace, origin, RaycastParams.new() and direction, testParams)
-                        -- Use workspace:Raycast internally for detection
                         local detectResult = nil
                         pcall(function()
                             local dp = RaycastParams.new()
@@ -1533,13 +1531,14 @@ local function createUI()
             dragging = true
         end)
 
-        UserInputService.InputEnded:Connect(function(input)
+        local endConn = UserInputService.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
+        table.insert(Connections, endConn)
 
-        UserInputService.InputChanged:Connect(function(input)
+        local changeConn = UserInputService.InputChanged:Connect(function(input)
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local pos = input.Position
                 local absPos = sliderBg.AbsolutePosition
@@ -1552,6 +1551,7 @@ local function createUI()
                 if callback then callback(currentValue) end
             end
         end)
+        table.insert(Connections, changeConn)
 
         return {Set = function(val)
             currentValue = val
