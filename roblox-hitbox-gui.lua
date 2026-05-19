@@ -1288,7 +1288,7 @@ local function createUI()
 
     -- Close button
     local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 28, 0, 28)
+    closeBtn.Size = UDim2.new(0, 44, 0, 44)
     closeBtn.Position = UDim2.new(1, -33, 0, 4)
     closeBtn.BackgroundColor3 = NEON.Danger
     closeBtn.Text = "✕"
@@ -1301,7 +1301,7 @@ local function createUI()
 
     -- Minimize button
     local minBtn = Instance.new("TextButton")
-    minBtn.Size = UDim2.new(0, 28, 0, 28)
+    minBtn.Size = UDim2.new(0, 44, 0, 44)
     minBtn.Position = UDim2.new(1, -65, 0, 4)
     minBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     minBtn.Text = "—"
@@ -1755,7 +1755,7 @@ local function createUI()
 
         for j, opt in ipairs(options) do
             local optBtn = Instance.new("TextButton")
-            optBtn.Size = UDim2.new(1, 0, 0, 26)
+            optBtn.Size = UDim2.new(1, 0, 0, 40)
             optBtn.Position = UDim2.new(0, 0, 0, (j - 1) * 26)
             optBtn.BackgroundColor3 = Color3.fromRGB(20, 26, 40)
             optBtn.Text = opt
@@ -1963,7 +1963,7 @@ local function createUI()
     addSectionHeader(miscTab, "⚙ CÀI ĐẶT", 1)
 
     local resetBtn = Instance.new("TextButton")
-    resetBtn.Size = UDim2.new(1, 0, 0, 40)
+    resetBtn.Size = UDim2.new(1, 0, 0, 48)
     resetBtn.BackgroundColor3 = NEON.Danger
     resetBtn.Text = "🔄 RESET TẤT CẢ"
     resetBtn.TextColor3 = NEON.TextPrimary
