@@ -1,8 +1,8 @@
--- Hoàng Anh Hub v21.0
+-- Hoàng Anh Hub v21.1
 -- Features: ESP (Box/Name/HP/Tracer/Skeleton), Aimbot (Gần nhất/Máu thấp nhất),
 -- Silent Aim, TriggerBot, Chams, Wallbang (Xuyên vật thể), Hitbox, Player Mods,
 -- Speed, Jump, Noclip, Infinite Jump, Anti-AFK, Keybind System
--- Mobile UI, Topmost, Sidebar Navigation
+-- Gaming/Neon UI, Bottom Tab Bar, Valorant Style
 -- ⚠️ Sử dụng có thể bị phạt trong game. Dùng có trách nhiệm.
 
 -- ============================================================
@@ -1180,8 +1180,26 @@ local function updateFOVCircle()
 end
 
 -- ============================================================
--- UI SYSTEM
 -- ============================================================
+-- UI SYSTEM (v21.1 — Valorant Neon Style)
+-- ============================================================
+local NEON = {
+    Background = Color3.fromRGB(10, 14, 23),
+    PanelBG = Color3.fromRGB(15, 20, 35),
+    AccentPrimary = Color3.fromRGB(0, 240, 255),
+    AccentSecondary = Color3.fromRGB(0, 180, 255),
+    TextPrimary = Color3.fromRGB(224, 240, 255),
+    TextSecondary = Color3.fromRGB(140, 160, 191),
+    TextDisabled = Color3.fromRGB(58, 74, 88),
+    ToggleOff = Color3.fromRGB(30, 35, 50),
+    ToggleOn = Color3.fromRGB(0, 180, 230),
+    SliderTrack = Color3.fromRGB(25, 30, 45),
+    Danger = Color3.fromRGB(200, 50, 60),
+}
+local CORNER = UDim.new(0, 4)
+local TWEEN_FAST = TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+local TWEEN_GLOW = TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+
 local function createUI()
     -- Destroy old UI
     local oldGui = LocalPlayer.PlayerGui:FindFirstChild("HoangAnhHub")
@@ -1192,147 +1210,155 @@ local function createUI()
     gui.ResetOnSpawn = false
     gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     gui.DisplayOrder = 999999
-    pcall(function()
-        gui.IgnoreGuiInset = true
-    end)
+    pcall(function() gui.IgnoreGuiInset = true end)
     gui.Parent = LocalPlayer.PlayerGui
 
-    -- Main Frame
+    -- ============================================================
+    -- MAIN FRAME (360x520, dark bg, multi-layer neon stroke)
+    -- ============================================================
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 320, 0, 480)
-    mainFrame.Position = UDim2.new(0.5, -160, 0.5, -240)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+    mainFrame.Size = UDim2.new(0, 360, 0, 520)
+    mainFrame.Position = UDim2.new(0.5, -180, 0.5, -260)
+    mainFrame.BackgroundColor3 = NEON.Background
     mainFrame.BorderSizePixel = 0
+    mainFrame.ClipsDescendants = true
     mainFrame.Visible = false
     mainFrame.Parent = gui
 
     local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 10)
+    mainCorner.CornerRadius = CORNER
     mainCorner.Parent = mainFrame
 
-    local mainStroke = Instance.new("UIStroke")
-    mainStroke.Color = Color3.fromRGB(0, 200, 100)
-    mainStroke.Thickness = 1.5
-    mainStroke.Transparency = 0.3
-    mainStroke.Parent = mainFrame
+    -- Layer 1: solid inner border
+    local stroke1 = Instance.new("UIStroke")
+    stroke1.Color = NEON.AccentPrimary
+    stroke1.Thickness = 1
+    stroke1.Transparency = 0
+    stroke1.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke1.Parent = mainFrame
 
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    shadow.Position = UDim2.new(0.5, 0, 0.5, 4)
-    shadow.Size = UDim2.new(1, 30, 1, 30)
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://6015897843"
-    shadow.ImageColor3 = Color3.new(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(49, 49, 450, 450)
-    shadow.ZIndex = 0
-    shadow.Parent = mainFrame
+    -- Layer 2: medium glow
+    local stroke2 = Instance.new("UIStroke")
+    stroke2.Color = NEON.AccentPrimary
+    stroke2.Thickness = 4
+    stroke2.Transparency = 0.6
+    stroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke2.Parent = mainFrame
 
-    -- Title Bar
+    -- Layer 3: outer soft glow (pulsing)
+    local stroke3 = Instance.new("UIStroke")
+    stroke3.Color = Color3.fromRGB(0, 180, 255)
+    stroke3.Thickness = 8
+    stroke3.Transparency = 0.85
+    stroke3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke3.Parent = mainFrame
+    TweenService:Create(stroke3, TWEEN_GLOW, {Transparency = 0.7}):Play()
+
+    -- ============================================================
+    -- TITLE BAR (36px)
+    -- ============================================================
     local titleBar = Instance.new("Frame")
     titleBar.Name = "TitleBar"
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = Color3.fromRGB(12, 12, 18)
+    titleBar.Size = UDim2.new(1, 0, 0, 36)
+    titleBar.BackgroundColor3 = Color3.fromRGB(12, 18, 28)
     titleBar.BorderSizePixel = 0
     titleBar.Parent = mainFrame
 
-    local titleCorner = Instance.new("UICorner")
-    titleCorner.CornerRadius = UDim.new(0, 10)
-    titleCorner.Parent = titleBar
+    -- Neon accent line at bottom of title
+    local titleLine = Instance.new("Frame")
+    titleLine.Size = UDim2.new(1, 0, 0, 1)
+    titleLine.Position = UDim2.new(0, 0, 1, -1)
+    titleLine.BackgroundColor3 = NEON.AccentPrimary
+    titleLine.BackgroundTransparency = 0.4
+    titleLine.BorderSizePixel = 0
+    titleLine.Parent = titleBar
 
-    local titleFix = Instance.new("Frame")
-    titleFix.Size = UDim2.new(1, 0, 0, 10)
-    titleFix.Position = UDim2.new(0, 0, 1, -10)
-    titleFix.BackgroundColor3 = Color3.fromRGB(12, 12, 18)
-    titleFix.BorderSizePixel = 0
-    titleFix.Parent = titleBar
-
+    -- Title text: ALL CAPS, neon cyan
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, -80, 1, 0)
-    titleLabel.Position = UDim2.new(0, 15, 0, 0)
+    titleLabel.Position = UDim2.new(0, 12, 0, 0)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = "⚡ Hoàng Anh Hub v21.0"
-    titleLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
-    titleLabel.TextSize = 16
+    titleLabel.Text = "HOÀNG ANH HUB v21.1"
+    titleLabel.TextColor3 = NEON.AccentPrimary
+    titleLabel.TextSize = 14
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = titleBar
 
-    -- Close Button
+    -- Close button
     local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 30, 0, 30)
-    closeBtn.Position = UDim2.new(1, -35, 0, 5)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    closeBtn.Size = UDim2.new(0, 28, 0, 28)
+    closeBtn.Position = UDim2.new(1, -33, 0, 4)
+    closeBtn.BackgroundColor3 = NEON.Danger
     closeBtn.Text = "✕"
-    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = NEON.TextPrimary
+    closeBtn.TextSize = 12
     closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.AutoButtonColor = false
     closeBtn.Parent = titleBar
+    Instance.new("UICorner", closeBtn).CornerRadius = CORNER
 
-    local closeBtnCorner = Instance.new("UICorner")
-    closeBtnCorner.CornerRadius = UDim.new(0, 6)
-    closeBtnCorner.Parent = closeBtn
-
-    -- Minimize Button
+    -- Minimize button
     local minBtn = Instance.new("TextButton")
-    minBtn.Size = UDim2.new(0, 30, 0, 30)
-    minBtn.Position = UDim2.new(1, -70, 0, 5)
-    minBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+    minBtn.Size = UDim2.new(0, 28, 0, 28)
+    minBtn.Position = UDim2.new(1, -65, 0, 4)
+    minBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     minBtn.Text = "—"
-    minBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    minBtn.TextSize = 14
+    minBtn.TextColor3 = NEON.TextSecondary
+    minBtn.TextSize = 12
     minBtn.Font = Enum.Font.GothamBold
+    minBtn.AutoButtonColor = false
     minBtn.Parent = titleBar
+    Instance.new("UICorner", minBtn).CornerRadius = CORNER
 
-    local minBtnCorner = Instance.new("UICorner")
-    minBtnCorner.CornerRadius = UDim.new(0, 6)
-    minBtnCorner.Parent = minBtn
+    -- ============================================================
+    -- BOTTOM TAB BAR (56px)
+    -- ============================================================
+    local tabBar = Instance.new("Frame")
+    tabBar.Name = "TabBar"
+    tabBar.Size = UDim2.new(1, 0, 0, 56)
+    tabBar.Position = UDim2.new(0, 0, 1, -56)
+    tabBar.BackgroundColor3 = NEON.Background
+    tabBar.BorderSizePixel = 0
+    tabBar.Parent = mainFrame
 
-    -- Sidebar
-    local sidebar = Instance.new("Frame")
-    sidebar.Name = "Sidebar"
-    sidebar.Size = UDim2.new(0, 70, 1, -40)
-    sidebar.Position = UDim2.new(0, 0, 0, 40)
-    sidebar.BackgroundColor3 = Color3.fromRGB(14, 14, 20)
-    sidebar.BorderSizePixel = 0
-    sidebar.Parent = mainFrame
+    -- Neon line at top of tab bar
+    local tabLine = Instance.new("Frame")
+    tabLine.Size = UDim2.new(1, 0, 0, 1)
+    tabLine.BackgroundColor3 = NEON.AccentPrimary
+    tabLine.BackgroundTransparency = 0.5
+    tabLine.BorderSizePixel = 0
+    tabLine.Parent = tabBar
 
-    local sidebarLayout = Instance.new("UIListLayout")
-    sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    sidebarLayout.Padding = UDim.new(0, 4)
-    sidebarLayout.Parent = sidebar
-
-    local sidebarPadding = Instance.new("UIPadding")
-    sidebarPadding.PaddingTop = UDim.new(0, 8)
-    sidebarPadding.PaddingLeft = UDim.new(0, 5)
-    sidebarPadding.PaddingRight = UDim.new(0, 5)
-    sidebarPadding.Parent = sidebar
-
-    -- Content Area
+    -- ============================================================
+    -- CONTENT AREA (between title and tab bar)
+    -- ============================================================
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
-    contentArea.Size = UDim2.new(1, -80, 1, -50)
-    contentArea.Position = UDim2.new(0, 80, 0, 45)
+    contentArea.Size = UDim2.new(1, 0, 1, -92)
+    contentArea.Position = UDim2.new(0, 0, 0, 36)
     contentArea.BackgroundTransparency = 1
+    contentArea.BorderSizePixel = 0
     contentArea.Parent = mainFrame
 
-    -- Tab Content Frames
+    -- ============================================================
+    -- TAB SYSTEM (6 tabs: ESP, Aimbot, Combat, Hitbox, Player, Misc)
+    -- ============================================================
     local tabs = {}
     local tabNames = {"ESP", "Aimbot", "Combat", "Hitbox", "Player", "Misc"}
-    local tabIcons = {"👁", "🎯", "🔫", "📦", "🏃", "⚙"}
+    local tabIcons = {"👁", "🎯", "⚔", "▣", "🏃", "⚙"}
     local currentTab = "ESP"
+    local tabButtons = {}
 
     for i, name in ipairs(tabNames) do
+        -- Content ScrollingFrame
         local tabContent = Instance.new("ScrollingFrame")
         tabContent.Name = name
-        tabContent.Size = UDim2.new(1, -10, 1, 0)
-        tabContent.Position = UDim2.new(0, 5, 0, 0)
+        tabContent.Size = UDim2.new(1, 0, 1, 0)
         tabContent.BackgroundTransparency = 1
         tabContent.ScrollBarThickness = 3
-        tabContent.ScrollBarImageColor3 = Color3.fromRGB(0, 200, 100)
+        tabContent.ScrollBarImageColor3 = NEON.AccentPrimary
         tabContent.BorderSizePixel = 0
         tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
         tabContent.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -1344,185 +1370,288 @@ local function createUI()
         layout.Padding = UDim.new(0, 6)
         layout.Parent = tabContent
 
-        local padding = Instance.new("UIPadding")
-        padding.PaddingTop = UDim.new(0, 5)
-        padding.PaddingLeft = UDim.new(0, 5)
-        padding.PaddingRight = UDim.new(0, 5)
-        padding.Parent = tabContent
+        local pad = Instance.new("UIPadding")
+        pad.PaddingTop = UDim.new(0, 8)
+        pad.PaddingLeft = UDim.new(0, 10)
+        pad.PaddingRight = UDim.new(0, 10)
+        pad.PaddingBottom = UDim.new(0, 8)
+        pad.Parent = tabContent
 
         tabs[name] = tabContent
 
-        -- Sidebar button
-        local btn = Instance.new("TextButton")
-        btn.Name = "Tab_" .. name
-        btn.Size = UDim2.new(1, 0, 0, 50)
-        btn.BackgroundColor3 = (name == currentTab) and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(22, 22, 30)
-        btn.Text = tabIcons[i] .. "\n" .. name
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn.TextSize = 11
-        btn.Font = Enum.Font.GothamBold
-        btn.AutoButtonColor = false
-        btn.Parent = sidebar
+        -- Bottom tab button
+        local tabBtn = Instance.new("TextButton")
+        tabBtn.Name = "Tab_" .. name
+        tabBtn.Size = UDim2.new(0, 60, 1, 0)
+        tabBtn.BackgroundColor3 = NEON.Background
+        tabBtn.BackgroundTransparency = 1
+        tabBtn.Text = ""
+        tabBtn.AutoButtonColor = false
+        tabBtn.LayoutOrder = i
+        tabBtn.Parent = tabBar
 
-        local btnCorner = Instance.new("UICorner")
-        btnCorner.CornerRadius = UDim.new(0, 8)
-        btnCorner.Parent = btn
+        -- Icon label
+        local icon = Instance.new("TextLabel")
+        icon.Name = "Icon"
+        icon.Size = UDim2.new(1, 0, 0, 28)
+        icon.Position = UDim2.new(0, 0, 0, 4)
+        icon.BackgroundTransparency = 1
+        icon.Text = tabIcons[i]
+        icon.TextSize = 20
+        icon.Font = Enum.Font.GothamBold
+        icon.TextColor3 = (name == currentTab) and NEON.AccentPrimary or NEON.TextDisabled
+        icon.Parent = tabBtn
 
-        btn.MouseButton1Click:Connect(function()
+        -- Tab text label (ALL CAPS)
+        local tabLabel = Instance.new("TextLabel")
+        tabLabel.Name = "Label"
+        tabLabel.Size = UDim2.new(1, 0, 0, 14)
+        tabLabel.Position = UDim2.new(0, 0, 0, 32)
+        tabLabel.BackgroundTransparency = 1
+        tabLabel.Text = string.upper(name)
+        tabLabel.TextSize = 9
+        tabLabel.Font = Enum.Font.GothamBold
+        tabLabel.TextColor3 = (name == currentTab) and NEON.AccentPrimary or NEON.TextDisabled
+        tabLabel.Parent = tabBtn
+
+        -- Underline indicator (active tab)
+        local underline = Instance.new("Frame")
+        underline.Name = "Underline"
+        underline.Size = UDim2.new(0.6, 0, 0, 2)
+        underline.Position = UDim2.new(0.2, 0, 1, -2)
+        underline.BackgroundColor3 = NEON.AccentPrimary
+        underline.BorderSizePixel = 0
+        underline.Visible = (name == currentTab)
+        underline.Parent = tabBtn
+        Instance.new("UICorner", underline).CornerRadius = UDim.new(0, 1)
+
+        -- Glow UIStroke behind active icon
+        local iconGlow = Instance.new("UIStroke")
+        iconGlow.Name = "IconGlow"
+        iconGlow.Color = NEON.AccentPrimary
+        iconGlow.Thickness = 6
+        iconGlow.Transparency = (name == currentTab) and 0.65 or 1
+        iconGlow.Parent = icon
+
+        tabButtons[name] = {
+            button = tabBtn,
+            icon = icon,
+            label = tabLabel,
+            underline = underline,
+            glow = iconGlow,
+        }
+
+        -- Tab click handler with animated transitions
+        tabBtn.MouseButton1Click:Connect(function()
             for tabName, frame in pairs(tabs) do
                 frame.Visible = (tabName == name)
             end
-            for _, sBtn in ipairs(sidebar:GetChildren()) do
-                if sBtn:IsA("TextButton") then
-                    sBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
-                end
+            for tabName, btnData in pairs(tabButtons) do
+                local isActive = (tabName == name)
+                btnData.icon.TextColor3 = isActive and NEON.AccentPrimary or NEON.TextDisabled
+                btnData.label.TextColor3 = isActive and NEON.AccentPrimary or NEON.TextDisabled
+                btnData.underline.Visible = isActive
+                TweenService:Create(btnData.glow, TWEEN_FAST, {
+                    Transparency = isActive and 0.65 or 1
+                }):Play()
             end
-            btn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
             currentTab = name
         end)
     end
 
     -- ============================================================
-    -- UI HELPER FUNCTIONS
+    -- UI HELPER: Section Header (ALL CAPS + left accent bar)
     -- ============================================================
     local function addSectionHeader(parent, text, order)
-        local header = Instance.new("TextLabel")
+        local header = Instance.new("Frame")
         header.Name = "Header_" .. text
-        header.Size = UDim2.new(1, 0, 0, 28)
-        header.BackgroundColor3 = Color3.fromRGB(0, 180, 90)
-        header.BackgroundTransparency = 0.85
-        header.Text = "  " .. text
-        header.TextColor3 = Color3.fromRGB(0, 255, 150)
-        header.TextSize = 13
-        header.Font = Enum.Font.GothamBold
-        header.TextXAlignment = Enum.TextXAlignment.Left
+        header.Size = UDim2.new(1, 0, 0, 30)
+        header.BackgroundColor3 = NEON.PanelBG
+        header.BackgroundTransparency = 0.4
+        header.BorderSizePixel = 0
         header.LayoutOrder = order
         header.Parent = parent
+        Instance.new("UICorner", header).CornerRadius = CORNER
 
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 6)
-        corner.Parent = header
+        -- Left accent bar (3px cyan)
+        local accentBar = Instance.new("Frame")
+        accentBar.Size = UDim2.new(0, 3, 0.65, 0)
+        accentBar.Position = UDim2.new(0, 0, 0.175, 0)
+        accentBar.BackgroundColor3 = NEON.AccentPrimary
+        accentBar.BorderSizePixel = 0
+        accentBar.Parent = header
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, -16, 1, 0)
+        label.Position = UDim2.new(0, 12, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = string.upper(text)
+        label.TextColor3 = NEON.AccentPrimary
+        label.TextSize = 12
+        label.Font = Enum.Font.GothamBold
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = header
     end
 
+    -- ============================================================
+    -- UI HELPER: Neon Toggle Switch (animated glow)
+    -- ============================================================
     local function addToggle(parent, text, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Toggle_" .. text
-        frame.Size = UDim2.new(1, 0, 0, 36)
-        frame.BackgroundColor3 = Color3.fromRGB(28, 28, 38)
+        frame.Size = UDim2.new(1, 0, 0, 38)
+        frame.BackgroundColor3 = NEON.PanelBG
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.Parent = parent
-
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 8)
-        corner.Parent = frame
+        Instance.new("UICorner", frame).CornerRadius = CORNER
 
         local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -60, 1, 0)
+        label.Size = UDim2.new(1, -64, 1, 0)
         label.Position = UDim2.new(0, 12, 0, 0)
         label.BackgroundTransparency = 1
         label.Text = text
-        label.TextColor3 = Color3.fromRGB(220, 220, 220)
+        label.TextColor3 = NEON.TextPrimary
         label.TextSize = 13
         label.Font = Enum.Font.Gotham
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = frame
 
-        local toggle = Instance.new("TextButton")
-        toggle.Size = UDim2.new(0, 44, 0, 22)
-        toggle.Position = UDim2.new(1, -54, 0.5, -11)
-        toggle.BackgroundColor3 = default and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(60, 60, 70)
-        toggle.Text = ""
-        toggle.AutoButtonColor = false
-        toggle.Parent = frame
+        -- Toggle track (pill shape)
+        local track = Instance.new("Frame")
+        track.Size = UDim2.new(0, 44, 0, 22)
+        track.Position = UDim2.new(1, -54, 0.5, -11)
+        track.BackgroundColor3 = default and NEON.ToggleOn or NEON.ToggleOff
+        track.BorderSizePixel = 0
+        track.Parent = frame
+        Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
 
-        local toggleCorner = Instance.new("UICorner")
-        toggleCorner.CornerRadius = UDim.new(0, 11)
-        toggleCorner.Parent = toggle
+        -- Track neon stroke
+        local trackStroke = Instance.new("UIStroke")
+        trackStroke.Color = NEON.AccentPrimary
+        trackStroke.Thickness = 1.5
+        trackStroke.Transparency = default and 0.3 or 1
+        trackStroke.Parent = track
 
-        local indicator = Instance.new("Frame")
-        indicator.Size = UDim2.new(0, 18, 0, 18)
-        indicator.Position = default and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
-        indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        indicator.BorderSizePixel = 0
-        indicator.Parent = toggle
+        -- Thumb
+        local thumb = Instance.new("Frame")
+        thumb.Size = UDim2.new(0, 18, 0, 18)
+        thumb.Position = default and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
+        thumb.BackgroundColor3 = default and NEON.AccentPrimary or NEON.TextDisabled
+        thumb.BorderSizePixel = 0
+        thumb.Parent = track
+        Instance.new("UICorner", thumb).CornerRadius = UDim.new(1, 0)
 
-        local indicatorCorner = Instance.new("UICorner")
-        indicatorCorner.CornerRadius = UDim.new(1, 0)
-        indicatorCorner.Parent = indicator
+        -- Thumb glow
+        local thumbGlow = Instance.new("UIStroke")
+        thumbGlow.Color = NEON.AccentPrimary
+        thumbGlow.Thickness = 4
+        thumbGlow.Transparency = default and 0.55 or 1
+        thumbGlow.Parent = thumb
 
         local state = default
-        toggle.MouseButton1Click:Connect(function()
+
+        -- Invisible click button covering the whole row
+        local clickBtn = Instance.new("TextButton")
+        clickBtn.Size = UDim2.new(1, 0, 1, 0)
+        clickBtn.BackgroundTransparency = 1
+        clickBtn.Text = ""
+        clickBtn.Parent = frame
+
+        local function animateToggle(val)
+            TweenService:Create(track, TWEEN_FAST, {
+                BackgroundColor3 = val and NEON.ToggleOn or NEON.ToggleOff
+            }):Play()
+            TweenService:Create(trackStroke, TWEEN_FAST, {
+                Transparency = val and 0.3 or 1
+            }):Play()
+            TweenService:Create(thumb, TWEEN_FAST, {
+                Position = val and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9),
+                BackgroundColor3 = val and NEON.AccentPrimary or NEON.TextDisabled
+            }):Play()
+            TweenService:Create(thumbGlow, TWEEN_FAST, {
+                Transparency = val and 0.55 or 1
+            }):Play()
+        end
+
+        clickBtn.MouseButton1Click:Connect(function()
             state = not state
-            toggle.BackgroundColor3 = state and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(60, 60, 70)
-            indicator.Position = state and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
+            animateToggle(state)
             if callback then callback(state) end
         end)
 
         return {Set = function(val)
             state = val
-            toggle.BackgroundColor3 = state and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(60, 60, 70)
-            indicator.Position = state and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
+            animateToggle(val)
         end}
     end
 
+    -- ============================================================
+    -- UI HELPER: Neon Slider (gradient fill + glowing thumb)
+    -- ============================================================
     local function addSlider(parent, text, min, max, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Slider_" .. text
-        frame.Size = UDim2.new(1, 0, 0, 50)
-        frame.BackgroundColor3 = Color3.fromRGB(28, 28, 38)
+        frame.Size = UDim2.new(1, 0, 0, 52)
+        frame.BackgroundColor3 = NEON.PanelBG
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.Parent = parent
-
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 8)
-        corner.Parent = frame
+        Instance.new("UICorner", frame).CornerRadius = CORNER
 
         local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -80, 0, 20)
+        label.Size = UDim2.new(1, -24, 0, 20)
         label.Position = UDim2.new(0, 12, 0, 4)
         label.BackgroundTransparency = 1
         label.Text = text .. ": " .. default
-        label.TextColor3 = Color3.fromRGB(220, 220, 220)
+        label.TextColor3 = NEON.TextPrimary
         label.TextSize = 12
         label.Font = Enum.Font.Gotham
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = frame
 
-        local sliderBg = Instance.new("Frame")
-        sliderBg.Size = UDim2.new(1, -24, 0, 8)
-        sliderBg.Position = UDim2.new(0, 12, 0, 32)
-        sliderBg.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-        sliderBg.BorderSizePixel = 0
-        sliderBg.Parent = frame
+        -- Slider track
+        local sliderTrack = Instance.new("Frame")
+        sliderTrack.Size = UDim2.new(1, -24, 0, 6)
+        sliderTrack.Position = UDim2.new(0, 12, 0, 34)
+        sliderTrack.BackgroundColor3 = NEON.SliderTrack
+        sliderTrack.BorderSizePixel = 0
+        sliderTrack.Parent = frame
+        Instance.new("UICorner", sliderTrack).CornerRadius = UDim.new(0, 3)
 
-        local sliderBgCorner = Instance.new("UICorner")
-        sliderBgCorner.CornerRadius = UDim.new(0, 4)
-        sliderBgCorner.Parent = sliderBg
-
+        -- Fill bar with gradient (cyan -> blue)
         local percent = (default - min) / (max - min)
         local sliderFill = Instance.new("Frame")
         sliderFill.Size = UDim2.new(percent, 0, 1, 0)
-        sliderFill.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+        sliderFill.BackgroundColor3 = NEON.AccentPrimary
         sliderFill.BorderSizePixel = 0
-        sliderFill.Parent = sliderBg
+        sliderFill.Parent = sliderTrack
+        Instance.new("UICorner", sliderFill).CornerRadius = UDim.new(0, 3)
 
-        local sliderFillCorner = Instance.new("UICorner")
-        sliderFillCorner.CornerRadius = UDim.new(0, 4)
-        sliderFillCorner.Parent = sliderFill
+        local fillGrad = Instance.new("UIGradient")
+        fillGrad.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 240, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 120, 255))
+        })
+        fillGrad.Parent = sliderFill
 
+        -- Thumb with glow
         local sliderBtn = Instance.new("TextButton")
-        sliderBtn.Size = UDim2.new(0, 16, 0, 16)
-        sliderBtn.Position = UDim2.new(percent, -8, 0.5, -8)
-        sliderBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        sliderBtn.Size = UDim2.new(0, 14, 0, 14)
+        sliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        sliderBtn.BackgroundColor3 = NEON.AccentPrimary
         sliderBtn.Text = ""
         sliderBtn.AutoButtonColor = false
-        sliderBtn.Parent = sliderBg
+        sliderBtn.BorderSizePixel = 0
+        sliderBtn.ZIndex = 3
+        sliderBtn.Parent = sliderTrack
+        Instance.new("UICorner", sliderBtn).CornerRadius = UDim.new(1, 0)
 
-        local sliderBtnCorner = Instance.new("UICorner")
-        sliderBtnCorner.CornerRadius = UDim.new(1, 0)
-        sliderBtnCorner.Parent = sliderBtn
+        local sliderGlow = Instance.new("UIStroke")
+        sliderGlow.Color = NEON.AccentPrimary
+        sliderGlow.Thickness = 4
+        sliderGlow.Transparency = 0.5
+        sliderGlow.Parent = sliderBtn
 
         local dragging = false
         local currentValue = default
@@ -1541,12 +1670,12 @@ local function createUI()
         local changeConn = UserInputService.InputChanged:Connect(function(input)
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
                 local pos = input.Position
-                local absPos = sliderBg.AbsolutePosition
-                local absSize = sliderBg.AbsoluteSize
+                local absPos = sliderTrack.AbsolutePosition
+                local absSize = sliderTrack.AbsoluteSize
                 local relX = math.clamp((pos.X - absPos.X) / absSize.X, 0, 1)
                 currentValue = math.floor(min + (max - min) * relX + 0.5)
                 sliderFill.Size = UDim2.new(relX, 0, 1, 0)
-                sliderBtn.Position = UDim2.new(relX, -8, 0.5, -8)
+                sliderBtn.Position = UDim2.new(relX, -7, 0.5, -7)
                 label.Text = text .. ": " .. currentValue
                 if callback then callback(currentValue) end
             end
@@ -1557,84 +1686,102 @@ local function createUI()
             currentValue = val
             local p = (val - min) / (max - min)
             sliderFill.Size = UDim2.new(p, 0, 1, 0)
-            sliderBtn.Position = UDim2.new(p, -8, 0.5, -8)
+            sliderBtn.Position = UDim2.new(p, -7, 0.5, -7)
             label.Text = text .. ": " .. val
         end}
     end
 
+    -- ============================================================
+    -- UI HELPER: Neon Dropdown
+    -- ============================================================
     local function addDropdown(parent, text, options, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Dropdown_" .. text
-        frame.Size = UDim2.new(1, 0, 0, 36)
-        frame.BackgroundColor3 = Color3.fromRGB(28, 28, 38)
+        frame.Size = UDim2.new(1, 0, 0, 38)
+        frame.BackgroundColor3 = NEON.PanelBG
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.ClipsDescendants = true
         frame.Parent = parent
-
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 8)
-        corner.Parent = frame
+        Instance.new("UICorner", frame).CornerRadius = CORNER
 
         local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(0.5, 0, 0, 36)
+        label.Size = UDim2.new(0.5, 0, 0, 38)
         label.Position = UDim2.new(0, 12, 0, 0)
         label.BackgroundTransparency = 1
         label.Text = text
-        label.TextColor3 = Color3.fromRGB(220, 220, 220)
+        label.TextColor3 = NEON.TextPrimary
         label.TextSize = 12
         label.Font = Enum.Font.Gotham
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = frame
 
         local selectedBtn = Instance.new("TextButton")
-        selectedBtn.Size = UDim2.new(0.45, 0, 0, 26)
-        selectedBtn.Position = UDim2.new(0.52, 0, 0, 5)
-        selectedBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        selectedBtn.Size = UDim2.new(0.42, 0, 0, 26)
+        selectedBtn.Position = UDim2.new(0.55, 0, 0, 6)
+        selectedBtn.BackgroundColor3 = NEON.SliderTrack
         selectedBtn.Text = default .. " ▾"
-        selectedBtn.TextColor3 = Color3.fromRGB(0, 255, 150)
+        selectedBtn.TextColor3 = NEON.AccentPrimary
         selectedBtn.TextSize = 12
         selectedBtn.Font = Enum.Font.Gotham
         selectedBtn.AutoButtonColor = false
         selectedBtn.Parent = frame
+        Instance.new("UICorner", selectedBtn).CornerRadius = CORNER
 
-        local selectedCorner = Instance.new("UICorner")
-        selectedCorner.CornerRadius = UDim.new(0, 6)
-        selectedCorner.Parent = selectedBtn
+        local selStroke = Instance.new("UIStroke")
+        selStroke.Color = NEON.AccentPrimary
+        selStroke.Thickness = 1
+        selStroke.Transparency = 0.6
+        selStroke.Parent = selectedBtn
 
         local currentValue = default
         local isOpen = false
 
         local optionsFrame = Instance.new("Frame")
-        optionsFrame.Size = UDim2.new(0.45, 0, 0, #options * 26)
-        optionsFrame.Position = UDim2.new(0.52, 0, 0, 34)
-        optionsFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+        optionsFrame.Size = UDim2.new(0.42, 0, 0, #options * 26)
+        optionsFrame.Position = UDim2.new(0.55, 0, 0, 35)
+        optionsFrame.BackgroundColor3 = Color3.fromRGB(20, 26, 40)
         optionsFrame.BorderSizePixel = 0
         optionsFrame.Visible = false
+        optionsFrame.ZIndex = 5
         optionsFrame.Parent = frame
+        Instance.new("UICorner", optionsFrame).CornerRadius = CORNER
 
-        local optCorner = Instance.new("UICorner")
-        optCorner.CornerRadius = UDim.new(0, 6)
-        optCorner.Parent = optionsFrame
+        local optStroke = Instance.new("UIStroke")
+        optStroke.Color = NEON.AccentPrimary
+        optStroke.Thickness = 1
+        optStroke.Transparency = 0.5
+        optStroke.Parent = optionsFrame
 
         for j, opt in ipairs(options) do
             local optBtn = Instance.new("TextButton")
             optBtn.Size = UDim2.new(1, 0, 0, 26)
-            optBtn.Position = UDim2.new(0, 0, 0, (j-1) * 26)
-            optBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            optBtn.Position = UDim2.new(0, 0, 0, (j - 1) * 26)
+            optBtn.BackgroundColor3 = Color3.fromRGB(20, 26, 40)
             optBtn.Text = opt
-            optBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+            optBtn.TextColor3 = NEON.TextSecondary
             optBtn.TextSize = 12
             optBtn.Font = Enum.Font.Gotham
             optBtn.AutoButtonColor = false
+            optBtn.ZIndex = 6
             optBtn.Parent = optionsFrame
+
+            optBtn.MouseEnter:Connect(function()
+                optBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 60)
+                optBtn.TextColor3 = NEON.AccentPrimary
+            end)
+            optBtn.MouseLeave:Connect(function()
+                optBtn.BackgroundColor3 = Color3.fromRGB(20, 26, 40)
+                optBtn.TextColor3 = NEON.TextSecondary
+            end)
 
             optBtn.MouseButton1Click:Connect(function()
                 currentValue = opt
                 selectedBtn.Text = opt .. " ▾"
                 optionsFrame.Visible = false
                 isOpen = false
-                frame.Size = UDim2.new(1, 0, 0, 36)
+                frame.ZIndex = 1
+                frame.Size = UDim2.new(1, 0, 0, 38)
                 if callback then callback(opt) end
             end)
         end
@@ -1642,10 +1789,11 @@ local function createUI()
         selectedBtn.MouseButton1Click:Connect(function()
             isOpen = not isOpen
             optionsFrame.Visible = isOpen
+            frame.ZIndex = isOpen and 10 or 1
             if isOpen then
-                frame.Size = UDim2.new(1, 0, 0, 36 + #options * 26 + 4)
+                frame.Size = UDim2.new(1, 0, 0, 38 + #options * 26 + 4)
             else
-                frame.Size = UDim2.new(1, 0, 0, 36)
+                frame.Size = UDim2.new(1, 0, 0, 38)
             end
         end)
 
@@ -1656,18 +1804,21 @@ local function createUI()
         end}
     end
 
+    -- ============================================================
+    -- UI HELPER: Info Label
+    -- ============================================================
     local function addLabel(parent, text, order)
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, 0, 0, 24)
-        label.BackgroundTransparency = 1
-        label.Text = text
-        label.TextColor3 = Color3.fromRGB(160, 160, 170)
-        label.TextSize = 11
-        label.Font = Enum.Font.Gotham
-        label.TextWrapped = true
-        label.LayoutOrder = order
-        label.Parent = parent
-        return label
+        local lbl = Instance.new("TextLabel")
+        lbl.Size = UDim2.new(1, 0, 0, 22)
+        lbl.BackgroundTransparency = 1
+        lbl.Text = text
+        lbl.TextColor3 = NEON.TextSecondary
+        lbl.TextSize = 11
+        lbl.Font = Enum.Font.Gotham
+        lbl.TextWrapped = true
+        lbl.LayoutOrder = order
+        lbl.Parent = parent
+        return lbl
     end
 
     -- ============================================================
@@ -1809,21 +1960,25 @@ local function createUI()
     -- TAB: MISC
     -- ============================================================
     local miscTab = tabs["Misc"]
-    addSectionHeader(miscTab, "⚙ KHÁC", 1)
+    addSectionHeader(miscTab, "⚙ CÀI ĐẶT", 1)
 
     local resetBtn = Instance.new("TextButton")
     resetBtn.Size = UDim2.new(1, 0, 0, 40)
-    resetBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    resetBtn.BackgroundColor3 = NEON.Danger
     resetBtn.Text = "🔄 RESET TẤT CẢ"
-    resetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    resetBtn.TextColor3 = NEON.TextPrimary
     resetBtn.TextSize = 14
     resetBtn.Font = Enum.Font.GothamBold
     resetBtn.LayoutOrder = 2
+    resetBtn.AutoButtonColor = false
     resetBtn.Parent = miscTab
+    Instance.new("UICorner", resetBtn).CornerRadius = CORNER
 
-    local resetCorner = Instance.new("UICorner")
-    resetCorner.CornerRadius = UDim.new(0, 8)
-    resetCorner.Parent = resetBtn
+    local resetStroke = Instance.new("UIStroke")
+    resetStroke.Color = Color3.fromRGB(255, 60, 70)
+    resetStroke.Thickness = 1
+    resetStroke.Transparency = 0.5
+    resetStroke.Parent = resetBtn
 
     addSectionHeader(miscTab, "⌨ PHÍM TẮT", 3)
     addLabel(miscTab, "Insert: Bật/Tắt Menu", 4)
@@ -1831,11 +1986,12 @@ local function createUI()
     addLabel(miscTab, "F4: TriggerBot | F5: Wallbang", 6)
     addLabel(miscTab, "F6: Chams | F7: Noclip | F8: Infinite Jump", 7)
 
-    addLabel(miscTab, "Hoàng Anh Hub v21.0", 10)
-    addLabel(miscTab, "ESP | Aimbot | Silent Aim | TriggerBot", 11)
-    addLabel(miscTab, "Chams | Wallbang | Hitbox | Player", 12)
-    addLabel(miscTab, "⚡ Aim: Gần nhất hoặc Máu thấp nhất", 13)
-    addLabel(miscTab, "🤫 Silent Aim: sửa trajectory đạn", 14)
+    addSectionHeader(miscTab, "📋 THÔNG TIN", 10)
+    addLabel(miscTab, "Hoàng Anh Hub v21.1 — Valorant Neon UI", 11)
+    addLabel(miscTab, "ESP | Aimbot | Silent Aim | TriggerBot", 12)
+    addLabel(miscTab, "Chams | Wallbang | Hitbox | Player", 13)
+    addLabel(miscTab, "⚡ Aim: Gần nhất hoặc Máu thấp nhất", 14)
+    addLabel(miscTab, "🤫 Silent Aim: sửa trajectory đạn", 15)
 
     resetBtn.MouseButton1Click:Connect(function()
         Config.ESPEnabled = false
@@ -1866,34 +2022,42 @@ local function createUI()
     end)
 
     -- ============================================================
-    -- TOGGLE BUTTON (nút nổi)
+    -- FLOATING TOGGLE BUTTON (neon orb with glow)
     -- ============================================================
     local toggleBtn = Instance.new("TextButton")
     toggleBtn.Name = "ToggleBtn"
     toggleBtn.Size = UDim2.new(0, 50, 0, 50)
     toggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
-    toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+    toggleBtn.BackgroundColor3 = NEON.Background
     toggleBtn.Text = "⚡"
-    toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleBtn.TextSize = 24
+    toggleBtn.TextColor3 = NEON.AccentPrimary
+    toggleBtn.TextSize = 22
     toggleBtn.Font = Enum.Font.GothamBold
     toggleBtn.AutoButtonColor = false
     toggleBtn.Parent = gui
+    Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1, 0)
 
-    local toggleCorner2 = Instance.new("UICorner")
-    toggleCorner2.CornerRadius = UDim.new(0, 25)
-    toggleCorner2.Parent = toggleBtn
+    -- Multi-layer neon stroke on toggle button
+    local tbStroke1 = Instance.new("UIStroke")
+    tbStroke1.Color = NEON.AccentPrimary
+    tbStroke1.Thickness = 1.5
+    tbStroke1.Transparency = 0.1
+    tbStroke1.Parent = toggleBtn
 
-    local toggleStroke = Instance.new("UIStroke")
-    toggleStroke.Color = Color3.fromRGB(0, 255, 150)
-    toggleStroke.Thickness = 2
-    toggleStroke.Parent = toggleBtn
+    local tbStroke2 = Instance.new("UIStroke")
+    tbStroke2.Color = NEON.AccentPrimary
+    tbStroke2.Thickness = 5
+    tbStroke2.Transparency = 0.6
+    tbStroke2.Parent = toggleBtn
+    TweenService:Create(tbStroke2, TWEEN_GLOW, {Transparency = 0.35}):Play()
 
     toggleBtn.MouseButton1Click:Connect(function()
         mainFrame.Visible = not mainFrame.Visible
     end)
 
-    -- Drag toggle button (mobile)
+    -- ============================================================
+    -- DRAG: Floating Toggle Button
+    -- ============================================================
     local dragToggle = false
     local dragStartToggle, startPosToggle
 
@@ -1921,7 +2085,9 @@ local function createUI()
         end
     end)
 
-    -- Drag main frame
+    -- ============================================================
+    -- DRAG: Main Frame (via title bar)
+    -- ============================================================
     local dragMain = false
     local dragStartMain, startPosMain
 
@@ -1949,7 +2115,9 @@ local function createUI()
         end
     end)
 
-    -- Close button
+    -- ============================================================
+    -- Close / Minimize buttons
+    -- ============================================================
     closeBtn.MouseButton1Click:Connect(function()
         gui:Destroy()
         if _G.HOANG_ANH_HUB and _G.HOANG_ANH_HUB.Cleanup then
@@ -1957,7 +2125,6 @@ local function createUI()
         end
     end)
 
-    -- Minimize button
     minBtn.MouseButton1Click:Connect(function()
         mainFrame.Visible = false
     end)
@@ -2123,4 +2290,4 @@ _G.HOANG_ANH_HUB = {
     end
 }
 
-print("Hoàng Anh Hub v21.0 loaded! ESP + Aimbot + Silent Aim + TriggerBot + Chams + Wallbang + Hitbox + Player + Infinite Jump + Anti-AFK + Keybinds")
+print("Hoàng Anh Hub v21.1 loaded! ESP + Aimbot + Silent Aim + TriggerBot + Chams + Wallbang + Hitbox + Player + Infinite Jump + Anti-AFK + Keybinds — Valorant Neon UI")
