@@ -753,12 +753,14 @@ local function updateESP(player)
     local head = char:FindFirstChild("Head")
     if not head then hideESP(espData) return end
 
-    -- Compute 3D bounding box from all character BaseParts
+    -- Compute 3D bounding box from main body parts only (no accessories)
+    local BODY_PARTS = {"Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot","Torso","Left Arm","Right Arm","Left Leg","Right Leg","HumanoidRootPart"}
     local minVec = Vector3.new(math.huge, math.huge, math.huge)
     local maxVec = Vector3.new(-math.huge, -math.huge, -math.huge)
     local hasPart = false
-    for _, part in ipairs(char:GetDescendants()) do
-        if part:IsA("BasePart") then
+    for _, partName in ipairs(BODY_PARTS) do
+        local part = char:FindFirstChild(partName)
+        if part and part:IsA("BasePart") then
             hasPart = true
             local cf = part.CFrame
             local hs = part.Size / 2
@@ -1836,14 +1838,15 @@ local function createUI()
     sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     sidebarLayout.Parent = sidebar
 
-    -- Sidebar right border accent
+    -- Sidebar right border accent (in mainFrame to avoid UIListLayout)
     local sidebarBorder = Instance.new("Frame")
-    sidebarBorder.Size = UDim2.new(0, 1, 1, 0)
-    sidebarBorder.Position = UDim2.new(1, -1, 0, 0)
+    sidebarBorder.Size = UDim2.new(0, 1, 1, -36)
+    sidebarBorder.Position = UDim2.new(0, sidebarW - 1, 0, 36)
     sidebarBorder.BackgroundColor3 = GLASS.AccentPrimary
     sidebarBorder.BackgroundTransparency = 0.7
     sidebarBorder.BorderSizePixel = 0
-    sidebarBorder.Parent = sidebar
+    sidebarBorder.ZIndex = 5
+    sidebarBorder.Parent = mainFrame
 
     -- ============================================================
     -- CONTENT AREA
