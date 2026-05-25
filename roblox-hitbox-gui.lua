@@ -3,7 +3,7 @@
 -- Aimbot (Gần nhất/Máu thấp nhất), Silent Aim, TriggerBot, Chams,
 -- Wallbang (Xuyên vật thể), Hitbox, Player Mods,
 -- Speed, Jump, Noclip, Infinite Jump, Anti-AFK, Keybind System
--- Liquid Glass UI, Bottom Tab Bar, Modern Glassmorphism Style
+-- Liquid Glass UI, Left Sidebar, Modern Glassmorphism Style
 -- ⚠️ Sử dụng có thể bị phạt trong game. Dùng có trách nhiệm.
 
 -- ============================================================
@@ -749,17 +749,74 @@ local function updateESP(player)
         if worldDist > Config.ESPMaxDistance then hideESP(espData) return end
     end
 
-    -- Get bounding box
+    -- Get bounding box via proper 3D→2D projection (all 8 corners)
     local head = char:FindFirstChild("Head")
     if not head then hideESP(espData) return end
 
-    local topPos, topOnScreen = getScreenPos(head.Position + Vector3.new(0, 1.8, 0))
-    local bottomPos, bottomOnScreen = getScreenPos(rootPos - Vector3.new(0, 3, 0))
+    -- Compute 3D bounding box from all character BaseParts
+    local minVec = Vector3.new(math.huge, math.huge, math.huge)
+    local maxVec = Vector3.new(-math.huge, -math.huge, -math.huge)
+    local hasPart = false
+    for _, part in ipairs(char:GetDescendants()) do
+        if part:IsA("BasePart") then
+            hasPart = true
+            local cf = part.CFrame
+            local hs = part.Size / 2
+            local partCorners = {
+                cf * Vector3.new(-hs.X, -hs.Y, -hs.Z),
+                cf * Vector3.new(-hs.X, -hs.Y,  hs.Z),
+                cf * Vector3.new(-hs.X,  hs.Y, -hs.Z),
+                cf * Vector3.new(-hs.X,  hs.Y,  hs.Z),
+                cf * Vector3.new( hs.X, -hs.Y, -hs.Z),
+                cf * Vector3.new( hs.X, -hs.Y,  hs.Z),
+                cf * Vector3.new( hs.X,  hs.Y, -hs.Z),
+                cf * Vector3.new( hs.X,  hs.Y,  hs.Z),
+            }
+            for _, c in ipairs(partCorners) do
+                minVec = Vector3.new(math.min(minVec.X, c.X), math.min(minVec.Y, c.Y), math.min(minVec.Z, c.Z))
+                maxVec = Vector3.new(math.max(maxVec.X, c.X), math.max(maxVec.Y, c.Y), math.max(maxVec.Z, c.Z))
+            end
+        end
+    end
+    if not hasPart then hideESP(espData) return end
 
-    if not topOnScreen and not bottomOnScreen then hideESP(espData) return end
+    -- Project all 8 corners of the 3D bounding box to 2D screen space
+    local bbCorners3D = {
+        Vector3.new(minVec.X, minVec.Y, minVec.Z),
+        Vector3.new(minVec.X, minVec.Y, maxVec.Z),
+        Vector3.new(minVec.X, maxVec.Y, minVec.Z),
+        Vector3.new(minVec.X, maxVec.Y, maxVec.Z),
+        Vector3.new(maxVec.X, minVec.Y, minVec.Z),
+        Vector3.new(maxVec.X, minVec.Y, maxVec.Z),
+        Vector3.new(maxVec.X, maxVec.Y, minVec.Z),
+        Vector3.new(maxVec.X, maxVec.Y, maxVec.Z),
+    }
 
-    local boxHeight = math.abs(bottomPos.Y - topPos.Y)
-    local boxWidth = boxHeight * 0.55
+    local screenCorners = {}
+    local anyOnScreen = false
+    for _, c3 in ipairs(bbCorners3D) do
+        local pos, onScreen = Camera:WorldToViewportPoint(c3)
+        if pos.Z > 0 then -- only include points in front of camera
+            table.insert(screenCorners, Vector2.new(pos.X, pos.Y))
+            if onScreen then anyOnScreen = true end
+        end
+    end
+    if #screenCorners == 0 or not anyOnScreen then hideESP(espData) return end
+
+    local minX, minY = math.huge, math.huge
+    local maxX, maxY = -math.huge, -math.huge
+    for _, sp in ipairs(screenCorners) do
+        minX = math.min(minX, sp.X)
+        maxX = math.max(maxX, sp.X)
+        minY = math.min(minY, sp.Y)
+        maxY = math.max(maxY, sp.Y)
+    end
+
+    local topPos = Vector2.new((minX + maxX) / 2, minY)
+    local bottomPos = Vector2.new((minX + maxX) / 2, maxY)
+
+    local boxHeight = math.abs(maxY - minY)
+    local boxWidth = math.abs(maxX - minX)
     local centerX = (topPos.X + bottomPos.X) / 2
 
     -- Distance-based fade factor (0 = far/transparent, 1 = close/opaque)
@@ -1007,7 +1064,7 @@ local function updateESP(player)
         if Config.ESPTracer then
             local screenBottom = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
             espData.Tracer.From = screenBottom
-            espData.Tracer.To = Vector2.new(centerX, bottomPos.Y)
+            espData.Tracer.To = Vector2.new(centerX, (minY + maxY) / 2)
             espData.Tracer.Color = boxColor
             espData.Tracer.Transparency = tracerAlpha
             espData.Tracer.Visible = true
@@ -1597,9 +1654,9 @@ end
 -- ============================================================
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local menuScale = math.clamp(Camera.ViewportSize.X / 800, 0.65, 1)
-local menuW = math.floor(360 * menuScale)
-local menuH = math.floor(520 * menuScale)
-local tabBtnWidth = isMobile and math.floor(360 * menuScale / 6) or 60
+local menuW = math.floor(500 * menuScale)
+local menuH = math.floor(400 * menuScale)
+local sidebarW = 70
 
 -- ============================================================
 -- Clean Glass Color Palette
@@ -1761,32 +1818,40 @@ local function createUI()
     Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 8)
 
     -- ============================================================
-    -- BOTTOM TAB BAR
+    -- LEFT SIDEBAR
     -- ============================================================
-    local tabBarH = isMobile and 44 or 52
-    local tabBar = Instance.new("Frame")
-    tabBar.Name = "TabBar"
-    tabBar.Size = UDim2.new(1, 0, 0, tabBarH)
-    tabBar.Position = UDim2.new(0, 0, 1, -tabBarH)
-    tabBar.BackgroundColor3 = GLASS.PanelBG
-    tabBar.BackgroundTransparency = 0.15
-    tabBar.BorderSizePixel = 0
-    tabBar.Parent = mainFrame
+    local sidebar = Instance.new("Frame")
+    sidebar.Name = "Sidebar"
+    sidebar.Size = UDim2.new(0, sidebarW, 1, -36)
+    sidebar.Position = UDim2.new(0, 0, 0, 36)
+    sidebar.BackgroundColor3 = GLASS.PanelBG
+    sidebar.BackgroundTransparency = 0.08
+    sidebar.BorderSizePixel = 0
+    sidebar.Parent = mainFrame
 
-    local tabLine = Instance.new("Frame")
-    tabLine.Size = UDim2.new(1, 0, 0, 1)
-    tabLine.BackgroundColor3 = GLASS.AccentPrimary
-    tabLine.BackgroundTransparency = 0.75
-    tabLine.BorderSizePixel = 0
-    tabLine.Parent = tabBar
+    -- Sidebar layout
+    local sidebarLayout = Instance.new("UIListLayout")
+    sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    sidebarLayout.Padding = UDim.new(0, 2)
+    sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    sidebarLayout.Parent = sidebar
+
+    -- Sidebar right border accent
+    local sidebarBorder = Instance.new("Frame")
+    sidebarBorder.Size = UDim2.new(0, 1, 1, 0)
+    sidebarBorder.Position = UDim2.new(1, -1, 0, 0)
+    sidebarBorder.BackgroundColor3 = GLASS.AccentPrimary
+    sidebarBorder.BackgroundTransparency = 0.7
+    sidebarBorder.BorderSizePixel = 0
+    sidebarBorder.Parent = sidebar
 
     -- ============================================================
     -- CONTENT AREA
     -- ============================================================
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
-    contentArea.Size = UDim2.new(1, 0, 1, -(36 + tabBarH))
-    contentArea.Position = UDim2.new(0, 0, 0, 36)
+    contentArea.Size = UDim2.new(1, -sidebarW, 1, -36)
+    contentArea.Position = UDim2.new(0, sidebarW, 0, 36)
     contentArea.BackgroundTransparency = 1
     contentArea.BorderSizePixel = 0
     contentArea.Parent = mainFrame
@@ -1799,7 +1864,6 @@ local function createUI()
     local tabIcons = {"👁", "🎯", "⚔", "▣", "🏃", "⚙"}
     local currentTab = "ESP"
     local tabButtons = {}
-    local underlineBar = nil
 
     for i, name in ipairs(tabNames) do
         -- Content ScrollingFrame
@@ -1821,54 +1885,74 @@ local function createUI()
         layout.Parent = tabContent
 
         local pad = Instance.new("UIPadding")
-        pad.PaddingTop = UDim.new(0, isMobile and 10 or 8)
-        pad.PaddingLeft = UDim.new(0, isMobile and 8 or 10)
-        pad.PaddingRight = UDim.new(0, isMobile and 8 or 10)
-        pad.PaddingBottom = UDim.new(0, isMobile and 12 or 8)
+        pad.PaddingTop = UDim.new(0, 8)
+        pad.PaddingLeft = UDim.new(0, 10)
+        pad.PaddingRight = UDim.new(0, 10)
+        pad.PaddingBottom = UDim.new(0, 8)
         pad.Parent = tabContent
 
         tabs[name] = tabContent
 
-        -- Bottom tab button
+        -- Sidebar tab button
         local tabBtn = Instance.new("TextButton")
         tabBtn.Name = "Tab_" .. name
-        tabBtn.Size = UDim2.new(0, tabBtnWidth, 1, 0)
-        tabBtn.BackgroundColor3 = GLASS.PanelBG
-        tabBtn.BackgroundTransparency = 1
+        tabBtn.Size = UDim2.new(1, -6, 0, 46)
+        tabBtn.BackgroundColor3 = GLASS.AccentPrimary
+        tabBtn.BackgroundTransparency = (name == currentTab) and 0.85 or 1
         tabBtn.Text = ""
         tabBtn.AutoButtonColor = false
         tabBtn.LayoutOrder = i
-        tabBtn.Parent = tabBar
+        tabBtn.Parent = sidebar
+        Instance.new("UICorner", tabBtn).CornerRadius = UDim.new(0, 8)
+
+        -- Active accent bar (left edge)
+        local activeBar = Instance.new("Frame")
+        activeBar.Name = "ActiveBar"
+        activeBar.Size = UDim2.new(0, 3, 0.6, 0)
+        activeBar.Position = UDim2.new(0, 1, 0.2, 0)
+        activeBar.BackgroundColor3 = GLASS.AccentPrimary
+        activeBar.BackgroundTransparency = (name == currentTab) and 0 or 1
+        activeBar.BorderSizePixel = 0
+        activeBar.Parent = tabBtn
+        Instance.new("UICorner", activeBar).CornerRadius = UDim.new(0, 2)
+
+        -- Glow stroke for active tab
+        local tabGlow = Instance.new("UIStroke")
+        tabGlow.Color = GLASS.AccentPrimary
+        tabGlow.Thickness = 1.5
+        tabGlow.Transparency = (name == currentTab) and 0.5 or 1
+        tabGlow.Parent = tabBtn
 
         -- Icon label
         local icon = Instance.new("TextLabel")
         icon.Name = "Icon"
-        icon.Size = UDim2.new(1, 0, 0, isMobile and 28 or 26)
-        icon.Position = UDim2.new(0, 0, 0, isMobile and 6 or 4)
+        icon.Size = UDim2.new(1, 0, 0, 24)
+        icon.Position = UDim2.new(0, 0, 0, 4)
         icon.BackgroundTransparency = 1
         icon.Text = tabIcons[i]
-        icon.TextSize = isMobile and 18 or 20
+        icon.TextSize = 18
         icon.Font = Enum.Font.GothamBold
         icon.TextColor3 = (name == currentTab) and GLASS.AccentPrimary or GLASS.TextDisabled
         icon.Parent = tabBtn
 
-        -- Tab text label (hidden on mobile)
+        -- Tab text label
         local tabLabel = Instance.new("TextLabel")
         tabLabel.Name = "Label"
         tabLabel.Size = UDim2.new(1, 0, 0, 12)
-        tabLabel.Position = UDim2.new(0, 0, 0, isMobile and 28 or 30)
+        tabLabel.Position = UDim2.new(0, 0, 0, 28)
         tabLabel.BackgroundTransparency = 1
         tabLabel.Text = string.upper(name)
-        tabLabel.TextSize = 8
+        tabLabel.TextSize = 7
         tabLabel.Font = Enum.Font.GothamBold
         tabLabel.TextColor3 = (name == currentTab) and GLASS.AccentPrimary or GLASS.TextDisabled
-        tabLabel.Visible = not isMobile
         tabLabel.Parent = tabBtn
 
         tabButtons[name] = {
             button = tabBtn,
             icon = icon,
             label = tabLabel,
+            activeBar = activeBar,
+            glow = tabGlow,
         }
 
         -- Tab click handler
@@ -1878,30 +1962,21 @@ local function createUI()
             end
             for tabName, btnData in pairs(tabButtons) do
                 local isActive = (tabName == name)
+                TweenService:Create(btnData.button, TWEEN_FAST, {
+                    BackgroundTransparency = isActive and 0.85 or 1
+                }):Play()
+                TweenService:Create(btnData.activeBar, TWEEN_FAST, {
+                    BackgroundTransparency = isActive and 0 or 1
+                }):Play()
+                TweenService:Create(btnData.glow, TWEEN_FAST, {
+                    Transparency = isActive and 0.5 or 1
+                }):Play()
                 btnData.icon.TextColor3 = isActive and GLASS.AccentPrimary or GLASS.TextDisabled
                 btnData.label.TextColor3 = isActive and GLASS.AccentPrimary or GLASS.TextDisabled
-            end
-            -- Animate underline to active tab
-            if underlineBar and tabButtons[name] then
-                local btnPos = tabButtons[name].button.Position
-                local btnSize = tabButtons[name].button.Size
-                TweenService:Create(underlineBar, TWEEN_FAST, {
-                    Position = UDim2.new(btnPos.X.Scale, btnPos.X.Offset, 1, -2),
-                    Size = UDim2.new(btnSize.X.Scale, btnSize.X.Offset, 0, 2)
-                }):Play()
             end
             currentTab = name
         end)
     end
-
-    -- Animated underline (positioned over active tab)
-    underlineBar = Instance.new("Frame")
-    underlineBar.Name = "ActiveUnderline"
-    underlineBar.Size = UDim2.new(0, tabBtnWidth, 0, 2)
-    underlineBar.Position = UDim2.new(0, 0, 1, -2)
-    underlineBar.BackgroundColor3 = GLASS.AccentPrimary
-    underlineBar.BorderSizePixel = 0
-    underlineBar.Parent = tabBar
 
     -- ============================================================
     -- UI HELPER: Section Header
@@ -2793,4 +2868,4 @@ _G.HOANG_ANH_HUB = {
     end
 }
 
-print("Hoàng Anh Hub v21.3 loaded! ESP (Corner Box/Name/Distance/HP/Head Dot/Tracer) + Aimbot + Silent Aim + TriggerBot + Chams + Wallbang + Hitbox + Player + Infinite Jump + Anti-AFK + Keybinds — Liquid Glass UI")
+print("Hoàng Anh Hub v21.3 loaded! ESP (Corner Box/Name/Distance/HP/Head Dot/Tracer) + Aimbot + Silent Aim + TriggerBot + Chams + Wallbang + Hitbox + Player + Infinite Jump + Anti-AFK + Keybinds — Left Sidebar UI")
