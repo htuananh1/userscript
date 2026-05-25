@@ -749,76 +749,29 @@ local function updateESP(player)
         if worldDist > Config.ESPMaxDistance then hideESP(espData) return end
     end
 
-    -- Get bounding box via proper 3D→2D projection (all 8 corners)
+    -- Get bounding box: project head top and root bottom
     local head = char:FindFirstChild("Head")
     if not head then hideESP(espData) return end
 
-    -- Compute 3D bounding box from main body parts only (no accessories)
-    local BODY_PARTS = {"Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot","Torso","Left Arm","Right Arm","Left Leg","Right Leg","HumanoidRootPart"}
-    local minVec = Vector3.new(math.huge, math.huge, math.huge)
-    local maxVec = Vector3.new(-math.huge, -math.huge, -math.huge)
-    local hasPart = false
-    for _, partName in ipairs(BODY_PARTS) do
-        local part = char:FindFirstChild(partName)
-        if part and part:IsA("BasePart") then
-            hasPart = true
-            local cf = part.CFrame
-            local hs = part.Size / 2
-            local partCorners = {
-                cf * Vector3.new(-hs.X, -hs.Y, -hs.Z),
-                cf * Vector3.new(-hs.X, -hs.Y,  hs.Z),
-                cf * Vector3.new(-hs.X,  hs.Y, -hs.Z),
-                cf * Vector3.new(-hs.X,  hs.Y,  hs.Z),
-                cf * Vector3.new( hs.X, -hs.Y, -hs.Z),
-                cf * Vector3.new( hs.X, -hs.Y,  hs.Z),
-                cf * Vector3.new( hs.X,  hs.Y, -hs.Z),
-                cf * Vector3.new( hs.X,  hs.Y,  hs.Z),
-            }
-            for _, c in ipairs(partCorners) do
-                minVec = Vector3.new(math.min(minVec.X, c.X), math.min(minVec.Y, c.Y), math.min(minVec.Z, c.Z))
-                maxVec = Vector3.new(math.max(maxVec.X, c.X), math.max(maxVec.Y, c.Y), math.max(maxVec.Z, c.Z))
-            end
-        end
-    end
-    if not hasPart then hideESP(espData) return end
+    -- Top: above head (includes hat height)
+    local headTop = head.Position + Vector3.new(0, 1.5, 0)
+    -- Bottom: below root
+    local rootBottom = rootPos - Vector3.new(0, 3, 0)
 
-    -- Project all 8 corners of the 3D bounding box to 2D screen space
-    local bbCorners3D = {
-        Vector3.new(minVec.X, minVec.Y, minVec.Z),
-        Vector3.new(minVec.X, minVec.Y, maxVec.Z),
-        Vector3.new(minVec.X, maxVec.Y, minVec.Z),
-        Vector3.new(minVec.X, maxVec.Y, maxVec.Z),
-        Vector3.new(maxVec.X, minVec.Y, minVec.Z),
-        Vector3.new(maxVec.X, minVec.Y, maxVec.Z),
-        Vector3.new(maxVec.X, maxVec.Y, minVec.Z),
-        Vector3.new(maxVec.X, maxVec.Y, maxVec.Z),
-    }
+    local topScreen, topOnScreen = Camera:WorldToViewportPoint(headTop)
+    local botScreen, botOnScreen = Camera:WorldToViewportPoint(rootBottom)
 
-    local screenCorners = {}
-    local anyOnScreen = false
-    for _, c3 in ipairs(bbCorners3D) do
-        local pos, onScreen = Camera:WorldToViewportPoint(c3)
-        if pos.Z > 0 then -- only include points in front of camera
-            table.insert(screenCorners, Vector2.new(pos.X, pos.Y))
-            if onScreen then anyOnScreen = true end
-        end
-    end
-    if #screenCorners == 0 or not anyOnScreen then hideESP(espData) return end
+    -- Both behind camera? hide
+    if topScreen.Z <= 0 and botScreen.Z <= 0 then hideESP(espData) return end
+    -- At least one must be on screen
+    if not topOnScreen and not botOnScreen then hideESP(espData) return end
 
-    local minX, minY = math.huge, math.huge
-    local maxX, maxY = -math.huge, -math.huge
-    for _, sp in ipairs(screenCorners) do
-        minX = math.min(minX, sp.X)
-        maxX = math.max(maxX, sp.X)
-        minY = math.min(minY, sp.Y)
-        maxY = math.max(maxY, sp.Y)
-    end
+    local topPos = Vector2.new(topScreen.X, topScreen.Y)
+    local bottomPos = Vector2.new(botScreen.X, botScreen.Y)
 
-    local topPos = Vector2.new((minX + maxX) / 2, minY)
-    local bottomPos = Vector2.new((minX + maxX) / 2, maxY)
-
-    local boxHeight = math.abs(maxY - minY)
-    local boxWidth = math.abs(maxX - minX)
+    local boxHeight = math.abs(bottomPos.Y - topPos.Y)
+    -- Width from height with ratio
+    local boxWidth = boxHeight * 0.55
     local centerX = (topPos.X + bottomPos.X) / 2
 
     -- Distance-based fade factor (0 = far/transparent, 1 = close/opaque)
