@@ -1590,35 +1590,35 @@ end
 
 -- ============================================================
 -- ============================================================
--- UI SYSTEM (v22 — Neon Frost Style, Mobile-Responsive)
+-- ============================================================
+-- UI SYSTEM (v22 — Clean Glass Style, Mobile-Responsive)
 -- ============================================================
 -- Mobile Detection & Responsive Sizing
 -- ============================================================
 local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 local menuScale = math.clamp(Camera.ViewportSize.X / 800, 0.65, 1)
-local menuW = math.floor(380 * menuScale)
-local menuH = math.floor(540 * menuScale)
-local tabBtnWidth = isMobile and math.floor(380 * menuScale / 6) or 60
+local menuW = math.floor(360 * menuScale)
+local menuH = math.floor(520 * menuScale)
+local tabBtnWidth = isMobile and math.floor(360 * menuScale / 6) or 60
 
 -- ============================================================
--- Neon Frost Color Palette
+-- Clean Glass Color Palette
 -- ============================================================
 local GLASS = {
-    Background = Color3.fromRGB(15, 18, 30),
-    PanelBG = Color3.fromRGB(22, 27, 45),
-    AccentPrimary = Color3.fromRGB(0, 200, 255),
-    AccentSecondary = Color3.fromRGB(120, 80, 255),
-    TextPrimary = Color3.fromRGB(230, 240, 255),
-    TextSecondary = Color3.fromRGB(140, 160, 200),
-    TextDisabled = Color3.fromRGB(80, 95, 130),
-    ToggleOff = Color3.fromRGB(50, 55, 75),
-    ToggleOn = Color3.fromRGB(0, 200, 255),
-    SliderTrack = Color3.fromRGB(35, 40, 60),
-    Danger = Color3.fromRGB(255, 60, 90),
-    GlassEdge = Color3.fromRGB(60, 80, 140),
-    GlassShadow = Color3.fromRGB(0, 150, 255),
-    GradientStart = Color3.fromRGB(0, 200, 255),
-    GradientEnd = Color3.fromRGB(120, 80, 255),
+    Background = Color3.fromRGB(245, 248, 255),
+    PanelBG = Color3.fromRGB(255, 255, 255),
+    AccentPrimary = Color3.fromRGB(70, 130, 255),
+    AccentSecondary = Color3.fromRGB(120, 170, 255),
+    TextPrimary = Color3.fromRGB(20, 30, 60),
+    TextSecondary = Color3.fromRGB(100, 115, 145),
+    TextDisabled = Color3.fromRGB(175, 185, 210),
+    ToggleOff = Color3.fromRGB(200, 210, 230),
+    ToggleOn = Color3.fromRGB(70, 130, 255),
+    SliderTrack = Color3.fromRGB(225, 232, 248),
+    Danger = Color3.fromRGB(235, 72, 92),
+    GlassEdge = Color3.fromRGB(255, 255, 255),
+    GlassShadow = Color3.fromRGB(180, 195, 225),
+    TitleBarBG = Color3.fromRGB(240, 244, 255),
 }
 local CORNER = UDim.new(0, 10)
 local TWEEN_FAST = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -1645,8 +1645,8 @@ local function createUI()
     mainFrame.Name = "MainFrame"
     mainFrame.Size = UDim2.new(0, menuW, 0, menuH)
     mainFrame.Position = UDim2.new(0.5, -menuW / 2, 0.5, -menuH / 2)
-    mainFrame.BackgroundColor3 = GLASS.Background
-    mainFrame.BackgroundTransparency = 0.15
+    mainFrame.BackgroundColor3 = GLASS.PanelBG
+    mainFrame.BackgroundTransparency = 0.25
     mainFrame.BorderSizePixel = 0
     mainFrame.ClipsDescendants = true
     mainFrame.Visible = false
@@ -1654,28 +1654,28 @@ local function createUI()
 
     Instance.new("UICorner", mainFrame).CornerRadius = CORNER
 
-    -- Neon Frost edge glow layers
+    -- Clean Glass edge layers: white edge + soft shadow + ambient glow
     local stroke1 = Instance.new("UIStroke")
     stroke1.Color = GLASS.GlassEdge
     stroke1.Thickness = 1
-    stroke1.Transparency = 0.2
+    stroke1.Transparency = 0.15
     stroke1.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     stroke1.Parent = mainFrame
 
     local stroke2 = Instance.new("UIStroke")
     stroke2.Color = GLASS.GlassShadow
     stroke2.Thickness = 3
-    stroke2.Transparency = 0.5
+    stroke2.Transparency = 0.55
     stroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     stroke2.Parent = mainFrame
 
     local stroke3 = Instance.new("UIStroke")
-    stroke3.Color = GLASS.AccentSecondary
-    stroke3.Thickness = 6
-    stroke3.Transparency = 0.82
+    stroke3.Color = GLASS.AccentPrimary
+    stroke3.Thickness = 5
+    stroke3.Transparency = 0.85
     stroke3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     stroke3.Parent = mainFrame
-    TweenService:Create(stroke3, TWEEN_GLOW, {Transparency = 0.6}):Play()
+    TweenService:Create(stroke3, TWEEN_GLOW, {Transparency = 0.65}):Play()
 
     -- ============================================================
     -- OPEN/CLOSE ANIMATION
@@ -1684,7 +1684,7 @@ local function createUI()
         mainFrame.Visible = true
         mainFrame.BackgroundTransparency = 1
         TweenService:Create(mainFrame, TWEEN_OPEN, {
-            BackgroundTransparency = 0.15
+            BackgroundTransparency = 0.25
         }):Play()
     end
 
@@ -1696,76 +1696,42 @@ local function createUI()
         tween.Completed:Connect(function()
             if mainFrame.BackgroundTransparency >= 1 then
                 mainFrame.Visible = false
-                mainFrame.BackgroundTransparency = 0.15
+                mainFrame.BackgroundTransparency = 0.25
             end
         end)
     end
 
     -- ============================================================
-    -- TITLE BAR (gradient, glow line)
+    -- TITLE BAR
     -- ============================================================
     local titleBar = Instance.new("Frame")
     titleBar.Name = "TitleBar"
     titleBar.Size = UDim2.new(1, 0, 0, 36)
-    titleBar.BackgroundColor3 = GLASS.PanelBG
-    titleBar.BackgroundTransparency = 0.1
+    titleBar.BackgroundColor3 = GLASS.TitleBarBG
+    titleBar.BackgroundTransparency = 0
     titleBar.BorderSizePixel = 0
     titleBar.Parent = mainFrame
 
-    -- Gradient background for title bar
-    local titleGrad = Instance.new("UIGradient")
-    titleGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 14, 30)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 25, 45)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 14, 30))
-    })
-    titleGrad.Parent = titleBar
-
-    -- Glow line at bottom of title bar
-    local glowLine = Instance.new("Frame")
-    glowLine.Size = UDim2.new(1, 0, 0, 2)
-    glowLine.Position = UDim2.new(0, 0, 1, -2)
-    glowLine.BorderSizePixel = 0
-    glowLine.Parent = titleBar
-
-    local glowGrad = Instance.new("UIGradient")
-    glowGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, GLASS.GradientStart),
-        ColorSequenceKeypoint.new(0.5, GLASS.GradientEnd),
-        ColorSequenceKeypoint.new(1, GLASS.GradientStart)
-    })
-    glowGrad.Parent = glowLine
-
-    -- Animated glow line offset
-    task.spawn(function()
-        local offset = 0
-        while glowLine and glowLine.Parent do
-            offset = offset + 0.005
-            if offset > 1 then offset = 0 end
-            pcall(function() glowGrad.Offset = Vector2.new(offset, 0) end)
-            task.wait(0.03)
-        end
-    end)
+    -- Subtle accent line at bottom of title bar
+    local accentLine = Instance.new("Frame")
+    accentLine.Size = UDim2.new(1, 0, 0, 1)
+    accentLine.Position = UDim2.new(0, 0, 1, -1)
+    accentLine.BackgroundColor3 = GLASS.AccentPrimary
+    accentLine.BackgroundTransparency = 0.3
+    accentLine.BorderSizePixel = 0
+    accentLine.Parent = titleBar
 
     -- Title text
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, -80, 1, 0)
     titleLabel.Position = UDim2.new(0, 12, 0, 0)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = "⚡ HOÀNG ANH HUB v22"
-    titleLabel.TextColor3 = GLASS.TextPrimary
-    titleLabel.TextSize = 13
+    titleLabel.Text = "HOÀNG ANH HUB v22"
+    titleLabel.TextColor3 = GLASS.AccentPrimary
+    titleLabel.TextSize = 14
     titleLabel.Font = Enum.Font.GothamBold
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = titleBar
-
-    -- Gradient on title text
-    local titleTextGrad = Instance.new("UIGradient")
-    titleTextGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, GLASS.GradientStart),
-        ColorSequenceKeypoint.new(1, GLASS.GradientEnd)
-    })
-    titleTextGrad.Parent = titleLabel
 
     -- Close button
     local closeBtn = Instance.new("TextButton")
@@ -1784,8 +1750,8 @@ local function createUI()
     local minBtn = Instance.new("TextButton")
     minBtn.Size = UDim2.new(0, 30, 0, 30)
     minBtn.Position = UDim2.new(1, -68, 0, 3)
-    minBtn.BackgroundColor3 = GLASS.ToggleOff
-    minBtn.BackgroundTransparency = 0.3
+    minBtn.BackgroundColor3 = GLASS.TextDisabled
+    minBtn.BackgroundTransparency = 0.5
     minBtn.Text = "—"
     minBtn.TextColor3 = GLASS.TextSecondary
     minBtn.TextSize = 12
@@ -1797,12 +1763,13 @@ local function createUI()
     -- ============================================================
     -- BOTTOM TAB BAR
     -- ============================================================
+    local tabBarH = isMobile and 44 or 52
     local tabBar = Instance.new("Frame")
     tabBar.Name = "TabBar"
-    tabBar.Size = UDim2.new(1, 0, 0, isMobile and 44 or 52)
-    tabBar.Position = UDim2.new(0, 0, 1, -(isMobile and 44 or 52))
+    tabBar.Size = UDim2.new(1, 0, 0, tabBarH)
+    tabBar.Position = UDim2.new(0, 0, 1, -tabBarH)
     tabBar.BackgroundColor3 = GLASS.PanelBG
-    tabBar.BackgroundTransparency = 0.1
+    tabBar.BackgroundTransparency = 0.15
     tabBar.BorderSizePixel = 0
     tabBar.Parent = mainFrame
 
@@ -1816,7 +1783,6 @@ local function createUI()
     -- ============================================================
     -- CONTENT AREA
     -- ============================================================
-    local tabBarH = isMobile and 44 or 52
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
     contentArea.Size = UDim2.new(1, 0, 1, -(36 + tabBarH))
@@ -1833,7 +1799,7 @@ local function createUI()
     local tabIcons = {"👁", "🎯", "⚔", "▣", "🏃", "⚙"}
     local currentTab = "ESP"
     local tabButtons = {}
-    local underlineBar = nil  -- animated neon glow underline
+    local underlineBar = nil
 
     for i, name in ipairs(tabNames) do
         -- Content ScrollingFrame
@@ -1899,19 +1865,10 @@ local function createUI()
         tabLabel.Visible = not isMobile
         tabLabel.Parent = tabBtn
 
-        -- Glow UIStroke behind active icon
-        local iconGlow = Instance.new("UIStroke")
-        iconGlow.Name = "IconGlow"
-        iconGlow.Color = GLASS.AccentPrimary
-        iconGlow.Thickness = 4
-        iconGlow.Transparency = (name == currentTab) and 0.5 or 1
-        iconGlow.Parent = icon
-
         tabButtons[name] = {
             button = tabBtn,
             icon = icon,
             label = tabLabel,
-            glow = iconGlow,
         }
 
         -- Tab click handler
@@ -1923,9 +1880,6 @@ local function createUI()
                 local isActive = (tabName == name)
                 btnData.icon.TextColor3 = isActive and GLASS.AccentPrimary or GLASS.TextDisabled
                 btnData.label.TextColor3 = isActive and GLASS.AccentPrimary or GLASS.TextDisabled
-                TweenService:Create(btnData.glow, TWEEN_FAST, {
-                    Transparency = isActive and 0.5 or 1
-                }):Play()
             end
             -- Animate underline to active tab
             if underlineBar and tabButtons[name] then
@@ -1940,7 +1894,7 @@ local function createUI()
         end)
     end
 
-    -- Animated neon glow underline (positioned over active tab)
+    -- Animated underline (positioned over active tab)
     underlineBar = Instance.new("Frame")
     underlineBar.Name = "ActiveUnderline"
     underlineBar.Size = UDim2.new(0, tabBtnWidth, 0, 2)
@@ -1948,14 +1902,6 @@ local function createUI()
     underlineBar.BackgroundColor3 = GLASS.AccentPrimary
     underlineBar.BorderSizePixel = 0
     underlineBar.Parent = tabBar
-
-    local underlineGlow = Instance.new("UIStroke")
-    underlineGlow.Color = GLASS.AccentPrimary
-    underlineGlow.Thickness = 4
-    underlineGlow.Transparency = 0.4
-    underlineGlow.Parent = underlineBar
-
-    TweenService:Create(underlineGlow, TWEEN_GLOW, {Transparency = 0.15}):Play()
 
     -- ============================================================
     -- UI HELPER: Section Header
@@ -1965,20 +1911,11 @@ local function createUI()
         header.Name = "Header_" .. text
         header.Size = UDim2.new(1, 0, 0, 30)
         header.BackgroundColor3 = GLASS.PanelBG
-        header.BackgroundTransparency = 0.15
+        header.BackgroundTransparency = 0.25
         header.BorderSizePixel = 0
         header.LayoutOrder = order
         header.Parent = parent
         Instance.new("UICorner", header).CornerRadius = CORNER
-
-        -- Subtle gradient background
-        local headerGrad = Instance.new("UIGradient")
-        headerGrad.Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(22, 27, 45)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(18, 22, 38))
-        })
-        headerGrad.Rotation = 90
-        headerGrad.Parent = header
 
         -- Left accent bar
         local accentBar = Instance.new("Frame")
@@ -1988,33 +1925,27 @@ local function createUI()
         accentBar.BorderSizePixel = 0
         accentBar.Parent = header
 
-        local accentGlow = Instance.new("UIStroke")
-        accentGlow.Color = GLASS.AccentPrimary
-        accentGlow.Thickness = 3
-        accentGlow.Transparency = 0.6
-        accentGlow.Parent = accentBar
-
         local label = Instance.new("TextLabel")
         label.Size = UDim2.new(1, -16, 1, 0)
         label.Position = UDim2.new(0, 12, 0, 0)
         label.BackgroundTransparency = 1
         label.Text = string.upper(text)
         label.TextColor3 = GLASS.AccentPrimary
-        label.TextSize = 11
+        label.TextSize = 12
         label.Font = Enum.Font.GothamBold
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.Parent = header
     end
 
     -- ============================================================
-    -- UI HELPER: Toggle Switch (Neon Frost style)
+    -- UI HELPER: Toggle Switch
     -- ============================================================
     local function addToggle(parent, text, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Toggle_" .. text
         frame.Size = UDim2.new(1, 0, 0, 38)
         frame.BackgroundColor3 = GLASS.PanelBG
-        frame.BackgroundTransparency = 0.15
+        frame.BackgroundTransparency = 0.2
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.Parent = parent
@@ -2040,13 +1971,6 @@ local function createUI()
         track.Parent = frame
         Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
 
-        -- Track glow stroke
-        local trackStroke = Instance.new("UIStroke")
-        trackStroke.Color = GLASS.AccentPrimary
-        trackStroke.Thickness = 1.5
-        trackStroke.Transparency = default and 0.3 or 0.85
-        trackStroke.Parent = track
-
         -- Thumb
         local thumb = Instance.new("Frame")
         thumb.Size = UDim2.new(0, 18, 0, 18)
@@ -2056,11 +1980,11 @@ local function createUI()
         thumb.Parent = track
         Instance.new("UICorner", thumb).CornerRadius = UDim.new(1, 0)
 
-        -- Thumb neon glow
+        -- Thumb glow stroke
         local thumbGlow = Instance.new("UIStroke")
         thumbGlow.Color = GLASS.AccentPrimary
-        thumbGlow.Thickness = 3
-        thumbGlow.Transparency = default and 0.4 or 1
+        thumbGlow.Thickness = 2
+        thumbGlow.Transparency = default and 0.3 or 1
         thumbGlow.Parent = thumb
 
         local state = default
@@ -2075,15 +1999,12 @@ local function createUI()
             TweenService:Create(track, TWEEN_FAST, {
                 BackgroundColor3 = val and GLASS.ToggleOn or GLASS.ToggleOff
             }):Play()
-            TweenService:Create(trackStroke, TWEEN_FAST, {
-                Transparency = val and 0.3 or 0.85
-            }):Play()
             TweenService:Create(thumb, TWEEN_FAST, {
                 Position = val and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9),
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             }):Play()
             TweenService:Create(thumbGlow, TWEEN_FAST, {
-                Transparency = val and 0.4 or 1
+                Transparency = val and 0.3 or 1
             }):Play()
         end
 
@@ -2102,14 +2023,14 @@ local function createUI()
     end
 
     -- ============================================================
-    -- UI HELPER: Slider (Neon Frost style)
+    -- UI HELPER: Slider
     -- ============================================================
     local function addSlider(parent, text, min, max, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Slider_" .. text
         frame.Size = UDim2.new(1, 0, 0, 52)
         frame.BackgroundColor3 = GLASS.PanelBG
-        frame.BackgroundTransparency = 0.15
+        frame.BackgroundTransparency = 0.2
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.Parent = parent
@@ -2146,8 +2067,8 @@ local function createUI()
 
         local fillGrad = Instance.new("UIGradient")
         fillGrad.Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, GLASS.GradientStart),
-            ColorSequenceKeypoint.new(1, GLASS.GradientEnd)
+            ColorSequenceKeypoint.new(0, GLASS.AccentSecondary),
+            ColorSequenceKeypoint.new(1, GLASS.AccentPrimary)
         })
         fillGrad.Parent = sliderFill
 
@@ -2165,7 +2086,7 @@ local function createUI()
 
         local sliderGlow = Instance.new("UIStroke")
         sliderGlow.Color = GLASS.AccentPrimary
-        sliderGlow.Thickness = 3
+        sliderGlow.Thickness = 2
         sliderGlow.Transparency = 0.35
         sliderGlow.Parent = sliderBtn
 
@@ -2208,14 +2129,14 @@ local function createUI()
     end
 
     -- ============================================================
-    -- UI HELPER: Dropdown (Neon Frost style)
+    -- UI HELPER: Dropdown
     -- ============================================================
     local function addDropdown(parent, text, options, default, order, callback)
         local frame = Instance.new("Frame")
         frame.Name = "Dropdown_" .. text
         frame.Size = UDim2.new(1, 0, 0, 38)
         frame.BackgroundColor3 = GLASS.PanelBG
-        frame.BackgroundTransparency = 0.15
+        frame.BackgroundTransparency = 0.2
         frame.BorderSizePixel = 0
         frame.LayoutOrder = order
         frame.ClipsDescendants = true
@@ -2245,12 +2166,6 @@ local function createUI()
         selectedBtn.Parent = frame
         Instance.new("UICorner", selectedBtn).CornerRadius = CORNER
 
-        local selStroke = Instance.new("UIStroke")
-        selStroke.Color = GLASS.AccentPrimary
-        selStroke.Thickness = 1
-        selStroke.Transparency = 0.6
-        selStroke.Parent = selectedBtn
-
         local currentValue = default
         local isOpen = false
 
@@ -2266,9 +2181,9 @@ local function createUI()
         Instance.new("UICorner", optionsFrame).CornerRadius = CORNER
 
         local optStroke = Instance.new("UIStroke")
-        optStroke.Color = GLASS.GlassEdge
+        optStroke.Color = GLASS.GlassShadow
         optStroke.Thickness = 1
-        optStroke.Transparency = 0.4
+        optStroke.Transparency = 0.5
         optStroke.Parent = optionsFrame
 
         for j, opt in ipairs(options) do
@@ -2522,12 +2437,6 @@ local function createUI()
     resetBtn.Parent = miscTab
     Instance.new("UICorner", resetBtn).CornerRadius = CORNER
 
-    local resetStroke = Instance.new("UIStroke")
-    resetStroke.Color = GLASS.Danger
-    resetStroke.Thickness = 1
-    resetStroke.Transparency = 0.4
-    resetStroke.Parent = resetBtn
-
     addSectionHeader(miscTab, "⌨ PHÍM TẮT", 3)
     addLabel(miscTab, "Insert: Bật/Tắt Menu", 4)
     addLabel(miscTab, "F1: ESP | F2: Aimbot | F3: Silent Aim", 5)
@@ -2535,7 +2444,7 @@ local function createUI()
     addLabel(miscTab, "F6: Chams | F7: Noclip | F8: Infinite Jump", 7)
 
     addSectionHeader(miscTab, "📋 THÔNG TIN", 10)
-    addLabel(miscTab, "Hoàng Anh Hub v22 — Neon Frost UI", 11)
+    addLabel(miscTab, "Hoàng Anh Hub v22 — Clean Glass UI", 11)
     addLabel(miscTab, "ESP | Aimbot | Silent Aim | TriggerBot", 12)
     addLabel(miscTab, "Chams | Wallbang | Hitbox | Player", 13)
     addLabel(miscTab, "⚡ Aim: Gần nhất hoặc Máu thấp nhất", 14)
@@ -2578,15 +2487,15 @@ local function createUI()
     end)
 
     -- ============================================================
-    -- FLOATING TOGGLE BUTTON (neon frost orb)
+    -- FLOATING TOGGLE BUTTON
     -- ============================================================
     local btnSize = isMobile and 60 or 50
     local toggleBtn = Instance.new("TextButton")
     toggleBtn.Name = "ToggleBtn"
     toggleBtn.Size = UDim2.new(0, btnSize, 0, btnSize)
     toggleBtn.Position = UDim2.new(0, 20, 0.5, -btnSize / 2)
-    toggleBtn.BackgroundColor3 = GLASS.Background
-    toggleBtn.BackgroundTransparency = 0.2
+    toggleBtn.BackgroundColor3 = GLASS.PanelBG
+    toggleBtn.BackgroundTransparency = 0.3
     toggleBtn.Text = "⚡"
     toggleBtn.TextColor3 = GLASS.AccentPrimary
     toggleBtn.TextSize = isMobile and 26 or 22
@@ -2595,17 +2504,17 @@ local function createUI()
     toggleBtn.Parent = gui
     Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(1, 0)
 
-    -- Glass edge stroke
+    -- White edge stroke
     local tbStroke1 = Instance.new("UIStroke")
     tbStroke1.Color = GLASS.GlassEdge
     tbStroke1.Thickness = 1.5
-    tbStroke1.Transparency = 0.2
+    tbStroke1.Transparency = 0.15
     tbStroke1.Parent = toggleBtn
 
-    -- Pulsing neon glow
+    -- Pulsing accent glow
     local tbStroke2 = Instance.new("UIStroke")
     tbStroke2.Color = GLASS.AccentPrimary
-    tbStroke2.Thickness = 5
+    tbStroke2.Thickness = 4
     tbStroke2.Transparency = 0.55
     tbStroke2.Parent = toggleBtn
     TweenService:Create(tbStroke2, TWEEN_GLOW, {Transparency = 0.25}):Play()
@@ -2616,16 +2525,6 @@ local function createUI()
         else
             showMenu()
         end
-        -- Subtle rotation on press
-        task.spawn(function()
-            local rot = 0
-            for _ = 1, 8 do
-                rot = rot + 15
-                pcall(function() toggleBtn.Rotation = rot end)
-                task.wait(0.02)
-            end
-            pcall(function() toggleBtn.Rotation = 0 end)
-        end)
     end)
 
     -- ============================================================
@@ -2722,7 +2621,6 @@ local function createUI()
 
     return gui
 end
-
 -- ============================================================
 -- KEYBIND SYSTEM
 -- ============================================================
