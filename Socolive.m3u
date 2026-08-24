@@ -4,23 +4,23 @@
 # ======================================
 # Status       : ONLINE
 # Channels     : 8
-# Updated      : 24/08/2026 17:06:32
+# Updated      : 24/08/2026 17:07:33
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
 #EXTINF:-1 tvg-id="room-133277" tvg-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-title="SocoLive",Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt
-https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=f89ef93718949583d4e78860935f2d97&txTime=6a8c6be8
+https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=d31a9c89321e686b3bfbbd64c33278cb&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-133824" tvg-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-title="SocoLive",Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào
-https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=2fd276264654e2a64003cc286f476a02&txTime=6a8c6be8
+https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=1c729442912851e47ee64ee54f64fc98&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-152898" tvg-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-title="SocoLive",Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ
-https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=d8aa2dad30da46bb2117f6d689d4b901&txTime=6a8c6be8
+https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=ac493c6207566d08ea5cfe986dbe8048&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-179093" tvg-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-title="SocoLive",Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ
-https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=e45ccde1144435a78e246c83b91083b7&txTime=6a8c6be8
+https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=7820a5bdbaab1cb8233c0594772cc726&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-343500" tvg-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-title="SocoLive",Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo
-https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=8a61a4fe9035afe80f41b7a1bc846b63&txTime=6a8c6be8
+https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=6191a7a0ef60c3399e7408ffb4b75b1a&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-9912079" tvg-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-title="SocoLive",Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông
-https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=071ff4aac8b1ba38223d02161fd5ba20&txTime=6a8c6be8
+https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=44eb4feed1cc3082c80ee1de33a1b0ea&txTime=6a8c6c24
 #EXTINF:-1 tvg-id="room-9912099" tvg-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-title="SocoLive",WCBC: Beijing Normal University vs Shandong Hi-Speed - KING
-https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787569560-0-0-0d6a949ba186d5b64e8103d99b708a73
+https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787569620-0-0-e9aa3e81869102c2347373024db63db3
 #EXTINF:-1 tvg-id="room-9912106" tvg-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-title="SocoLive",WCBC: Beijing Normal University vs Shandong Hi-Speed - BRIAN
-https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787569560-0-0-47cfbb84f62fd9173175b10f9390b798
+https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787569620-0-0-c1e9724cbee0a58f934cedee02c7d2d8
