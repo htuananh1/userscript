@@ -5,16 +5,7 @@
     "name": "ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - Casting",
     "logo": "https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=724cb987ee0ac437286dd9b7e33034c0\u0026txTime=6a8cb2ec",
-    "type": "hls"
-  },
-  {
-    "id": "501412",
-    "tvg_id": "room-501412",
-    "name": "ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciucrica Women - XUÂN SON",
-    "logo": "https://sta.vnres.co/file/common/20251230/ed05555c76c867229b3ced63a841aae2.png",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-501412_lhd.m3u8?txSecret=21cdc242ab6f72b51169a8b3b958c0fb\u0026txTime=6a8cb24e",
+    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=98cd834668039086958bba47460dc29b\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -23,7 +14,7 @@
     "name": "ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BLV WUKONG",
     "logo": "https://sta.vnres.co/file/common/20251121/6d691b0b9dfd9eeb599401a2499400f0.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-511367_lhd.m3u8?txSecret=9914486e652b2cdce05c8e8f000d28d4\u0026txTime=6a8cb2ec",
+    "url": "https://pull.niur.live/live/stream-511367_lhd.m3u8?txSecret=e36e9d210bea9dc4c81450c85b4215ed\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -32,7 +23,7 @@
     "name": "GERC: Würzburger Kickers vs FC Köln - NGƯỜI CÁ",
     "logo": "https://sta.vnres.co/file/common/20260805/c8068dd64589d2890066f1eacc273ab0.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-595335_lhd.m3u8?auth_key=1787587740-0-0-61d5aaec5d75f6d8c3acfc98d0199886",
+    "url": "https://pull.niues.live/live/stream-595335_lhd.m3u8?auth_key=1787587920-0-0-d24566654a803724f4597c3fcb779870",
     "type": "hls"
   },
   {
@@ -41,7 +32,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - XUÂN TÓC ĐỎ",
     "logo": "https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=95192e11beb3a532be397e5287dcae20\u0026txTime=6a8cb2ec",
+    "url": "https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=bdcdcb55a54a374095bb4724e3a5c023\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -50,7 +41,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA",
     "logo": "https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787587740-0-0-142469f54f83b75b0e671610c5b1f50c",
+    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787587920-0-0-bc3b29cf207535d9248a9dc4fdef3827",
     "type": "hls"
   },
   {
@@ -59,7 +50,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BÚN ĐẬU",
     "logo": "https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787587740-0-0-c4706e8ca7e53892daec864003015574",
+    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787587920-0-0-f327f19584a96c6cd343dca9d8cab94c",
     "type": "hls"
   },
   {
@@ -68,7 +59,7 @@
     "name": "ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BOSS",
     "logo": "https://sta.vnres.co/file/common/20260802/d0b756ac34b8f00d22a6d687f86fe8b2.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-620504_lhd.m3u8?txSecret=3c276b6ef05c90f9435f0ad5e7de1d68\u0026txTime=6a8cb2ec",
+    "url": "https://pull.niur.live/live/stream-620504_lhd.m3u8?txSecret=db340b98464d83505e180852672c9225\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -77,7 +68,7 @@
     "name": "GERC: VSG Altglienicke vs VfL Wolfsburg - RỒNG ĐẤT",
     "logo": "https://sta.vnres.co/file/common/20260725/0eb3315ecb9cf5c7f5f9b102d38e52f9.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-620649_lhd.m3u8?auth_key=1787587740-0-0-4d5116d5900dacae003e3755f29dd002",
+    "url": "https://pull.niues.live/live/stream-620649_lhd.m3u8?auth_key=1787587920-0-0-2e77c81cea6480dfa57fa7d2e7d58687",
     "type": "hls"
   },
   {
@@ -86,7 +77,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3",
     "logo": "https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=cec38ed74c2f626e73669f38aaa8f3a4\u0026txTime=6a8cb2ec",
+    "url": "https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=9ac07038c491c9bf29f77c4aed8990de\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -95,7 +86,7 @@
     "name": "ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BLV BẢY",
     "logo": "https://sta.vnres.co/file/common/20260813/5d212275a6562e784f8ce4dd82466681.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-621843_lhd.m3u8?auth_key=1787587740-0-0-6fee556653b0e6dbe8fdc755aefbd253",
+    "url": "https://pull.niues.live/live/stream-621843_lhd.m3u8?auth_key=1787587920-0-0-274acf7e63d1186db54f4e99bc33671f",
     "type": "hls"
   },
   {
@@ -104,7 +95,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - KENCHU",
     "logo": "https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787587740-0-0-db15bb5bbcb766835bd543eb32b37e2c",
+    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787587920-0-0-24488e54db7a88ebd4c63e6a60947043",
     "type": "hls"
   },
   {
@@ -113,7 +104,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BLV TOMIA",
     "logo": "https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787587740-0-0-294c96509782f2794d1926f471c5c692",
+    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787587920-0-0-cd6db648e1890481173ee80500003ab3",
     "type": "hls"
   },
   {
@@ -122,7 +113,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - ZIDANE",
     "logo": "https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=743470e0a62061a2a4d6ff1f78ad87fa\u0026txTime=6a8cb2ec",
+    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=2edd630747e5be6218d4fe933275e939\u0026txTime=6a8cb3a0",
     "type": "hls"
   },
   {
@@ -131,7 +122,7 @@
     "name": "GERC: Würzburger Kickers vs FC Köln - BLV A TÚ",
     "logo": "https://sta.vnres.co/file/common/20260607/678f6480ad0d1ca70b81555c3f8eed28.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912120_lhd.m3u8?auth_key=1787587740-0-0-cd9c3ae7333801843d51f3ddc372fe75",
+    "url": "https://pull.niues.live/live/stream-9912120_lhd.m3u8?auth_key=1787587920-0-0-c68b342ecceba93741e2d1c62cce9ea7",
     "type": "hls"
   }
 ]
