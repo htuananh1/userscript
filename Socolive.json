@@ -1,128 +1,767 @@
 [
   {
-    "id": "133277",
-    "tvg_id": "room-133277",
-    "name": "Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt",
-    "logo": "https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=eb733d67612b2fb4410c3383d1e97f8b\u0026txTime=6a8c8448",
+    "id": "78905744",
+    "tvg_id": "house-78905744",
+    "name": "Bodo Glimt vs NEC Nijmegen - BLV 7UP (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWUwNzcyMzRjMDUtZDg2NA/YTZhMzUyYjZkMzAtOGNkZg.jpg",
+    "group": "Champions League",
+    "url": "https://live05.meung.app/live/78905744.m3u8",
     "type": "hls"
   },
   {
-    "id": "133824",
-    "tvg_id": "room-133824",
-    "name": "Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào",
-    "logo": "https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=17fae4e0a3c36a9488abe07ac17cdd4b\u0026txTime=6a8c8448",
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "LASK Linz vs Celtic - BLV PEPSI (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "Champions League",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
     "type": "hls"
   },
   {
-    "id": "152898",
-    "tvg_id": "room-152898",
-    "name": "Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ",
-    "logo": "https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=3da7720bac50f04aed9bfa339fa32fe9\u0026txTime=6a8c8448",
+    "id": "97885009",
+    "tvg_id": "house-97885009",
+    "name": "Sabah FC vs Hapoel Beer Sheva - BLV WARRIOR (16:45 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MzkwNDEyYWVjOTEtZGM4Nw/MzllNDQ3M2FhMDUtMDc5Mg.jpg",
+    "group": "Champions League",
+    "url": "https://live05.meung.app/live/97885009.m3u8",
     "type": "hls"
   },
   {
-    "id": "179093",
-    "tvg_id": "room-179093",
-    "name": "Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ",
-    "logo": "https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=9aceac9bf58342d4cbc7019cde9676d5\u0026txTime=6a8c8448",
+    "id": "16226575",
+    "tvg_id": "house-16226575",
+    "name": "SK Brann W vs Austria Wien W - BLV FANTA (16:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZjJlODQzOTVmNjYtM2QzNw/NmRiMTZhNTJlNjYtOGM2ZQ.jpg",
+    "group": "Champions League Nữ",
+    "url": "https://live05.meung.app/live/16226575.m3u8",
     "type": "hls"
   },
   {
-    "id": "256080",
-    "tvg_id": "room-256080",
-    "name": "MAS SL: Sabah FC vs Star City - BLV CUỘI",
-    "logo": "https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787575833-0-0-f8e82863f657d83d2744277da65aa6b6",
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "Wolfsburg Nữ vs Inter Nữ - BLV STING (16:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Champions League Nữ",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
     "type": "hls"
   },
   {
-    "id": "291277",
-    "tvg_id": "room-291277",
-    "name": "MAS SL: Sabah FC vs Star City - CÔNG CHẤT",
-    "logo": "https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=6c911062ce86f295e2c224f69a8aa11b\u0026txTime=6a8c8448",
+    "id": "87547578",
+    "tvg_id": "house-87547578",
+    "name": "Andranik vs Echmiadzin - BLV MOUNTAIN DEW (12:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NDU2ODM5ZDZhY2QtOTg5Ng/MjU3MDJjNmI3ZDctMDk2Yg.jpg",
+    "group": "Cúp Armenia",
+    "url": "https://live05.meung.app/live/87547578.m3u8",
     "type": "hls"
   },
   {
-    "id": "321443",
-    "tvg_id": "room-321443",
-    "name": "MAS SL: Sabah FC vs Star City - BLV GIÓ",
-    "logo": "https://sta.vnres.co/file/common/20260603/54289b9ef989aba74cff5bfdee1d4656.png",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=e397a0f6174bef214a1138bf02ae10b0\u0026txTime=6a8c8448",
+    "id": "75748097",
+    "tvg_id": "house-75748097",
+    "name": "Cruzeiro vs Atletico Mineiro - BLV SPRITE (00:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MjAwMmI0MDJhMWUtZjFiNQ/ZDJlMGJhMWRjMGEtYjI2NQ.jpg",
+    "group": "Cúp Brasil",
+    "url": "https://live05.meung.app/live/75748097.m3u8",
     "type": "hls"
   },
   {
-    "id": "343500",
-    "tvg_id": "room-343500",
-    "name": "Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo",
-    "logo": "https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=be52a9c72be0dada4931fe52e18c7f76\u0026txTime=6a8c8448",
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "Birmingham City vs Brentford - BLV STING (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
     "type": "hls"
   },
   {
-    "id": "558264",
-    "tvg_id": "room-558264",
-    "name": "WCBC: Sichuan Jinqiang vs Jiangsu Nangang - HUNTER",
-    "logo": "https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=2300e50f64bb8803247d8f4660dcf1e9\u0026txTime=6a8c8469",
+    "id": "75915087",
+    "tvg_id": "house-75915087",
+    "name": "Cardiff City vs Norwich City - BLV MONSTER (18:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZmNmM2FmOGQwNmQtOWI2MQ/ZmU2Y2FjNGFiYTAtNDc2NA.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/75915087.m3u8",
     "type": "hls"
   },
   {
-    "id": "9912041",
-    "tvg_id": "room-9912041",
-    "name": "MAS SL: Sabah FC vs Star City - BLV TAP",
-    "logo": "https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=8e74e2e00ab04feae85ec4f3bbefb2c4\u0026txTime=6a8c8448",
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Ipswich Town vs Leicester City - BLV  KHÔNG ĐỘ (18:45 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
     "type": "hls"
   },
   {
-    "id": "9912079",
-    "tvg_id": "room-9912079",
-    "name": "Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông",
-    "logo": "https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=1d7bf7f0f9511fa13f23326def5078d0\u0026txTime=6a8c8448",
+    "id": "49572724",
+    "tvg_id": "house-49572724",
+    "name": "Ipswich Town vs Leicester City - BLV REDBULL (18:45 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.k8v4dh4.app/web/image/YzY0ZjM0YTFiNWEtZDMxZA/ZWVlMGJjMjc4ZTItM2EwMQ.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/49572724.m3u8",
     "type": "hls"
   },
   {
-    "id": "9912099",
-    "tvg_id": "room-9912099",
-    "name": "WCBC: Sichuan Jinqiang vs Jiangsu Nangang - KING",
-    "logo": "https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575800-0-0-dbcc35a82934fedb1512cbbcd374aaf6",
+    "id": "33982309",
+    "tvg_id": "house-33982309",
+    "name": "Nottingham Forest vs Leeds United - BLV REVIVE (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGNhNTc0OTZhNTQtNDE3NA/MzUzMTg2NTM3NTctYWRlMw.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/33982309.m3u8",
     "type": "hls"
   },
   {
-    "id": "9912106",
-    "tvg_id": "room-9912106",
-    "name": "WCBC: Beijing Normal University vs Shandong Hi-Speed - BRIAN",
-    "logo": "https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787575631-0-0-4438f52658010cda92facc3f5a48a24e",
+    "id": "02456966",
+    "tvg_id": "house-02456966",
+    "name": "Nottingham Forest vs Leeds United - BLV SODA (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NjBlZWE2MDY4ZTEtMjNjNw/OWUzMmZkYjk2ZjAtODI3NQ.png",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/02456966.m3u8",
     "type": "hls"
   },
   {
-    "id": "9912110",
-    "tvg_id": "room-9912110",
-    "name": "MAS SL: Sabah FC vs Star City - BLV ZOWIE",
-    "logo": "https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png",
-    "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787575800-0-0-cdfde9afe3a0389dab684034271d2aa4",
+    "id": "97885009",
+    "tvg_id": "house-97885009",
+    "name": "Sheffield Wednesday vs Wolverhampton Wanderers - BLV WARRIOR (18:45 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MzkwNDEyYWVjOTEtZGM4Nw/MzllNDQ3M2FhMDUtMDc5Mg.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/97885009.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "07808742",
+    "tvg_id": "house-07808742",
+    "name": "Southampton vs West Ham United - BLV SAMURAI (18:45 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDQzOWUyYmNkNWItM2JkZg/ODgyMjBjMDgzMGEtYzEzZg.jpg",
+    "group": "Cúp Carabao Anh",
+    "url": "https://live05.meung.app/live/07808742.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "07808742",
+    "tvg_id": "house-07808742",
+    "name": "Hellas Syrou vs Marko - BLV SAMURAI (14:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDQzOWUyYmNkNWItM2JkZg/ODgyMjBjMDgzMGEtYzEzZg.jpg",
+    "group": "Cúp Hy Lạp",
+    "url": "https://live05.meung.app/live/07808742.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75915087",
+    "tvg_id": "house-75915087",
+    "name": "Club Leon vs Real Salt Lake - BLV MONSTER (02:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZmNmM2FmOGQwNmQtOWI2MQ/ZmU2Y2FjNGFiYTAtNDc2NA.jpg",
+    "group": "Cúp Liên đoàn",
+    "url": "https://live05.meung.app/live/75915087.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "97885009",
+    "tvg_id": "house-97885009",
+    "name": "Monterrey vs Chicago Fire - BLV WARRIOR (00:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MzkwNDEyYWVjOTEtZGM4Nw/MzllNDQ3M2FhMDUtMDc5Mg.jpg",
+    "group": "Cúp Liên đoàn",
+    "url": "https://live05.meung.app/live/97885009.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "02456966",
+    "tvg_id": "house-02456966",
+    "name": "Altglienicke vs VfL Wolfsburg - BLV SODA (16:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NjBlZWE2MDY4ZTEtMjNjNw/OWUzMmZkYjk2ZjAtODI3NQ.png",
+    "group": "Cúp Liên đoàn bóng đá Đức",
+    "url": "https://live05.meung.app/live/02456966.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "Hallescher vs FC Schalke 04 - BLV STING (18:45 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Cúp Liên đoàn bóng đá Đức",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "78905744",
+    "tvg_id": "house-78905744",
+    "name": "SC Verl vs Hamburger SV - BLV 7UP (16:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWUwNzcyMzRjMDUtZDg2NA/YTZhMzUyYjZkMzAtOGNkZg.jpg",
+    "group": "Cúp Liên đoàn bóng đá Đức",
+    "url": "https://live05.meung.app/live/78905744.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "97885009",
+    "tvg_id": "house-97885009",
+    "name": "Wurzburger Kickers vs 1. FC Köln - BLV WARRIOR (16:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MzkwNDEyYWVjOTEtZGM4Nw/MzllNDQ3M2FhMDUtMDc5Mg.jpg",
+    "group": "Cúp Liên đoàn bóng đá Đức",
+    "url": "https://live05.meung.app/live/97885009.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75748097",
+    "tvg_id": "house-75748097",
+    "name": "Preston Lions vs South Melbourne - BLV SPRITE (09:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MjAwMmI0MDJhMWUtZjFiNQ/ZDJlMGJhMWRjMGEtYjI2NQ.jpg",
+    "group": "Cúp bóng đá của Hiệp hội Bóng đá Úc",
+    "url": "https://live05.meung.app/live/75748097.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "02456966",
+    "tvg_id": "house-02456966",
+    "name": "Queensland Lions SC vs North Sunshine Eagles - BLV SODA (09:30 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NjBlZWE2MDY4ZTEtMjNjNw/OWUzMmZkYjk2ZjAtODI3NQ.png",
+    "group": "Cúp bóng đá của Hiệp hội Bóng đá Úc",
+    "url": "https://live05.meung.app/live/02456966.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "19919577",
+    "tvg_id": "house-19919577",
+    "name": "Kashima Antlers vs Suzuka - BLV POCARI (10:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ODc3MDVjYWI0NDItMTMzMw/ZThmZDYxZGMxOGQtNjYwZQ.jpg",
+    "group": "Emperors Cup",
+    "url": "https://live05.meung.app/live/19919577.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "Machida vs Grulla Morioka - BLV BÍ ĐAO (09:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Emperors Cup",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87379114",
+    "tvg_id": "house-87379114",
+    "name": "Tacoma Defiance vs Sporting Kansas City 2 - BLV Cozy (02:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NGZkODJiZmYyNTktNDFhZQ/MTBjZDlkZjE5ZGYtMDIwOQ.jpg",
+    "group": "Giải Bóng đá Dự bị Nữ Hoa Kỳ",
+    "url": "https://live05.meung.app/live/87379114.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14830711",
+    "tvg_id": "house-14830711",
+    "name": "FK Isloch Minsk vs Dinamo Minsk - BLV GIÀ LÀNG (14:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWJlYjRhNTYyZmYtZTM3MQ/ZjY3N2M5NzhkZDMtMWQyMw.jpg",
+    "group": "Giải Bóng đá Ngoại hạng Belarus",
+    "url": "https://live05.meung.app/live/14830711.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Baltika vs Rubin Kazan - BLV  KHÔNG ĐỘ (17:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "Giải Bóng đá Ngoại hạng Nga",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "49572724",
+    "tvg_id": "house-49572724",
+    "name": "Kamaz Naberezhnye Chelny vs FK Sochi - BLV REDBULL (14:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.k8v4dh4.app/web/image/YzY0ZjM0YTFiNWEtZDMxZA/ZWVlMGJjMjc4ZTItM2EwMQ.jpg",
+    "group": "Giải Bóng đá Quốc gia Nga",
+    "url": "https://live05.meung.app/live/49572724.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87547578",
+    "tvg_id": "house-87547578",
+    "name": "Club Atletico Tigre vs Central Cordoba SDE - BLV MOUNTAIN DEW (22:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NDU2ODM5ZDZhY2QtOTg5Ng/MjU3MDJjNmI3ZDctMDk2Yg.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Argentina",
+    "url": "https://live05.meung.app/live/87547578.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "90865415",
+    "tvg_id": "house-90865415",
+    "name": "Lanus vs Argentinos Jrs - BLV 247 (00:15 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OWEyYWQ1NDcwZDAtNDRlMg/YTY4NDZhZTY5ZDEtMGJmOQ.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Argentina",
+    "url": "https://live05.meung.app/live/90865415.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "82054853",
+    "tvg_id": "house-82054853",
+    "name": "Talleres Cordoba vs Rosario Central - BLV ROCKSTAR (00:15 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZTY1M2Y4MzAxZTItZGRhYw/NTA1MTQ5Y2RlOGMtMmQyYg.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Argentina",
+    "url": "https://live05.meung.app/live/82054853.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75915087",
+    "tvg_id": "house-75915087",
+    "name": "Gil Vicente vs Casa Pia AC - BLV MONSTER (19:15 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZmNmM2FmOGQwNmQtOWI2MQ/ZmU2Y2FjNGFiYTAtNDc2NA.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Bồ Đào Nha",
+    "url": "https://live05.meung.app/live/75915087.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "Malaga vs Dep. La Coruna - BLV BÍ ĐAO (19:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Tây Ban Nha",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "49572724",
+    "tvg_id": "house-49572724",
+    "name": "Osasuna vs Levante - BLV REDBULL (17:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.k8v4dh4.app/web/image/YzY0ZjM0YTFiNWEtZDMxZA/ZWVlMGJjMjc4ZTItM2EwMQ.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Tây Ban Nha",
+    "url": "https://live05.meung.app/live/49572724.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87379114",
+    "tvg_id": "house-87379114",
+    "name": "Valencia CF vs Real Betis Balompié - BLV Cozy (19:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NGZkODJiZmYyNTktNDFhZQ/MTBjZDlkZjE5ZGYtMDIwOQ.jpg",
+    "group": "Giải Bóng đá Vô địch Quốc gia Tây Ban Nha",
+    "url": "https://live05.meung.app/live/87379114.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "Daejeon vs Ulsan Hyundai - BLV STING (10:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Giải K1 Hàn Quốc",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "82054853",
+    "tvg_id": "house-82054853",
+    "name": "FC Anyang vs Incheon United - BLV ROCKSTAR (10:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZTY1M2Y4MzAxZTItZGRhYw/NTA1MTQ5Y2RlOGMtMmQyYg.jpg",
+    "group": "Giải K1 Hàn Quốc",
+    "url": "https://live05.meung.app/live/82054853.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "07808742",
+    "tvg_id": "house-07808742",
+    "name": "Gangwon vs Gwangju FC - BLV SAMURAI (10:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDQzOWUyYmNkNWItM2JkZg/ODgyMjBjMDgzMGEtYzEzZg.jpg",
+    "group": "Giải K1 Hàn Quốc",
+    "url": "https://live05.meung.app/live/07808742.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "90865415",
+    "tvg_id": "house-90865415",
+    "name": "Jeju Utd vs Pohang Steelers - BLV 247 (10:30 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OWEyYWQ1NDcwZDAtNDRlMg/YTY4NDZhZTY5ZDEtMGJmOQ.jpg",
+    "group": "Giải K1 Hàn Quốc",
+    "url": "https://live05.meung.app/live/90865415.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "78905744",
+    "tvg_id": "house-78905744",
+    "name": "Seoul vs Bucheon FC 1995 - BLV 7UP (10:30 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWUwNzcyMzRjMDUtZDg2NA/YTZhMzUyYjZkMzAtOGNkZg.jpg",
+    "group": "Giải K1 Hàn Quốc",
+    "url": "https://live05.meung.app/live/78905744.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "Smouha vs Asyut Petroleum - BLV BÍ ĐAO (14:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Giải Ngoại hạng Ai Cập",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "07808742",
+    "tvg_id": "house-07808742",
+    "name": "Brondby vs Silkeborg - BLV SAMURAI (17:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDQzOWUyYmNkNWItM2JkZg/ODgyMjBjMDgzMGEtYzEzZg.jpg",
+    "group": "Giải Ngoại hạng Đan Mạch",
+    "url": "https://live05.meung.app/live/07808742.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75915087",
+    "tvg_id": "house-75915087",
+    "name": "Malmo FF vs Djurgarden - BLV MONSTER (17:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZmNmM2FmOGQwNmQtOWI2MQ/ZmU2Y2FjNGFiYTAtNDc2NA.jpg",
+    "group": "Giải Vô địch Quốc gia Thụy Điển",
+    "url": "https://live05.meung.app/live/75915087.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87547578",
+    "tvg_id": "house-87547578",
+    "name": "Independiente del Valle vs Deportes Tolima - BLV MOUNTAIN DEW (00:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NDU2ODM5ZDZhY2QtOTg5Ng/MjU3MDJjNmI3ZDctMDk2Yg.jpg",
+    "group": "Giải Vô địch các Câu lạc bộ Nam Mỹ",
+    "url": "https://live05.meung.app/live/87547578.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "Botosani vs FK Csikszereda Miercurea Ciuc - BLV PEPSI (15:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "Giải Vô địch quốc gia Romania",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "49572724",
+    "tvg_id": "house-49572724",
+    "name": "Abha vs Al Khaleej - BLV REDBULL (16:05 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.k8v4dh4.app/web/image/YzY0ZjM0YTFiNWEtZDMxZA/ZWVlMGJjMjc4ZTItM2EwMQ.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/49572724.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "90865415",
+    "tvg_id": "house-90865415",
+    "name": "Al Ettifaq vs Al-Nassr - BLV 247 (18:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OWEyYWQ1NDcwZDAtNDRlMg/YTY4NDZhZTY5ZDEtMGJmOQ.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/90865415.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "Al Ettifaq vs Al-Nassr - BLV BÍ ĐAO (18:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "16226575",
+    "tvg_id": "house-16226575",
+    "name": "Al Faisaly Harmah vs Al Fateh - BLV FANTA (16:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZjJlODQzOTVmNjYtM2QzNw/NmRiMTZhNTJlNjYtOGM2ZQ.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/16226575.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "Al-Ittihad FC vs Al Hazm - BLV PEPSI (18:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "NEOM Sports Club vs Al Qadisiya - BLV BÍ ĐAO (16:40 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Giải Vô địch quốc gia Ả-rập Xê-út",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "Auda vs Liepaja - BLV PEPSI (16:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "Giải bóng đá Cao cấp Latvia",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87379114",
+    "tvg_id": "house-87379114",
+    "name": "Deportivo Madryn vs Godoy Cruz - BLV Cozy (22:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NGZkODJiZmYyNTktNDFhZQ/MTBjZDlkZjE5ZGYtMDIwOQ.jpg",
+    "group": "Giải bóng đá Hạng nhì Argentina",
+    "url": "https://live05.meung.app/live/87379114.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87547578",
+    "tvg_id": "house-87547578",
+    "name": "Atletico Clube Goianiense vs Botafogo - BLV MOUNTAIN DEW (22:30 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NDU2ODM5ZDZhY2QtOTg5Ng/MjU3MDJjNmI3ZDctMDk2Yg.jpg",
+    "group": "Giải bóng đá Hạng nhì Brasil",
+    "url": "https://live05.meung.app/live/87547578.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75748097",
+    "tvg_id": "house-75748097",
+    "name": "Botafogo RJ vs Athletico-PR - BLV SPRITE (23:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MjAwMmI0MDJhMWUtZjFiNQ/ZDJlMGJhMWRjMGEtYjI2NQ.jpg",
+    "group": "Giải bóng đá Hạng nhất Brasil",
+    "url": "https://live05.meung.app/live/75748097.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "78905744",
+    "tvg_id": "house-78905744",
+    "name": "Fulham vs Chelsea - BLV 7UP (19:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWUwNzcyMzRjMDUtZDg2NA/YTZhMzUyYjZkMzAtOGNkZg.jpg",
+    "group": "Giải bóng đá Ngoại hạng Anh",
+    "url": "https://live05.meung.app/live/78905744.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "33982309",
+    "tvg_id": "house-33982309",
+    "name": "Fulham vs Chelsea - BLV REVIVE (19:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGNhNTc0OTZhNTQtNDE3NA/MzUzMTg2NTM3NTctYWRlMw.jpg",
+    "group": "Giải bóng đá Ngoại hạng Anh",
+    "url": "https://live05.meung.app/live/33982309.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "97885009",
+    "tvg_id": "house-97885009",
+    "name": "Fulham vs Chelsea - BLV WARRIOR (19:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/MzkwNDEyYWVjOTEtZGM4Nw/MzllNDQ3M2FhMDUtMDc5Mg.jpg",
+    "group": "Giải bóng đá Ngoại hạng Anh",
+    "url": "https://live05.meung.app/live/97885009.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "02456966",
+    "tvg_id": "house-02456966",
+    "name": "A.S. Roma vs ACF Fiorentina - BLV SODA (18:45 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NjBlZWE2MDY4ZTEtMjNjNw/OWUzMmZkYjk2ZjAtODI3NQ.png",
+    "group": "Giải bóng đá Serie A Italia",
+    "url": "https://live05.meung.app/live/02456966.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "33982309",
+    "tvg_id": "house-33982309",
+    "name": "Bologna F.C. 1909 vs S.S. Lazio - BLV REVIVE (16:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGNhNTc0OTZhNTQtNDE3NA/MzUzMTg2NTM3NTctYWRlMw.jpg",
+    "group": "Giải bóng đá Serie A Italia",
+    "url": "https://live05.meung.app/live/33982309.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "33982309",
+    "tvg_id": "house-33982309",
+    "name": "Estoril U23 vs Moreirense U23 - BLV REVIVE (10:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGNhNTc0OTZhNTQtNDE3NA/MzUzMTg2NTM3NTctYWRlMw.jpg",
+    "group": "Giải bóng đá U23 Bồ Đào Nha",
+    "url": "https://live05.meung.app/live/33982309.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "78905744",
+    "tvg_id": "house-78905744",
+    "name": "Việt Nam vs Thái Lan - BLV 7UP (13:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWUwNzcyMzRjMDUtZDg2NA/YTZhMzUyYjZkMzAtOGNkZg.jpg",
+    "group": "Giải bóng đá Đông Nam Á",
+    "url": "https://live05.meung.app/live/78905744.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14830711",
+    "tvg_id": "house-14830711",
+    "name": "Việt Nam vs Thái Lan - BLV GIÀ LÀNG (13:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NWJlYjRhNTYyZmYtZTM3MQ/ZjY3N2M5NzhkZDMtMWQyMw.jpg",
+    "group": "Giải bóng đá Đông Nam Á",
+    "url": "https://live05.meung.app/live/14830711.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "33982309",
+    "tvg_id": "house-33982309",
+    "name": "Việt Nam vs Thái Lan - BLV REVIVE (13:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGNhNTc0OTZhNTQtNDE3NA/MzUzMTg2NTM3NTctYWRlMw.jpg",
+    "group": "Giải bóng đá Đông Nam Á",
+    "url": "https://live05.meung.app/live/33982309.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "02456966",
+    "tvg_id": "house-02456966",
+    "name": "Việt Nam vs Thái Lan - BLV SODA (13:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NjBlZWE2MDY4ZTEtMjNjNw/OWUzMmZkYjk2ZjAtODI3NQ.png",
+    "group": "Giải bóng đá Đông Nam Á",
+    "url": "https://live05.meung.app/live/02456966.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "49572724",
+    "tvg_id": "house-49572724",
+    "name": "CSD Municipal vs Motagua - BLV REDBULL (02:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.k8v4dh4.app/web/image/YzY0ZjM0YTFiNWEtZDMxZA/ZWVlMGJjMjc4ZTItM2EwMQ.jpg",
+    "group": "Giải vô địch Bắc Mỹ, Trung Mỹ và vùng Caraibes",
+    "url": "https://live05.meung.app/live/49572724.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Cartagines vs CD FAS - BLV  KHÔNG ĐỘ (02:30 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "Giải vô địch Bắc Mỹ, Trung Mỹ và vùng Caraibes",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Johor Darul Takzim vs Kelantan Red Warrior - BLV  KHÔNG ĐỘ (12:15 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "Giải vô địch Malaysia",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "Kuala Lumpur City FC vs Kuching City FC - BLV PEPSI (13:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "Giải vô địch Malaysia",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "82054853",
+    "tvg_id": "house-82054853",
+    "name": "Sabah vs Star City - BLV ROCKSTAR (12:15 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZTY1M2Y4MzAxZTItZGRhYw/NTA1MTQ5Y2RlOGMtMmQyYg.jpg",
+    "group": "Giải vô địch Malaysia",
+    "url": "https://live05.meung.app/live/82054853.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "99121525",
+    "tvg_id": "house-99121525",
+    "name": "Everton vs U. De Concepcion - BLV BÍ ĐAO (23:30 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OGZhNGQ0MzRjZWEtOWUyYg/ZjY1YTRiMmY3NDMtZDI3NA.jpg",
+    "group": "Giải vô địch quốc gia Chile",
+    "url": "https://live05.meung.app/live/99121525.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "07808742",
+    "tvg_id": "house-07808742",
+    "name": "Din. Samarkand vs Pakhtakor - BLV SAMURAI (15:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDQzOWUyYmNkNWItM2JkZg/ODgyMjBjMDgzMGEtYzEzZg.jpg",
+    "group": "Giải vô địch quốc gia Uzbekistan",
+    "url": "https://live05.meung.app/live/07808742.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "FK Andijon vs Xorazm Urganch - BLV STING (14:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Giải vô địch quốc gia Uzbekistan",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Kuruvchi Kokand Qoqon vs Buxoro FK - BLV  KHÔNG ĐỘ (14:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "Giải vô địch quốc gia Uzbekistan",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "14707124",
+    "tvg_id": "house-14707124",
+    "name": "Verona U20 vs Cesena U20 - BLV STING (15:00 24/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/Mjk2OGQ3OGU0ZDktYTE1OQ/OTcxNDQ0MjdhMmItNzllNQ.jpg",
+    "group": "Giải vô địch trẻ 1 Ý",
+    "url": "https://live05.meung.app/live/14707124.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "19919577",
+    "tvg_id": "house-19919577",
+    "name": "Connecticut Sun vs Chicago Sky - BLV POCARI (23:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ODc3MDVjYWI0NDItMTMzMw/ZThmZDYxZGMxOGQtNjYwZQ.jpg",
+    "group": "Hiệp hội bóng rổ quốc gia nữ",
+    "url": "https://live05.meung.app/live/19919577.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "82054853",
+    "tvg_id": "house-82054853",
+    "name": "Dallas Wings vs Portland Fire - BLV ROCKSTAR (00:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZTY1M2Y4MzAxZTItZGRhYw/NTA1MTQ5Y2RlOGMtMmQyYg.jpg",
+    "group": "Hiệp hội bóng rổ quốc gia nữ",
+    "url": "https://live05.meung.app/live/82054853.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "19919577",
+    "tvg_id": "house-19919577",
+    "name": "Los Angeles Sparks vs Atlanta Dream - BLV POCARI (02:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ODc3MDVjYWI0NDItMTMzMw/ZThmZDYxZGMxOGQtNjYwZQ.jpg",
+    "group": "Hiệp hội bóng rổ quốc gia nữ",
+    "url": "https://live05.meung.app/live/19919577.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "87379114",
+    "tvg_id": "house-87379114",
+    "name": "Minnesota Lynx vs Golden State Valkyries - BLV Cozy (00:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/NGZkODJiZmYyNTktNDFhZQ/MTBjZDlkZjE5ZGYtMDIwOQ.jpg",
+    "group": "Hiệp hội bóng rổ quốc gia nữ",
+    "url": "https://live05.meung.app/live/87379114.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "90865415",
+    "tvg_id": "house-90865415",
+    "name": "Phoenix Mercury vs Washington Mystics - BLV 247 (02:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/OWEyYWQ1NDcwZDAtNDRlMg/YTY4NDZhZTY5ZDEtMGJmOQ.jpg",
+    "group": "Hiệp hội bóng rổ quốc gia nữ",
+    "url": "https://live05.meung.app/live/90865415.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "59444581",
+    "tvg_id": "house-59444581",
+    "name": "Rapid Wien vs Hearts - BLV PEPSI (16:45 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZDRhYWQ5ZGYwOWMtYmZkZQ/NWYzNTU0OTNlYmQtZjFiYw.jpg",
+    "group": "UEFA Europa Conference League",
+    "url": "https://live05.meung.app/live/59444581.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "75915087",
+    "tvg_id": "house-75915087",
+    "name": "Druzhba Maykop vs Neftyanik Izberbash - BLV MONSTER (15:00 26/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/ZmNmM2FmOGQwNmQtOWI2MQ/ZmU2Y2FjNGFiYTAtNDc2NA.jpg",
+    "group": "cúp Nga",
+    "url": "https://live05.meung.app/live/75915087.m3u8",
+    "type": "hls"
+  },
+  {
+    "id": "41943555",
+    "tvg_id": "house-41943555",
+    "name": "Kirov vs Amkar - BLV  KHÔNG ĐỘ (14:00 25/08)",
+    "logo": "https://d3j9d91vxmbmsx.cloudfront.net/web/image/YzlhMTQzNGM2MGUtOTQwYw/NmFmYTczOTNjZGEtZTFkMQ.jpg",
+    "group": "cúp Nga",
+    "url": "https://live05.meung.app/live/41943555.m3u8",
     "type": "hls"
   }
 ]
