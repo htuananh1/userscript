@@ -3,30 +3,32 @@
 # SOCOLIVE LIVE PLAYLIST
 # ======================================
 # Status       : ONLINE
-# Channels     : 11
-# Updated      : 24/08/2026 15:33:33
+# Channels     : 12
+# Updated      : 24/08/2026 15:34:32
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
 #EXTINF:-1 tvg-id="room-133277" tvg-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-title="SocoLive",Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt
-https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=c62a57c40931024dd0849d40d6c039da&txTime=6a8c561c
+https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=b9dd8c047635be833371dc896129a400&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-133824" tvg-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-title="SocoLive",Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào
-https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=a950d1ebe137efe153d9536cce382886&txTime=6a8c561c
+https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=de3e046e66398e740c4c6d1f0d46695f&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-152898" tvg-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-title="SocoLive",Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ
-https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=b2922853ec98530f4e9692bc51750b7d&txTime=6a8c561c
+https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=67498da147535f1b52914d7acb43732d&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-179093" tvg-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-title="SocoLive",Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ
-https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=40e0c14f6728dafe7eb2df9c6d11aaf0&txTime=6a8c561c
+https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=60a8839fc712e0c06dddfa2484388ac2&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-343500" tvg-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-title="SocoLive",Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo
-https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=a4bfabc56b72acfc02212f8a710152ca&txTime=6a8c561c
+https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=f6c2c96bf0692c0b0df557f69bdab9ab&txTime=6a8c5658
+#EXTINF:-1 tvg-id="room-356042" tvg-logo="https://sta.vnres.co/file/common/20260729/9d1142c80b552213b4765003753c881b.jpg" group-logo="https://sta.vnres.co/file/common/20260729/9d1142c80b552213b4765003753c881b.jpg" group-title="SocoLive",MPBL: Negros Hacienderos vs Mindoro Tamaraws - A CHÈ
+https://pull.niur.live/live/stream-356042_lhd.m3u8?txSecret=beab4481be13ec661453cedc0d770304&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-558264" tvg-logo="https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg" group-logo="https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg" group-title="SocoLive",WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - HUNTER
-https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=8591855e35811b5d8fc53e443c60164f&txTime=6a8c561c
+https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=5a93029415dff47d4c0d9eae01fc54af&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-9912079" tvg-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-title="SocoLive",Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông
-https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=5fefd3c34cfd199ecedc0c5f365fad2c&txTime=6a8c561c
+https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=205dd4a5a03633820984d3bb677c3f6d&txTime=6a8c5658
 #EXTINF:-1 tvg-id="room-9912099" tvg-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-title="SocoLive",WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - KING
-https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787563980-0-0-0ffcb669a3d20578f46ccf3ec7e6d4c7
+https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787564040-0-0-2336763e734e05e44cb67d79431794f1
 #EXTINF:-1 tvg-id="room-9912106" tvg-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-title="SocoLive",WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - BRIAN
-https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787563980-0-0-1f0f00664c67b8e321af9063d43ea4ac
+https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787564040-0-0-b70160990b43e53194e4d29233f803c4
 #EXTINF:-1 tvg-id="room-9912112" tvg-logo="https://sta.vnres.co/file/common/20260527/86e2d6082d35b8c905da5b66c29d4e3d.jpeg" group-logo="https://sta.vnres.co/file/common/20260527/86e2d6082d35b8c905da5b66c29d4e3d.jpeg" group-title="SocoLive",MPBL: Negros Hacienderos vs Mindoro Tamaraws - BLV HENRY
-https://pull.niues.live/live/stream-9912112_lhd.m3u8?auth_key=1787563980-0-0-92160079971d618642268b7d0fe1dbcb
+https://pull.niues.live/live/stream-9912112_lhd.m3u8?auth_key=1787564040-0-0-a027cf14d9ebc63a3773b149da3af7c2
 #EXTINF:-1 tvg-id="room-9912115" tvg-logo="https://sta.vnres.co/file/common/20250309/327aeb19e28284f148ce2d4cd8b30472.jpg" group-logo="https://sta.vnres.co/file/common/20250309/327aeb19e28284f148ce2d4cd8b30472.jpg" group-title="SocoLive",MPBL: Negros Hacienderos vs Mindoro Tamaraws - CHAN SENA
-https://pull.niues.live/live/stream-9912115_lhd.m3u8?auth_key=1787563980-0-0-f98ca256e937ca1b914856d5052e06d6
+https://pull.niues.live/live/stream-9912115_lhd.m3u8?auth_key=1787564040-0-0-84179dc7fd15b365f5cca4dde4fcc4e4
