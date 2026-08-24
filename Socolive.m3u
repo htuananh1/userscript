@@ -3,26 +3,24 @@
 # SOCOLIVE LIVE PLAYLIST
 # ======================================
 # Status       : ONLINE
-# Channels     : 9
-# Updated      : 24/08/2026 21:23:37
+# Channels     : 8
+# Updated      : 24/08/2026 21:28:37
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
 #EXTINF:-1 tvg-id="room-121289" tvg-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - Casting
-https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=9539ae0a108a912c7695b228b51ae796&txTime=6a8ca824
-#EXTINF:-1 tvg-id="room-256080" tvg-logo="https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg" group-logo="https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV CUỘI
-https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787584980-0-0-705f015e154f61b1f57cd5fe09c911f8
+https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=e31b8923aaaac121659260cd8ab2a2e7&txTime=6a8ca950
 #EXTINF:-1 tvg-id="room-610518" tvg-logo="https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg" group-logo="https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - XUÂN TÓC ĐỎ
-https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=fceb5c8c679eff261ed5c47582b42078&txTime=6a8ca824
+https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=93e06085b0eb7471087fd95bff84462d&txTime=6a8ca950
 #EXTINF:-1 tvg-id="room-619108" tvg-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA
-https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787584980-0-0-2356472b684b0b71f9fbc69009cbf344
+https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787585280-0-0-1208b9783a680f46dd095101f6af59d4
 #EXTINF:-1 tvg-id="room-619561" tvg-logo="https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg" group-logo="https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - BÚN ĐẬU
-https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787584980-0-0-55286a6964a5471e84ab98b88af28e31
+https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787585280-0-0-68d3646698c8f8a24018ddfae9893666
 #EXTINF:-1 tvg-id="room-621840" tvg-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3
-https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=e51864fd31ba198c1c6b1638f18668ab&txTime=6a8ca824
+https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=c87a16be9c13ab41c8cc77cd47e23a0b&txTime=6a8ca950
 #EXTINF:-1 tvg-id="room-622602" tvg-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - KENCHU
-https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787584980-0-0-6d12cb895a77df1dcf833d37a00cbc4c
+https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787585280-0-0-dbf28da5a69b0763042b727e8f240ebe
 #EXTINF:-1 tvg-id="room-9912008" tvg-logo="https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png" group-logo="https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - BLV TOMIA
-https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787584980-0-0-fd570412cdc0b2fcc95c80313e82878b
+https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787585280-0-0-93dd547634cb358dedf89c1195126a56
 #EXTINF:-1 tvg-id="room-9912060" tvg-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - ZIDANE
-https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=ac7970ec4c5e8931031de1813de83cfe&txTime=6a8ca824
+https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=a5006b8744e075eda0cfff76d26ae1ef&txTime=6a8ca950
