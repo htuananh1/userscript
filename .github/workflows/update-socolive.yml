@@ -1,0 +1,33 @@
+name: Update Socolive IPTV JSON
+
+on:
+  schedule:
+    # Signed stream URLs expire, so refresh frequently.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update playlist
+        run: python3 .github/scripts-copy/xxx.py
+
+      - name: Commit changed playlist
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.>
+          git add Socolive.json
+          if git diff --cached --quiet; then
+            echo "Socolive.json unchanged"
+            exit 0
+          fi
+          git commit -m "chore: update Socolive live sources"
+          git push
