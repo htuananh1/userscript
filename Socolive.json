@@ -5,7 +5,7 @@
     "name": "Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt",
     "logo": "https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=4bcbe795aafa09a94d07f8fad58b7728\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=40cc2510472a80caa73261e0ff63c856\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -14,7 +14,7 @@
     "name": "Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào",
     "logo": "https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=eb7e953372c791441ffe653e907f0e78\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=9b3a5d29c659daa802b2eb8b96c9c6e9\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -23,7 +23,7 @@
     "name": "Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ",
     "logo": "https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=f0222e1a826c3d28e0125bff5345e427\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=78b9316ed5c8d9d6587a8cb8f253da44\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -32,7 +32,7 @@
     "name": "Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ",
     "logo": "https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=46889d67c113ff0ef2cef52896761cb4\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=a2b91cf699286c993562cab47b58f94a\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -41,7 +41,16 @@
     "name": "Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo",
     "logo": "https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=cdf3c74ef496be456a1e0595d449a458\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=e13428d413e4ccb23595b262e055bb59\u0026txTime=6a8c8178",
+    "type": "hls"
+  },
+  {
+    "id": "558264",
+    "tvg_id": "room-558264",
+    "name": "WCBC: Sichuan Jinqiang vs Jiangsu Nangang - HUNTER",
+    "logo": "https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg",
+    "group": "SocoLive",
+    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=bb9098953689b382c15590f6e1f916f0\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -50,7 +59,7 @@
     "name": "Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông",
     "logo": "https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=27bd27e19b2cf0a5c19e402411c7da0d\u0026txTime=6a8c813c",
+    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=13433c0e029d5ab9e7739c737d9af608\u0026txTime=6a8c8178",
     "type": "hls"
   },
   {
@@ -59,7 +68,7 @@
     "name": "WCBC: Beijing Normal University vs Shandong Hi-Speed - KING",
     "logo": "https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575020-0-0-6f39a8d4fd201c7a00ee6febd0657341",
+    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575080-0-0-238262dce7c382c28f9fe3c62508c6c0",
     "type": "hls"
   },
   {
@@ -68,7 +77,7 @@
     "name": "WCBC: Beijing Normal University vs Shandong Hi-Speed - BRIAN",
     "logo": "https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787575020-0-0-bd1dd905b5936855aed5f93aec6d7901",
+    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787575080-0-0-7e45898b86db10fdfd973ad7c959212d",
     "type": "hls"
   }
 ]
