@@ -5,7 +5,7 @@
     "name": "Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt",
     "logo": "https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=125adb0a07dce9e700fea08b73f4dd4b\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=eb733d67612b2fb4410c3383d1e97f8b\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -14,7 +14,16 @@
     "name": "Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào",
     "logo": "https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=d46a705ef40a92840de1912bc735ffb9\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=17fae4e0a3c36a9488abe07ac17cdd4b\u0026txTime=6a8c8448",
+    "type": "hls"
+  },
+  {
+    "id": "152898",
+    "tvg_id": "room-152898",
+    "name": "Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ",
+    "logo": "https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png",
+    "group": "SocoLive",
+    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=3da7720bac50f04aed9bfa339fa32fe9\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -23,7 +32,7 @@
     "name": "Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ",
     "logo": "https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=46ec4c0e5014951993e84e1a808ebd91\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=9aceac9bf58342d4cbc7019cde9676d5\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -32,7 +41,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV CUỘI",
     "logo": "https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787575740-0-0-a0c5c2dbf87677bff8de08d282945790",
+    "url": "https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787575833-0-0-f8e82863f657d83d2744277da65aa6b6",
     "type": "hls"
   },
   {
@@ -41,7 +50,16 @@
     "name": "MAS SL: Sabah FC vs Star City - CÔNG CHẤT",
     "logo": "https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=a949763ff7a876623f10f0cd0e679ed7\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=6c911062ce86f295e2c224f69a8aa11b\u0026txTime=6a8c8448",
+    "type": "hls"
+  },
+  {
+    "id": "321443",
+    "tvg_id": "room-321443",
+    "name": "MAS SL: Sabah FC vs Star City - BLV GIÓ",
+    "logo": "https://sta.vnres.co/file/common/20260603/54289b9ef989aba74cff5bfdee1d4656.png",
+    "group": "SocoLive",
+    "url": "https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=e397a0f6174bef214a1138bf02ae10b0\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -50,7 +68,7 @@
     "name": "Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo",
     "logo": "https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=8cdec0c373c427a1e3f803685779cbf9\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=be52a9c72be0dada4931fe52e18c7f76\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -59,7 +77,7 @@
     "name": "WCBC: Sichuan Jinqiang vs Jiangsu Nangang - HUNTER",
     "logo": "https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=df78b9907ca0d9284f020289d85333cb\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=2300e50f64bb8803247d8f4660dcf1e9\u0026txTime=6a8c8469",
     "type": "hls"
   },
   {
@@ -68,7 +86,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV TAP",
     "logo": "https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=df80f1d2e5349d5457319086c544b2cb\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=8e74e2e00ab04feae85ec4f3bbefb2c4\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -77,7 +95,7 @@
     "name": "Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông",
     "logo": "https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=5951a958cc10f3228bbeba03e706ca94\u0026txTime=6a8c840c",
+    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=1d7bf7f0f9511fa13f23326def5078d0\u0026txTime=6a8c8448",
     "type": "hls"
   },
   {
@@ -86,7 +104,7 @@
     "name": "WCBC: Sichuan Jinqiang vs Jiangsu Nangang - KING",
     "logo": "https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575740-0-0-373cedf0cadc2fe6abd7e22674606f4d",
+    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575800-0-0-dbcc35a82934fedb1512cbbcd374aaf6",
     "type": "hls"
   },
   {
@@ -104,7 +122,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV ZOWIE",
     "logo": "https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787575740-0-0-e873412849f9c2b91ec4f41d3b7afd30",
+    "url": "https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787575800-0-0-cdfde9afe3a0389dab684034271d2aa4",
     "type": "hls"
   }
 ]
