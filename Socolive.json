@@ -5,7 +5,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - Casting",
     "logo": "https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=259e14616da554da945858ded7b94eec\u0026txTime=6a8caba8",
+    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=d4d962940ff05abef6b4bc0fd6255d81\u0026txTime=6a8cabe4",
     "type": "hls"
   },
   {
@@ -14,7 +14,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - XUÂN TÓC ĐỎ",
     "logo": "https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=1c6a34df40c8f8efd77e2bde1b959952\u0026txTime=6a8caba8",
+    "url": "https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=fbab1b4e31e0534c8a1ed297c0ecd789\u0026txTime=6a8cabe4",
     "type": "hls"
   },
   {
@@ -23,7 +23,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA",
     "logo": "https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787585880-0-0-34114eecdb06f8614ba47d7a9f9dd23c",
+    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787585940-0-0-b2a5ea1cda39ca295fa77056a6145a66",
     "type": "hls"
   },
   {
@@ -32,7 +32,16 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BÚN ĐẬU",
     "logo": "https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787585880-0-0-cf817ccf69ca98d9cb2c31aa33f74f58",
+    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787585940-0-0-a67f71ba4cd3c843b1039e0d1849c96a",
+    "type": "hls"
+  },
+  {
+    "id": "621840",
+    "tvg_id": "room-621840",
+    "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3",
+    "logo": "https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png",
+    "group": "SocoLive",
+    "url": "https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=bf8b4788551d118710e4285d24626edd\u0026txTime=6a8cabe4",
     "type": "hls"
   },
   {
@@ -41,7 +50,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - KENCHU",
     "logo": "https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787585880-0-0-60be1537b6845ae7e6759eec98940b89",
+    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787585940-0-0-56b85237e52124b9c073b98bcc81a193",
     "type": "hls"
   },
   {
@@ -50,7 +59,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BLV TOMIA",
     "logo": "https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787585880-0-0-b547d844336a6d745bf050349616ff72",
+    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787585940-0-0-2771c82d4f36f72dc870fafdd9ffd4f4",
     "type": "hls"
   },
   {
@@ -59,7 +68,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - ZIDANE",
     "logo": "https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=db43bff27c755554e5d419c7de74fe4e\u0026txTime=6a8caba8",
+    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=f69cd319bc41275bb8d84e65b4ceea32\u0026txTime=6a8cabe4",
     "type": "hls"
   }
 ]
