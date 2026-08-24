@@ -1,4 +1,4 @@
-name: Update Socolive IPTV JSON
+name: Update Socolive IPTV playlist
 
 on:
   schedule:
@@ -15,18 +15,23 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
 
       - name: Update playlist
-        run: python3 .github/scripts-copy/xxx.py
+        run: python .github/scripts/update_socolive.py
 
       - name: Commit changed playlist
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.>
-          git add Socolive.json
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Socolive.json Socolive.m3u
           if git diff --cached --quiet; then
-            echo "Socolive.json unchanged"
+            echo "Socolive playlist unchanged"
             exit 0
           fi
           git commit -m "chore: update Socolive live sources"
