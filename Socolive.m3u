@@ -3,34 +3,32 @@
 # SOCOLIVE LIVE PLAYLIST
 # ======================================
 # Status       : ONLINE
-# Channels     : 13
-# Updated      : 24/08/2026 21:03:37
+# Channels     : 12
+# Updated      : 24/08/2026 21:04:52
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
 #EXTINF:-1 tvg-id="room-121289" tvg-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - Casting
-https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=ec5a08f23f1de6caf8dae934ca4e2d98&txTime=6a8ca374
+https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=87e2061d342e557b9f68d678798b07c6&txTime=6a8ca3b0
 #EXTINF:-1 tvg-id="room-256080" tvg-logo="https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg" group-logo="https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV CUỘI
-https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787583780-0-0-cf55d7fa1bdc3b6daa13dcf295ba4b5c
+https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787583840-0-0-f34cdc8d700e4bda152d91b132ddad6b
 #EXTINF:-1 tvg-id="room-291277" tvg-logo="https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg" group-logo="https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - CÔNG CHẤT
-https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=ec1dcd96651570a608554c2463e963b9&txTime=6a8ca374
+https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=d60f13e242c3b65bd904fb013d99f09e&txTime=6a8ca3b0
 #EXTINF:-1 tvg-id="room-321443" tvg-logo="https://sta.vnres.co/file/common/20260603/54289b9ef989aba74cff5bfdee1d4656.png" group-logo="https://sta.vnres.co/file/common/20260603/54289b9ef989aba74cff5bfdee1d4656.png" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV GIÓ
-https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=cac0822c763550b2ec660044c70657df&txTime=6a8ca374
+https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=75c0272212bf4f72f1bda1bcd4e061c7&txTime=6a8ca3b0
 #EXTINF:-1 tvg-id="room-619108" tvg-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA
-https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787583780-0-0-1d013b48e437b6b951ee38894706272d
+https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787583840-0-0-8a60a5ac29e4a902830ab6ec9930d147
 #EXTINF:-1 tvg-id="room-619561" tvg-logo="https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg" group-logo="https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - BÚN ĐẬU
-https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787583780-0-0-1285470106cbcc591ed47f1c0ee3152b
-#EXTINF:-1 tvg-id="room-621840" tvg-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3
-https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=e3afa7dd0bed8eb21ea0af332ab99fa5&txTime=6a8ca374
+https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787583840-0-0-e91171ca547f798c6e78248ef8c54a34
 #EXTINF:-1 tvg-id="room-622602" tvg-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - KENCHU
-https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787583780-0-0-384229e8be179eec70915b67f8d2bc64
+https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787583840-0-0-b61040e0088222ee32e002c347d1735c
 #EXTINF:-1 tvg-id="room-9912008" tvg-logo="https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png" group-logo="https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - BLV TOMIA
-https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787583780-0-0-f6c18a091f73c4a3ef993f3073adad6a
+https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787583840-0-0-17b4c228128a699f902d88595fb7cb6f
 #EXTINF:-1 tvg-id="room-9912041" tvg-logo="https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg" group-logo="https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV TAP
-https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=758465dec6df6878b9aa8a86383f0670&txTime=6a8ca374
+https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=82468e900f01c7afe3ce1a3df81af6fb&txTime=6a8ca3b0
 #EXTINF:-1 tvg-id="room-9912060" tvg-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-title="SocoLive",UZB PFL: FK Kokand 1912 vs Buxoro FK - ZIDANE
-https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=e8ddfac87a287c6b783e8d5e3699ee41&txTime=6a8ca374
+https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=7bcf23cae30d0b4b7ce486c3c106e241&txTime=6a8ca3b0
 #EXTINF:-1 tvg-id="room-9912110" tvg-logo="https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png" group-logo="https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV ZOWIE
-https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787583780-0-0-ae3e6dcaf0f1b9041a70e2a12733ae59
+https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787583840-0-0-c8d92540ace9199eb81fa7efccb14cb7
 #EXTINF:-1 tvg-id="room-9912118" tvg-logo="https://sta.vnres.co/file/common/20260824/7f031d1ca981c4dc223b8eb7e6baa84b.jpg" group-logo="https://sta.vnres.co/file/common/20260824/7f031d1ca981c4dc223b8eb7e6baa84b.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - QUỐC KHÁNH
-https://pull.niur.live/live/stream-9912118_lhd.m3u8?txSecret=b2041458e3cde1996653f9866a037732&txTime=6a8ca374
+https://pull.niur.live/live/stream-9912118_lhd.m3u8?txSecret=e3723e4cb7044cf748db41df9fcd365a&txTime=6a8ca3b0
