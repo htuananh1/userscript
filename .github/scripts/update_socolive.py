@@ -1,93 +1,111 @@
 #!/usr/bin/env python3
-"""Fetch current public live rooms and write Socolive.json."""
+"""Fetch current Socolive IPTV streams and write Socolive.json."""
 
+import datetime
 import json
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
-API = "https://json.vnres.co"
-UA = "namhau-socolive-updater/1.0"
+API_URL = "https://api.gvapi.cc/api/matches"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 
-def fetch_jsonp(path, callback):
-    query = urlencode({"callback": callback})
-    request = Request(
-        f"{API}{path}?{query}",
-        headers={"Accept": "application/json", "User-Agent": UA},
-    )
+def fetch_matches():
+    request = Request(API_URL, headers={"User-Agent": UA, "Accept": "application/json"})
     with urlopen(request, timeout=20) as response:
-        text = response.read().decode("utf-8")
-    start = min((i for i in (text.find("{"), text.find("[")) if i >= 0), default=-1)
-    end = max(text.rfind("}"), text.rfind("]"))
-    if start < 0 or end < start:
-        raise ValueError(f"invalid JSONP response for {path}")
-    return json.loads(text[start : end + 1])
-
-
-def fetch_detail(room):
-    room_num = str(room.get("roomNum", ""))
-    if not room_num:
-        return None
-    data = fetch_jsonp(f"/room/{quote(room_num)}/detail.json", "detail")
-    stream = data.get("data", {}).get("stream", {}) or {}
-    url = stream.get("hdM3u8") or stream.get("m3u8")
-    kind = "hls"
-    if not url:
-        url = stream.get("hdFlv") or stream.get("flv")
-        kind = "flv"
-    if not url:
-        return None
-
-    detail_room = data.get("data", {}).get("room", {}) or {}
-    title = room.get("title") or detail_room.get("title") or f"Room {room_num}"
-    anchor = (room.get("anchor") or {}).get("nickName") or (detail_room.get("anchor") or {}).get("nickName")
-    if anchor:
-        title = f"{title} - {anchor}"
-    logo = room.get("cover") or detail_room.get("cover") or ""
-    return {
-        "id": room_num,
-        "tvg_id": f"room-{room_num}",
-        "name": title,
-        "logo": logo,
-        "group": "SocoLive",
-        "url": url,
-        "type": kind,
-    }
+        raw_data = response.read().decode("utf-8")
+    data = json.loads(raw_data)
+    if data.get("status") != 0:
+        raise ValueError(f"API returned non-zero status: {data.get('status')}")
+    return data.get("data", {})
 
 
 def main():
-    payload = fetch_jsonp("/all_live_rooms.json", "all_live_rooms")
-    groups = payload.get("data", {}) or {}
-    unique = {}
-    for value in groups.values():
-        if not isinstance(value, list):
-            continue
-        for room in value:
-            if room.get("roomNum") and room.get("liveStatus") == 1:
-                unique.setdefault(str(room["roomNum"]), room)
+    try:
+        matches = fetch_matches()
+    except Exception as exc:
+        print(f"Error fetching Socolive matches: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     channels = []
-    errors = []
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        futures = [pool.submit(fetch_detail, room) for room in unique.values()]
-        for future in as_completed(futures):
-            try:
-                channel = future.result()
-                if channel:
-                    channels.append(channel)
-            except Exception as exc:  # keep one bad room from stopping the update
-                errors.append(str(exc))
+    seen = set()
 
-    channels.sort(key=lambda item: item["id"])
+    for match_key, match in matches.items():
+        if not isinstance(match, dict):
+            continue
+
+        home = (match.get("homeTeamName") or "").strip()
+        away = (match.get("awayTeamName") or "").strip()
+        comp = (match.get("competitionName") or "").strip()
+        match_time_ts = match.get("matchTime")
+
+        time_str = ""
+        if match_time_ts:
+            try:
+                dt = datetime.datetime.fromtimestamp(match_time_ts)
+                time_str = dt.strftime("%H:%M %d/%m")
+            except Exception:
+                pass
+
+        if home and away:
+            match_title = f"{home} vs {away}"
+        else:
+            match_title = match.get("match_id") or match_key
+
+        group_title = comp if comp else "Socolive"
+
+        anchors = match.get("anchorAppointmentVoList") or []
+        for anchor in anchors:
+            if not isinstance(anchor, dict):
+                continue
+
+            house_id = str(anchor.get("houseId") or "").strip()
+            blv_name = (anchor.get("nickName") or "").strip()
+
+            m3u8 = (anchor.get("playStreamAddress2") or "").strip()
+            if not m3u8 and anchor.get("servers"):
+                servers = anchor.get("servers")
+                if isinstance(servers, list) and len(servers) > 0:
+                    m3u8 = str(servers[0]).strip()
+
+            if not m3u8:
+                continue
+
+            title = match_title
+            if blv_name:
+                title = f"{title} - {blv_name}"
+            if time_str:
+                title = f"{title} ({time_str})"
+
+            logo = (
+                anchor.get("userImage")
+                or match.get("homeTeamLogo")
+                or match.get("competitionLogo")
+                or ""
+            )
+
+            dedup_key = (house_id, m3u8, title)
+            if dedup_key in seen:
+                continue
+            seen.add(dedup_key)
+
+            channels.append({
+                "id": house_id if house_id else f"match-{match_key}",
+                "tvg_id": f"house-{house_id}" if house_id else f"tvg-{match_key}",
+                "name": title,
+                "logo": logo,
+                "group": group_title,
+                "url": m3u8,
+                "type": "hls",
+            })
+
+    channels.sort(key=lambda item: (item["group"], item["name"]))
+
     with open("Socolive.json", "w", encoding="utf-8", newline="\n") as output:
         json.dump(channels, output, ensure_ascii=False, indent=2)
         output.write("\n")
 
-    print(f"reported={sum(len(v) for v in groups.values() if isinstance(v, list))} unique={len(unique)} streams={len(channels)}")
-    for error in errors:
-        print(f"warning: {error}", file=sys.stderr)
+    print(f"Successfully processed {len(matches)} matches and generated {len(channels)} IPTV channels.")
 
 
 if __name__ == "__main__":
