@@ -5,7 +5,7 @@
     "name": "Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt",
     "logo": "https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=46743f4e45b1b29be313753b807cebdb\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=34f09477d774e512a728f69bfeaf4de7\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -14,7 +14,7 @@
     "name": "Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào",
     "logo": "https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=d7ceea7844c24f3d4ae10586b2c08638\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=024f791d352b9667811a5dc050af7bb9\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -23,7 +23,7 @@
     "name": "Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ",
     "logo": "https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=9793d4dc9a5aa7a525404388e31bb84f\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=0c0322068d5bc8bcd420585b57d57c00\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -32,7 +32,7 @@
     "name": "Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ",
     "logo": "https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=b5b354cacfb326ca65a800fb57a465ca\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=46de285ed06ac93e9853ba319444cef2\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -41,7 +41,7 @@
     "name": "Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo",
     "logo": "https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=cff7defeea62771d03a0677ceeb75b9e\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=dce4d46f5ebb7c46608d8b1151858738\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -50,7 +50,7 @@
     "name": "WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - HUNTER",
     "logo": "https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=92ae320083be155a99c4ba678e8fbf7a\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=ffae25c122a78475b74c83807a17fed2\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -59,7 +59,7 @@
     "name": "Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông",
     "logo": "https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=f817138a7566b7279fb67845ec8cc9d2\u0026txTime=6a8c4fc8",
+    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=b0aea3a7bd1bbbbc67ecf9cfa2336d42\u0026txTime=6a8c5004",
     "type": "hls"
   },
   {
@@ -68,7 +68,7 @@
     "name": "WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - KING",
     "logo": "https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787562360-0-0-635fff5430bb9db04ed10357cbd28615",
+    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787562420-0-0-9186bbd1593417b908a091846cdac612",
     "type": "hls"
   },
   {
@@ -77,7 +77,7 @@
     "name": "WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - BRIAN",
     "logo": "https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787562360-0-0-a85e0dbd6cdba3d29a027beb7acd419c",
+    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787562420-0-0-2372621e467f71ee0f335d3df62e2ad4",
     "type": "hls"
   }
 ]
