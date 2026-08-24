@@ -4,85 +4,85 @@
 # ======================================
 # Status       : ONLINE
 # Channels     : 39
-# Updated      : 24/08/2026 23:12:38
+# Updated      : 24/08/2026 23:22:37
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
-#EXTINF:-1 tvg-id="room-121289" tvg-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-logo="https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - Casting
-https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=ef1c8dc7b48adb17aeeb70585314a9d2&txTime=6a8cc1b0
 #EXTINF:-1 tvg-id="room-273736" tvg-logo="https://sta.vnres.co/file/common/20260609/b3e04b0f7d210d67052a911512e39f54.jpg" group-logo="https://sta.vnres.co/file/common/20260609/b3e04b0f7d210d67052a911512e39f54.jpg" group-title="SocoLive",ITA D1: Bologna vs Lazio - CHÍ PHÈO
-https://pull.niues.live/live/stream-273736_lhd.m3u8?auth_key=1787591520-0-0-beedb0ccab434012f7b6557ff0a2e52f
+https://pull.niues.live/live/stream-273736_lhd.m3u8?auth_key=1787592120-0-0-e63a30d7331886c90a4ba5a4e189f7a9
 #EXTINF:-1 tvg-id="room-400722" tvg-logo="https://sta.vnres.co/file/common/20260710/2986a2ea0d4ca6c5c2462ea5eca7ae73.jpg" group-logo="https://sta.vnres.co/file/common/20260710/2986a2ea0d4ca6c5c2462ea5eca7ae73.jpg" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - TUẤN CÙI
-https://pull.niues.live/live/stream-400722_lhd.m3u8?auth_key=1787591520-0-0-860c483df69d5f5fb136aea37ad6672b
+https://pull.niues.live/live/stream-400722_lhd.m3u8?auth_key=1787592120-0-0-6f693e73057a27f0e3ac35e9c368a9fe
 #EXTINF:-1 tvg-id="room-406865" tvg-logo="https://sta.vnres.co/file/common/20241220/6200343fea7ece69d7d92ae718616478.jpg" group-logo="https://sta.vnres.co/file/common/20241220/6200343fea7ece69d7d92ae718616478.jpg" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BLV ANH TÀI
-https://pull.niur.live/live/stream-406865_lhd.m3u8?txSecret=4c77ce6511155f333535687e716866ce&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-406865_lhd.m3u8?txSecret=a8365b7bd58451f5c8c8eef2c6569df4&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-459401" tvg-logo="https://sta.vnres.co/file/common/20251017/95aeab3d0e40306db5109d3e96afb8f4.jpg" group-logo="https://sta.vnres.co/file/common/20251017/95aeab3d0e40306db5109d3e96afb8f4.jpg" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - BLV BÉO
-https://pull.niur.live/live/stream-459401_lhd.m3u8?txSecret=31586354a56eea264eea00543f137abd&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-459401_lhd.m3u8?txSecret=3aeb24ee461559a1380812ab050cb9ed&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-472241" tvg-logo="https://sta.vnres.co/file/common/20260613/cc7eb6fb9d74dfa083a48c861b135ae8.jpg" group-logo="https://sta.vnres.co/file/common/20260613/cc7eb6fb9d74dfa083a48c861b135ae8.jpg" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - BLV XO
-https://pull.niur.live/live/stream-472241_lhd.m3u8?txSecret=596661811be41cb5d100233ca5279315&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-472241_lhd.m3u8?txSecret=1c55ff23dfd2757b7985f972e89975fe&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-484845" tvg-logo="https://sta.vnres.co/file/common/20260824/0f7586a28bd7c9b3a2bfede04e39b3dd.png" group-logo="https://sta.vnres.co/file/common/20260824/0f7586a28bd7c9b3a2bfede04e39b3dd.png" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - A BỆU
-https://pull.niur.live/live/stream-484845_lhd.m3u8?txSecret=c5a7ac2399e0cd814f1a7daee102fbba&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-484845_lhd.m3u8?txSecret=2b4c5ecbc1257fe40a697c5780f63ec6&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-494201" tvg-logo="https://sta.vnres.co/file/common/20260824/9579d2a0c143f2633fac665f96906c48.jpg" group-logo="https://sta.vnres.co/file/common/20260824/9579d2a0c143f2633fac665f96906c48.jpg" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - BLV MESSI
-https://pull.niues.live/live/stream-494201_lhd.m3u8?auth_key=1787591520-0-0-fcf3ba8fa81ff9a1c2df12d381df3534
+https://pull.niues.live/live/stream-494201_lhd.m3u8?auth_key=1787592120-0-0-34baddd8b30e3be15df2ec6fbc0fafa2
 #EXTINF:-1 tvg-id="room-501412" tvg-logo="https://sta.vnres.co/file/common/20251230/ed05555c76c867229b3ced63a841aae2.png" group-logo="https://sta.vnres.co/file/common/20251230/ed05555c76c867229b3ced63a841aae2.png" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - XUÂN SON
-https://pull.niur.live/live/stream-501412_lhd.m3u8?txSecret=ed37fb8cca8e9ab2f5220f0ccc5e355a&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-501412_lhd.m3u8?txSecret=2d269ae2dc823d64af438ddc0fed8b39&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-511367" tvg-logo="https://sta.vnres.co/file/common/20251121/6d691b0b9dfd9eeb599401a2499400f0.png" group-logo="https://sta.vnres.co/file/common/20251121/6d691b0b9dfd9eeb599401a2499400f0.png" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BLV WUKONG
-https://pull.niur.live/live/stream-511367_lhd.m3u8?txSecret=69de49536270aef63c800aca4bebf229&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-511367_lhd.m3u8?txSecret=a0183526322a52b4b10d969bdf7dcdca&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-527383" tvg-logo="https://sta.vnres.co/file/common/20260626/fcd1d9373f93de7ff3ebfbee3f073c7c.jpg" group-logo="https://sta.vnres.co/file/common/20260626/fcd1d9373f93de7ff3ebfbee3f073c7c.jpg" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - BLV ROBBEN
-https://pull.niues.live/live/stream-527383_lhd.m3u8?auth_key=1787591520-0-0-372e3570d47b15c600e18b6438c811df
+https://pull.niues.live/live/stream-527383_lhd.m3u8?auth_key=1787592120-0-0-07090d032f6f8a02833bf63dc92fa88d
 #EXTINF:-1 tvg-id="room-527384" tvg-logo="https://sta.vnres.co/file/common/20250723/92e3a983ca9ebf07e2630a12672018ca.jpg" group-logo="https://sta.vnres.co/file/common/20250723/92e3a983ca9ebf07e2630a12672018ca.jpg" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - LÃO LÂM
-https://pull.niues.live/live/stream-527384_lhd.m3u8?auth_key=1787591520-0-0-59d8fd107c5c61f352a3b91fe2db2a03
+https://pull.niues.live/live/stream-527384_lhd.m3u8?auth_key=1787592120-0-0-4cfb03ca801e95c55827bc79ca527417
+#EXTINF:-1 tvg-id="room-532081" tvg-logo="https://sta.vnres.co/file/common/20260729/32864b982ba0170f6ed062af85514671.jpg" group-logo="https://sta.vnres.co/file/common/20260729/32864b982ba0170f6ed062af85514671.jpg" group-title="SocoLive",SWE D1: Malmo FF vs Djurgardens - BLV ALEX
+https://pull.niues.live/live/stream-532081_lhd.m3u8?auth_key=1787592120-0-0-a9e2e073c999e74343c1902806fce640
 #EXTINF:-1 tvg-id="room-536185" tvg-logo="https://sta.vnres.co/file/common/20250821/4599267bc7061b982db36b4dded95de2.jpg" group-logo="https://sta.vnres.co/file/common/20250821/4599267bc7061b982db36b4dded95de2.jpg" group-title="SocoLive",KSA PR: Neom SC vs Al Qadsiah - BLV A WIN
-https://pull.niues.live/live/stream-536185_lhd.m3u8?auth_key=1787591520-0-0-c3dc67b2d90b3d5ff78bb6e1a894f411
+https://pull.niues.live/live/stream-536185_lhd.m3u8?auth_key=1787592120-0-0-47ebf4d796a9911b5494ddc164e8119f
 #EXTINF:-1 tvg-id="room-582342" tvg-logo="https://sta.vnres.co/file/common/20260721/f2855aef78044156ad9e45d7985403d0.jpg" group-logo="https://sta.vnres.co/file/common/20260721/f2855aef78044156ad9e45d7985403d0.jpg" group-title="SocoLive",DEN SASL: Brondby IF vs Silkeborg - BLV CÒ
-https://pull.niues.live/live/stream-582342_lhd.m3u8?auth_key=1787591520-0-0-b1794e75cf2af4f9cea8cfa30cb4b810
+https://pull.niues.live/live/stream-582342_lhd.m3u8?auth_key=1787592120-0-0-f2f180adfa4d52e2af93f8ba66cf9e80
 #EXTINF:-1 tvg-id="room-589848" tvg-logo="https://sta.vnres.co/file/common/20260411/c1490960e7f4b63fdc78206c576d2da8.png" group-logo="https://sta.vnres.co/file/common/20260411/c1490960e7f4b63fdc78206c576d2da8.png" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - LOKA
-https://pull.niues.live/live/stream-589848_lhd.m3u8?auth_key=1787591520-0-0-08d5936034c751d0168a5ba54d4ad07d
+https://pull.niues.live/live/stream-589848_lhd.m3u8?auth_key=1787592120-0-0-914e978c5e0608402dd470bd59c197af
 #EXTINF:-1 tvg-id="room-595335" tvg-logo="https://sta.vnres.co/file/common/20260805/c8068dd64589d2890066f1eacc273ab0.png" group-logo="https://sta.vnres.co/file/common/20260805/c8068dd64589d2890066f1eacc273ab0.png" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - NGƯỜI CÁ
-https://pull.niues.live/live/stream-595335_lhd.m3u8?auth_key=1787591520-0-0-088a8cd8d51dd03076bdd4bcdac22dd1
+https://pull.niues.live/live/stream-595335_lhd.m3u8?auth_key=1787592120-0-0-dfedd14e728f31d2443a34ec7959fa19
 #EXTINF:-1 tvg-id="room-598119" tvg-logo="https://sta.vnres.co/file/common/20260317/5be300857a15349a5324be170237948b.png" group-logo="https://sta.vnres.co/file/common/20260317/5be300857a15349a5324be170237948b.png" group-title="SocoLive",ITA D1: Bologna vs Lazio - BLV A TINH
-https://pull.niur.live/live/stream-598119_lhd.m3u8?txSecret=6b3271dc582ae5cb0c744a8bf91774fd&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-598119_lhd.m3u8?txSecret=6c7d2c393fb51a124ce53ef6b73920c3&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-607552" tvg-logo="https://sta.vnres.co/file/common/20260522/f2b4ef051d1e02300d2d5bf24f3828f0.png" group-logo="https://sta.vnres.co/file/common/20260522/f2b4ef051d1e02300d2d5bf24f3828f0.png" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - ĐỖ TÚ TÀI
-https://pull.niues.live/live/stream-607552_lhd.m3u8?auth_key=1787591520-0-0-7dbf30890dd2cde60e8a74d4ba17421d
+https://pull.niues.live/live/stream-607552_lhd.m3u8?auth_key=1787592120-0-0-82b207a9c65559722d6f696c88115c1b
 #EXTINF:-1 tvg-id="room-610518" tvg-logo="https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg" group-logo="https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - XUÂN TÓC ĐỎ
-https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=1e996d8c4098081d7d0000ceceb3f734&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=cbef3e70d1147b358cc945f8f0315770&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-610677" tvg-logo="https://sta.vnres.co/file/common/20260824/a9fe1debf697f718a04054a5149c5b42.jpg" group-logo="https://sta.vnres.co/file/common/20260824/a9fe1debf697f718a04054a5149c5b42.jpg" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - BLV CÁP
-https://pull.niur.live/live/stream-610677_lhd.m3u8?txSecret=d48ea36038be96d67a86174f2371246c&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-610677_lhd.m3u8?txSecret=8c48ed2a5477901c4127a4557a4d8a25&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-617313" tvg-logo="https://sta.vnres.co/file/common/20260628/540cb58118f4c3201221b711e9a9cb7b.jpg" group-logo="https://sta.vnres.co/file/common/20260628/540cb58118f4c3201221b711e9a9cb7b.jpg" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - VINFAST
-https://pull.niues.live/live/stream-617313_lhd.m3u8?auth_key=1787591520-0-0-3633a0b974b46487a8d3b17ca1b9dc42
+https://pull.niues.live/live/stream-617313_lhd.m3u8?auth_key=1787592120-0-0-fa511fc21ed5a011fb5fbe7e4736ed72
 #EXTINF:-1 tvg-id="room-619108" tvg-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-logo="https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA
-https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787591520-0-0-23bc6b35ce2c8e5113165c6dc512e599
+https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787592121-0-0-e984f2a068b7e6a4a0a1b7b414b881f5
 #EXTINF:-1 tvg-id="room-620084" tvg-logo="https://sta.vnres.co/file/common/20260713/cbd81ea71d49b5b5f074a5f56678a9b6.png" group-logo="https://sta.vnres.co/file/common/20260713/cbd81ea71d49b5b5f074a5f56678a9b6.png" group-title="SocoLive",KSA PR: Neom SC vs Al Qadsiah - PEANUT
-https://pull.niues.live/live/stream-620084_lhd.m3u8?auth_key=1787591520-0-0-5e2469286da8364e6f1a9ba171216df6
+https://pull.niues.live/live/stream-620084_lhd.m3u8?auth_key=1787592121-0-0-14f77ddc0c25eaf4d2694973f118e25f
 #EXTINF:-1 tvg-id="room-620504" tvg-logo="https://sta.vnres.co/file/common/20260802/d0b756ac34b8f00d22a6d687f86fe8b2.jpg" group-logo="https://sta.vnres.co/file/common/20260802/d0b756ac34b8f00d22a6d687f86fe8b2.jpg" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BOSS
-https://pull.niur.live/live/stream-620504_lhd.m3u8?txSecret=5ee664cc3f99e793190dcc7721757cf2&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-620504_lhd.m3u8?txSecret=cd8f3ea10f62ef333ca6e75a1b64b524&txTime=6a8cc409
 #EXTINF:-1 tvg-id="room-620649" tvg-logo="https://sta.vnres.co/file/common/20260725/0eb3315ecb9cf5c7f5f9b102d38e52f9.jpg" group-logo="https://sta.vnres.co/file/common/20260725/0eb3315ecb9cf5c7f5f9b102d38e52f9.jpg" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - RỒNG ĐẤT
-https://pull.niues.live/live/stream-620649_lhd.m3u8?auth_key=1787591520-0-0-43ca38e4ce9b378017e7f2a4945ead63
+https://pull.niues.live/live/stream-620649_lhd.m3u8?auth_key=1787592121-0-0-1c834dfd887aa6d3d74552aa5ea19f01
 #EXTINF:-1 tvg-id="room-620661" tvg-logo="https://sta.vnres.co/file/common/20260729/2cca708e4ee1d3e988c578ff79960d7b.jpg" group-logo="https://sta.vnres.co/file/common/20260729/2cca708e4ee1d3e988c578ff79960d7b.jpg" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - CACAO
-https://pull.niues.live/live/stream-620661_lhd.m3u8?auth_key=1787591520-0-0-0c6ed644d3c7871250f92883d9b5520a
+https://pull.niues.live/live/stream-620661_lhd.m3u8?auth_key=1787592121-0-0-f39d15f94c4a5c804474a952cefd0a91
 #EXTINF:-1 tvg-id="room-620797" tvg-logo="https://sta.vnres.co/file/common/20260721/eae172928facf755dbf2027ca230e55e.png" group-logo="https://sta.vnres.co/file/common/20260721/eae172928facf755dbf2027ca230e55e.png" group-title="SocoLive",GERC: VSG Altglienicke vs VfL Wolfsburg - BÒ TƯƠI
-https://pull.niues.live/live/stream-620797_lhd.m3u8?auth_key=1787591520-0-0-24b6e30c090e67bf1316ccad3d652fd1
+https://pull.niues.live/live/stream-620797_lhd.m3u8?auth_key=1787592121-0-0-eece450283f7636e6139c0dadff466d3
 #EXTINF:-1 tvg-id="room-621840" tvg-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-logo="https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png" group-title="SocoLive",RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3
-https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=828a25636a2087f602b87a8c0870cfde&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=d6f71c386738e0cf6683595b1e15e205&txTime=6a8cc409
 #EXTINF:-1 tvg-id="room-621843" tvg-logo="https://sta.vnres.co/file/common/20260813/5d212275a6562e784f8ce4dd82466681.png" group-logo="https://sta.vnres.co/file/common/20260813/5d212275a6562e784f8ce4dd82466681.png" group-title="SocoLive",ROM D1: FC Botosani vs FK Csikszereda Miercurea Ciuc - BLV BẢY
-https://pull.niues.live/live/stream-621843_lhd.m3u8?auth_key=1787591520-0-0-77d10d7e8734b2366e4e0ae230cd3ec2
+https://pull.niues.live/live/stream-621843_lhd.m3u8?auth_key=1787592121-0-0-4eeb7cc65166729b4ced89d62a0b90f7
 #EXTINF:-1 tvg-id="room-622240" tvg-logo="https://sta.vnres.co/file/common/20260809/8d3ecd1339e9fe41608eb4b7f008436c.jpg" group-logo="https://sta.vnres.co/file/common/20260809/8d3ecd1339e9fe41608eb4b7f008436c.jpg" group-title="SocoLive",BUL D1: Botev Vratsa vs Botev Plovdiv - CURRY
-https://pull.niues.live/live/stream-622240_lhd.m3u8?auth_key=1787591521-0-0-6c682d53f71717e73889924200035c0e
+https://pull.niues.live/live/stream-622240_lhd.m3u8?auth_key=1787592121-0-0-d9ac16792c24bdaf1965ce9e65fe7f19
 #EXTINF:-1 tvg-id="room-622241" tvg-logo="https://sta.vnres.co/file/common/20260811/153bed07d4854213a9a88e1029ada9de.jpg" group-logo="https://sta.vnres.co/file/common/20260811/153bed07d4854213a9a88e1029ada9de.jpg" group-title="SocoLive",BUL D1: Botev Vratsa vs Botev Plovdiv - BLV HEHE
-https://pull.niues.live/live/stream-622241_lhd.m3u8?auth_key=1787591521-0-0-8652d59a8f56da0d3759698f7e3671b2
+https://pull.niues.live/live/stream-622241_lhd.m3u8?auth_key=1787592121-0-0-58e754600c34688c9cdc7371cb6b3c21
 #EXTINF:-1 tvg-id="room-622602" tvg-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-logo="https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg" group-title="SocoLive",KSA PR: Neom SC vs Al Qadsiah - KENCHU
-https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787591521-0-0-00dab739685d3bf0a41924e602d7b51c
+https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787592121-0-0-f2705bf2d0a889d881fe9845855f7133
 #EXTINF:-1 tvg-id="room-991140" tvg-logo="https://sta.vnres.co/file/common/20240614/d900dd8841b1223c7b58554cde34df75.jpg" group-logo="https://sta.vnres.co/file/common/20240614/d900dd8841b1223c7b58554cde34df75.jpg" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - BLV FIREMAN
-https://pull.niues.live/live/stream-991140_lhd.m3u8?auth_key=1787591520-0-0-84012093136568ede0234a59c34068d4
+https://pull.niues.live/live/stream-991140_lhd.m3u8?auth_key=1787592120-0-0-f3b2eaee93558a595395d4df0ef64f27
 #EXTINF:-1 tvg-id="room-9912015" tvg-logo="https://sta.vnres.co/file/common/20260801/16b69ccb9ccf1f371806a3f19e7dc683.jpg" group-logo="https://sta.vnres.co/file/common/20260801/16b69ccb9ccf1f371806a3f19e7dc683.jpg" group-title="SocoLive",ITA D1: Bologna vs Lazio - BLV PEWPEW
-https://pull.niues.live/live/stream-9912015_lhd.m3u8?auth_key=1787591520-0-0-10f79a177496f073294ed6485d53161f
+https://pull.niues.live/live/stream-9912015_lhd.m3u8?auth_key=1787592120-0-0-7cec395291b6fa99f3652a09c163281d
 #EXTINF:-1 tvg-id="room-9912060" tvg-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-logo="https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg" group-title="SocoLive",ITA D1: Bologna vs Lazio - ZIDANE
-https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=a9f1550e65d45f2777707061e23176d5&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=6732063eb6bc537b22c65c4b0405f29b&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-9912091" tvg-logo="https://sta.vnres.co/file/common/20260824/c36ea022b8bdfc016fd6ad15bb563831.jpg" group-logo="https://sta.vnres.co/file/common/20260824/c36ea022b8bdfc016fd6ad15bb563831.jpg" group-title="SocoLive",ITA D1: Bologna vs Lazio - BLV Củ Cải
-https://pull.niues.live/live/stream-9912091_lhd.m3u8?auth_key=1787591520-0-0-d8f92caeda3b5654cbc5e3159d35cfa2
+https://pull.niues.live/live/stream-9912091_lhd.m3u8?auth_key=1787592120-0-0-0c0869c4bc26e2420ef155c585a90751
 #EXTINF:-1 tvg-id="room-9912117" tvg-logo="https://sta.vnres.co/file/common/20260810/b792b2c329f2ffe44037f2d5973945de.jpg" group-logo="https://sta.vnres.co/file/common/20260810/b792b2c329f2ffe44037f2d5973945de.jpg" group-title="SocoLive",GERC: SC Verl vs Hamburger SV - BLV LONG
-https://pull.niur.live/live/stream-9912117_lhd.m3u8?txSecret=6346b827d236df93176421403a67e178&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-9912117_lhd.m3u8?txSecret=1a7f0b1cdb3b109f75f38b4ea01316a1&txTime=6a8cc408
 #EXTINF:-1 tvg-id="room-9912120" tvg-logo="https://sta.vnres.co/file/common/20260607/678f6480ad0d1ca70b81555c3f8eed28.png" group-logo="https://sta.vnres.co/file/common/20260607/678f6480ad0d1ca70b81555c3f8eed28.png" group-title="SocoLive",GERC: Würzburger Kickers vs FC Köln - BLV A TÚ
-https://pull.niues.live/live/stream-9912120_lhd.m3u8?auth_key=1787591520-0-0-5e11795f44b40c9c87bdc949efdb22dd
+https://pull.niues.live/live/stream-9912120_lhd.m3u8?auth_key=1787592120-0-0-835e4fb6f46621cf0a84bfc7fac1cba4
 #EXTINF:-1 tvg-id="room-9912122" tvg-logo="https://sta.vnres.co/file/common/20260620/4cbae14a2d06d1635a160fc8c2beb182.jpg" group-logo="https://sta.vnres.co/file/common/20260620/4cbae14a2d06d1635a160fc8c2beb182.jpg" group-title="SocoLive",ITA D1: Bologna vs Lazio - RICKHANTER
-https://pull.niur.live/live/stream-9912122_lhd.m3u8?txSecret=f93950e3e20b6c65f3a430112216c166&txTime=6a8cc1b0
+https://pull.niur.live/live/stream-9912122_lhd.m3u8?txSecret=7187c6a2b3e7bc38544fac7207d4c718&txTime=6a8cc408
