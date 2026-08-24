@@ -5,7 +5,7 @@
     "name": "Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt",
     "logo": "https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=54419f7fb9b662451768f162d67c4db3\u0026txTime=6a8c6120",
+    "url": "https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=b7e80de76bb8807871286c19bde9ce88\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -14,7 +14,7 @@
     "name": "Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào",
     "logo": "https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=ea0d60b44f8315c3d00d1b8b8042051b\u0026txTime=6a8c6120",
+    "url": "https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=2b07edaea0f182a61b0823eb3caac5cf\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -23,7 +23,7 @@
     "name": "Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ",
     "logo": "https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=8893c0f6a1ba30ac35eec14291ef7695\u0026txTime=6a8c6120",
+    "url": "https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=e104badb216e3bce6313981e1149f27a\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -32,7 +32,7 @@
     "name": "Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ",
     "logo": "https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=879abacd78bcc9bcf0a3a0917fb4cc25\u0026txTime=6a8c6120",
+    "url": "https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=48d4c0cbae447b55475e994f878d0bd6\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -41,7 +41,7 @@
     "name": "Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo",
     "logo": "https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=27ae39e7c642ecaff92664c55ad6b72d\u0026txTime=6a8c6120",
+    "url": "https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=3fa833da44cf9876d1eb2666e9a2c570\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -50,16 +50,7 @@
     "name": "Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông",
     "logo": "https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=85d0438215a2405b2570057b78063b20\u0026txTime=6a8c6120",
-    "type": "hls"
-  },
-  {
-    "id": "9912099",
-    "tvg_id": "room-9912099",
-    "name": "WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - KING",
-    "logo": "https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg",
-    "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787566800-0-0-244bd18636140f9e4e37f7f59056e0cf",
+    "url": "https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=85380c66b6251c6d11273aadc2ed916d\u0026txTime=6a8c615c",
     "type": "hls"
   },
   {
@@ -68,7 +59,7 @@
     "name": "WCBC: Zhejiang Chouzhou Bank vs Shanghai Baoshan - BRIAN",
     "logo": "https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787566800-0-0-67bd6819254b8749b23ac1a8716361b3",
+    "url": "https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787566860-0-0-3a560fb15f2cd3b6b2d2c2a45982f0ba",
     "type": "hls"
   }
 ]
