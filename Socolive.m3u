@@ -3,30 +3,32 @@
 # SOCOLIVE LIVE PLAYLIST
 # ======================================
 # Status       : ONLINE
-# Channels     : 11
-# Updated      : 24/08/2026 18:43:47
+# Channels     : 12
+# Updated      : 24/08/2026 18:44:47
 # Player       : OTT Navigator / TiviMate
 # ======================================
 
 #EXTINF:-1 tvg-id="room-133277" tvg-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-logo="https://sta.vnres.co/file/common/20260727/6a1bd087526359e16b7bef9cd8f295f4.jpg" group-title="SocoLive",Tường thuật: SPA D1 - Elche CF vs FC Barcelona - Gà xào sả ớt
-https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=0715236b8f19d12bcc7126f95419850f&txTime=6a8c82a4
+https://pull.niur.live/live/stream-133277_lhd.m3u8?txSecret=5e6ce7c4adc9be5e5b80e3eb04dd3cf3&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-133824" tvg-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-logo="https://sta.vnres.co/file/common/20260727/f73cfd8a276f73997fc776b525386ab0.jpg" group-title="SocoLive",Tường thuật: ENG PR - Brighton Hove Albion vs Aston Villa - Bò leo rào
-https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=4a63ad5655e468d49e024486ef247c8e&txTime=6a8c82a4
+https://pull.niur.live/live/stream-133824_lhd.m3u8?txSecret=48a9f4cf91d18c016d0c6213ddcecab2&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-152898" tvg-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-logo="https://sta.vnres.co/file/common/20260727/64c252ea1e12ac9a5046ae2408d18ef2.png" group-title="SocoLive",Tường thuật: ITA D1 - Frosinone vs Juventus - Thỏ giang hồ
-https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=0dd70142825ff6b71b85f94c1b12f900&txTime=6a8c82a4
+https://pull.niur.live/live/stream-152898_lhd.m3u8?txSecret=3a6fc2c017309b624e0bc0ca23e4a63b&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-179093" tvg-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-logo="https://sta.vnres.co/file/common/20260727/9769db97775961b80ef6744d3059db86.jpg" group-title="SocoLive",Tường thuật: FRA D1 - Paris Saint Germain vs Stade Rennais FC - Hươu đau cổ
-https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=b738a00f346cc8e99a959c61996e4bfc&txTime=6a8c82a4
+https://pull.niur.live/live/stream-179093_lhd.m3u8?txSecret=c003d05e1c13c9fb2f0c2f40057c8905&txTime=6a8c82e0
+#EXTINF:-1 tvg-id="room-291277" tvg-logo="https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg" group-logo="https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - CÔNG CHẤT
+https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=0f9664115428bfc146d19055e6777daf&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-343500" tvg-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-logo="https://sta.vnres.co/file/common/20260727/81d82329dafb6d20a18e3321f65fbd14.jpg" group-title="SocoLive",Tường thuật: ENG PR - Newcastle United vs Liverpoolb - Mèo méo meo
-https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=959f388ec9f11c3cf0ca4a0064e2fc82&txTime=6a8c82a4
+https://pull.niur.live/live/stream-343500_lhd.m3u8?txSecret=349bbbc9258407def207989a86619c65&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-558264" tvg-logo="https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg" group-logo="https://sta.vnres.co/file/common/20260409/4bef5dd60673df0e61ac91db803e1191.jpg" group-title="SocoLive",WCBC: Sichuan Jinqiang vs Jiangsu Nangang - HUNTER
-https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=d16a18cf36b977b3732523b41a7b027d&txTime=6a8c82a4
+https://pull.niur.live/live/stream-558264_lhd.m3u8?txSecret=456c9b2e385d01e83aa38b28eefd59bc&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-9912041" tvg-logo="https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg" group-logo="https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV TAP
-https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=ecc0a0c8f49b4094851b79e9a4bc45e8&txTime=6a8c82a4
+https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=f78d94aa75ca45c7aeb8f099aa9c4908&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-9912079" tvg-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-logo="https://sta.vnres.co/file/common/20250424/a28542dbd508468d0a495a510077aa7b.jpg" group-title="SocoLive",Tường thuật: ENG PR - Manchester City vs Bournemouth AFC - Rắn ở đáy sông
-https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=237605c4ef607c63a70e50c3533b73ee&txTime=6a8c82a4
+https://pull.niur.live/live/stream-9912079_lhd.m3u8?txSecret=1a734a67b922cf5e7361ddb997ba5601&txTime=6a8c82e0
 #EXTINF:-1 tvg-id="room-9912099" tvg-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-logo="https://sta.vnres.co/file/common/20260509/a4366dff27ce40b1dea66de6bcb4231b.jpg" group-title="SocoLive",WCBC: Beijing Normal University vs Shandong Hi-Speed - KING
-https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575380-0-0-44f96bd0202d2fd8dcf7e5e3006a37cc
+https://pull.niues.live/live/stream-9912099_lhd.m3u8?auth_key=1787575474-0-0-087e9bc9509e5f04f4013e92090bc7b9
 #EXTINF:-1 tvg-id="room-9912106" tvg-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-logo="https://sta.vnres.co/file/common/20260222/4eac5c41021ca3f6e6d7694308af0a1d.jpg" group-title="SocoLive",WCBC: Beijing Normal University vs Shandong Hi-Speed - BRIAN
-https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787575380-0-0-dae4eb80a7c918a9b14c0bd40a03f987
+https://pull.niues.live/live/stream-9912106_lhd.m3u8?auth_key=1787575440-0-0-9029eb1e5bb1be22cc06cfae35f2dc45
 #EXTINF:-1 tvg-id="room-9912110" tvg-logo="https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png" group-logo="https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png" group-title="SocoLive",MAS SL: Sabah FC vs Star City - BLV ZOWIE
-https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787575380-0-0-4f39011a9f92d37a66cc45b14398d627
+https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787575440-0-0-c34161e1cf3cd2d62ba66fd8bb522fcb
