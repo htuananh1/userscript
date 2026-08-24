@@ -5,7 +5,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - Casting",
     "logo": "https://sta.vnres.co/file/common/20260514/bbbbb9cdb162442372ad02e281ff69d4.jpeg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=5f64f38f309955ea51222cb1de49cd79\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-121289_lhd.m3u8?txSecret=10376367efb6d727a93f191a58a7fb2a\u0026txTime=6a8ca428",
     "type": "hls"
   },
   {
@@ -14,7 +14,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV CUỘI",
     "logo": "https://sta.vnres.co/file/common/20260804/e812d4edaaf2081ed4e1824593a72b3a.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787583900-0-0-e41a4feb0e34f7e16421fd870f7ce7e6",
+    "url": "https://pull.niues.live/live/stream-256080_lhd.m3u8?auth_key=1787583960-0-0-b2c29e9b36697268148de428d057f7fe",
     "type": "hls"
   },
   {
@@ -23,7 +23,7 @@
     "name": "MAS SL: Sabah FC vs Star City - CÔNG CHẤT",
     "logo": "https://sta.vnres.co/file/common/20260507/f27519c438dedfaf3e72c09e21b66880.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=92e8158e55a958ac61de97521ff5807d\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-291277_lhd.m3u8?txSecret=f063a56f7301bd5c8fd30e940bd128a3\u0026txTime=6a8ca428",
     "type": "hls"
   },
   {
@@ -32,7 +32,16 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV GIÓ",
     "logo": "https://sta.vnres.co/file/common/20260603/54289b9ef989aba74cff5bfdee1d4656.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=18dd7816e9a492c4ea79324a5a011169\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-321443_lhd.m3u8?txSecret=65b1d08dabd07d5a572ba47fc51c54f8\u0026txTime=6a8ca428",
+    "type": "hls"
+  },
+  {
+    "id": "610518",
+    "tvg_id": "room-610518",
+    "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - XUÂN TÓC ĐỎ",
+    "logo": "https://sta.vnres.co/file/common/20260628/336b2e008de11bb26c1d4e0e46bc9f95.jpg",
+    "group": "SocoLive",
+    "url": "https://pull.niur.live/live/stream-610518_lhd.m3u8?txSecret=d3e7eda1c43409e1b4d1945134131144\u0026txTime=6a8ca442",
     "type": "hls"
   },
   {
@@ -41,7 +50,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - BLV NOVA",
     "logo": "https://sta.vnres.co/file/common/20260720/9b537b664ce0364f46b19b262f29b1d6.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787583900-0-0-05582cfc77dc7d375bb68872956f0f9b",
+    "url": "https://pull.niues.live/live/stream-619108_lhd.m3u8?auth_key=1787583960-0-0-9c758aedda8f6ec47ced65d35ecef257",
     "type": "hls"
   },
   {
@@ -50,7 +59,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BÚN ĐẬU",
     "logo": "https://sta.vnres.co/file/common/20260729/d06a0efe274bce28547238bec2a125b9.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787583900-0-0-c1013dfbb23ad0467a7352650fa3fc7b",
+    "url": "https://pull.niues.live/live/stream-619561_lhd.m3u8?auth_key=1787583960-0-0-0fd17bfae43eb3e7bee9bd095373e2b6",
     "type": "hls"
   },
   {
@@ -59,7 +68,7 @@
     "name": "RUS D2: KAMAZ Naberezhnye Chelny vs FC Sochi - MP3",
     "logo": "https://sta.vnres.co/file/common/20260810/042a00493898027e5f644f6f24e88c53.png",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=62dabb202c15d645833af7cac07159fd\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-621840_lhd.m3u8?txSecret=330388446c2647bd646bac06ae08ac91\u0026txTime=6a8ca428",
     "type": "hls"
   },
   {
@@ -68,7 +77,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - KENCHU",
     "logo": "https://sta.vnres.co/file/common/20260817/eeaf8e9a562009c633db883c389eb16b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787583900-0-0-02b6f3aca1c980e4d1ace7f8c2e188ce",
+    "url": "https://pull.niues.live/live/stream-622602_lhd.m3u8?auth_key=1787583960-0-0-88503bde4b3221b5e0a4ad67c0926d90",
     "type": "hls"
   },
   {
@@ -77,7 +86,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - BLV TOMIA",
     "logo": "https://sta.vnres.co/file/common/20260629/15a4e4b3233b174e59d4cd6ae5a8432c.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787583900-0-0-4b46cb1995524e1545b6ce1c424acb7a",
+    "url": "https://pull.niues.live/live/stream-9912008_lhd.m3u8?auth_key=1787583960-0-0-cea9c09119d97ca7b146208cfbfe0a9c",
     "type": "hls"
   },
   {
@@ -86,7 +95,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV TAP",
     "logo": "https://sta.vnres.co/file/common/20260121/079db710976b60b0787b1e2729b56e56.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=5cbf3bb43a91f7d296ba277fa6b90848\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-9912041_lhd.m3u8?txSecret=1a2542749f0c99cdf49f0398f57fe672\u0026txTime=6a8ca428",
     "type": "hls"
   },
   {
@@ -95,7 +104,7 @@
     "name": "UZB PFL: FK Kokand 1912 vs Buxoro FK - ZIDANE",
     "logo": "https://sta.vnres.co/file/common/20260824/6df818e081cfcc9dbb28f6b299961ba7.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=5eaedaf7e64e680e9397ac22bedec4d9\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-9912060_lhd.m3u8?txSecret=06f65a895c6c30b3fac48ef6f5a795b3\u0026txTime=6a8ca428",
     "type": "hls"
   },
   {
@@ -104,7 +113,7 @@
     "name": "MAS SL: Sabah FC vs Star City - BLV ZOWIE",
     "logo": "https://sta.vnres.co/file/common/20260824/76be87aa373e45e22f42cb2a5485f415.png",
     "group": "SocoLive",
-    "url": "https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787583900-0-0-19c921b41b863b1625333bb2cf17a592",
+    "url": "https://pull.niues.live/live/stream-9912110_lhd.m3u8?auth_key=1787583960-0-0-cb2ff51b97f93c8bea4ec31ab202b43f",
     "type": "hls"
   },
   {
@@ -113,7 +122,7 @@
     "name": "MAS SL: Sabah FC vs Star City - QUỐC KHÁNH",
     "logo": "https://sta.vnres.co/file/common/20260824/7f031d1ca981c4dc223b8eb7e6baa84b.jpg",
     "group": "SocoLive",
-    "url": "https://pull.niur.live/live/stream-9912118_lhd.m3u8?txSecret=0715c9128f9c0625920628429ff80c6f\u0026txTime=6a8ca3ec",
+    "url": "https://pull.niur.live/live/stream-9912118_lhd.m3u8?txSecret=af97a2610d1cbe50fe037e12e29c1228\u0026txTime=6a8ca428",
     "type": "hls"
   }
 ]
